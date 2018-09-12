@@ -3,6 +3,7 @@ package net.acomputerdog.securitycheckup;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.jwmi.JWMI;
+import net.acomputerdog.jwmi.WMIException;
 import net.acomputerdog.jwmi.nat.ReleasableVariant;
 import net.acomputerdog.jwmi.wbem.EnumWbemClassObject;
 import net.acomputerdog.jwmi.wbem.WbemClassObject;
@@ -16,6 +17,15 @@ import net.acomputerdog.securitycheckup.ex.UnsupportedPlatformException;
  * Main class for command line usage
  */
 public class CLIMain implements AutoCloseable {
+    /**
+     * Path to the WMI namespace CIMV2
+     */
+    public static final String WMI_NAMESPACE_CIMV2 = "root\\CIMV2";
+
+    /**
+     * Instance of WbemServices connected to the CIMV2 namespace
+     */
+    private WbemServices wbemCIMv2;
 
     /**
      * CLI constructor, should only be called from main()
@@ -27,22 +37,41 @@ public class CLIMain implements AutoCloseable {
     /**
      * Sets up the program to begin testing
      */
-    private void setup() throws UnsupportedPlatformException {
+    private void setup() throws UnsupportedPlatformException, WMIException {
+        if (!"Windows 10".equals(System.getProperty("os.name"))) {
+            throw new UnsupportedPlatformException("OS is not windows 10");
+        }
 
+        try (WbemLocator locator = JWMI.getInstance().createWbemLocator()) {
+            // connect to primary wmi namespace
+            this.wbemCIMv2 = locator.connectServer(WMI_NAMESPACE_CIMV2);
+        }
     }
 
     /**
      * Runs the security check and prints results
      */
     private void run() {
+        System.out.println("Running test...");
 
+        float overallScore = 0.0f;
+
+        System.out.println("Test complete!");
+        System.out.printf("Overall system score: %2.0f%%\n", overallScore * 100);
     }
 
     /**
      * Shuts down the program and releases any resources
      */
     public void close() {
-
+        if (wbemCIMv2 != null) {
+            try {
+                wbemCIMv2.release();
+            } catch (Throwable t) {
+                System.err.println("Exception releasing CIMv2 WbemServices");
+                t.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -119,6 +148,10 @@ public class CLIMain implements AutoCloseable {
                 System.err.println("This system or software environment is not supported.  Security Checkup cannot run.");
                 e.printStackTrace();
                 exitIncompatible();
+            } catch (WMIException e) {
+                System.err.println("WMI exception while loading, hresult = 0x" + Long.toHexString(e.getHresult() == null ? 0 : e.getHresult().longValue()));
+                e.printStackTrace();
+                exitWMIError();
             }
         } catch (Exception e) {
             System.err.println("Unhandled exception occurred");
@@ -132,7 +165,6 @@ public class CLIMain implements AutoCloseable {
      */
     private static void printVersionString() {
         System.out.println(VERSION_STRING);
-        System.out.println();
     }
 
     /**
@@ -248,5 +280,12 @@ public class CLIMain implements AutoCloseable {
      */
     private static void exitIncompatible() {
         System.exit(-3);
+    }
+
+    /**
+     * Exits with an exit code indicating that an unknown WMI error occurred
+     */
+    private static void exitWMIError() {
+        System.exit(-4);
     }
 }
