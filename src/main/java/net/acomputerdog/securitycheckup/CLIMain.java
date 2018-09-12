@@ -2,8 +2,15 @@ package net.acomputerdog.securitycheckup;
 
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
+import net.acomputerdog.jwmi.JWMI;
+import net.acomputerdog.jwmi.nat.ReleasableVariant;
+import net.acomputerdog.jwmi.wbem.EnumWbemClassObject;
+import net.acomputerdog.jwmi.wbem.WbemClassObject;
+import net.acomputerdog.jwmi.wbem.WbemLocator;
+import net.acomputerdog.jwmi.wbem.WbemServices;
 import net.acomputerdog.securitycheckup.ex.UnknownHiveException;
 import net.acomputerdog.securitycheckup.ex.UnsupportedPlatformException;
+
 
 /**
  * Main class for command line usage
@@ -58,26 +65,41 @@ public class CLIMain implements AutoCloseable {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("/?")) {
                     System.out.println("\nSupported arguments:");
-                    System.out.println("/?                                  Show this help");
-                    System.out.println("/version                            Show version string and exit");
-                    System.out.println("/debug_reg  <hive>  <key>  [value]  DEBUG: Print the value of a registry key");
+                    System.out.println("/?              Show this help");
+                    System.out.println("/version        Show version string and exit");
+                    System.out.println("/debug_reg      DEBUG: Print the value of a registry key");
+                    System.out.println("    <hive>          The hive to access");
+                    System.out.println("    <key>           The key in hive");
+                    System.out.println("    [value]         The value to print");
+                    System.out.println("/debug_wmi      DEBUG: Query WMI");
+                    System.out.println("    <namespace>     The namespace to connect to");
+                    System.out.println("    <query>         The query to execute");
+                    System.out.println("    <property>      The property to print from query results");
 
                     exitOK();
                 } else if (args[0].equalsIgnoreCase("/version")) {
                     // version was already printed
                     exitOK();
                 } else if (args[0].equalsIgnoreCase("/debug_reg")) {
-                    if (args.length >= 2) {
+                    if (args.length >= 3) {
 
                         // Value can be null for default value
                         String value = null;
-                        if (args.length >= 3) {
+                        if (args.length >= 4) {
                             value = args[3];
                         }
 
                         debugPrintReg(args[1], args[2], value);
                     } else {
                         System.out.println("You must specify the hive and path to the key to read");
+                        exitBadArg();
+                    }
+                } else if (args[0].equalsIgnoreCase("/debug_wmi")) {
+                    if (args.length == 4) {
+
+                        debugQueryWMI(args[1], args[2], args[3]);
+                    } else {
+                        System.out.println("You must specify the namespace, query, and property");
                         exitBadArg();
                     }
                 } else {
@@ -175,6 +197,28 @@ public class CLIMain implements AutoCloseable {
                 return WinReg.HKEY_DYN_DATA;
             default:
                 throw new UnknownHiveException("Unknown registry hive: " + hive);
+        }
+    }
+
+    private static void debugQueryWMI(String namespace, String query, String property) {
+        try {
+            try (WbemLocator locator = JWMI.getInstance().createWbemLocator()) {
+                try (WbemServices services = locator.connectServer(namespace)) {
+                    try (EnumWbemClassObject enumClsObj = services.execQuery(query)) {
+                        while (enumClsObj.hasNext()) {
+                            try (WbemClassObject clsObj = enumClsObj.next()) {
+                                try (ReleasableVariant variant = clsObj.get(property)) {
+                                    System.out.println(variant.stringValue());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            System.err.println("WMI error occurred");
+            e.printStackTrace();
         }
     }
 

@@ -16,11 +16,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>cn.chenlichao</groupId>
-            <artifactId>wmi4j</artifactId>
-            <version>0.9</version>
-        </dependency>
 
         <dependency>
             <groupId>net.java.dev.jna</groupId>
@@ -32,6 +27,12 @@
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
             <version>4.5.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.acomputerdog.jwmi</groupId>
+            <artifactId>jwmi</artifactId>
+            <version>0.2.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
