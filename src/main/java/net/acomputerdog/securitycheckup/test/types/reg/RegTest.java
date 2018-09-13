@@ -1,4 +1,4 @@
-package net.acomputerdog.securitycheckup.test.types;
+package net.acomputerdog.securitycheckup.test.types.reg;
 
 import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.securitycheckup.ex.reg.RegistryException;

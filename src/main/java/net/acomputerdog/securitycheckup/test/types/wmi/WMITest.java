@@ -1,4 +1,4 @@
-package net.acomputerdog.securitycheckup.test.types;
+package net.acomputerdog.securitycheckup.test.types.wmi;
 
 import net.acomputerdog.jwmi.WMIException;
 import net.acomputerdog.jwmi.wbem.EnumWbemClassObject;

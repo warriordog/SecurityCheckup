@@ -3,9 +3,9 @@ package net.acomputerdog.securitycheckup.test.suite.def;
 import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.jwmi.wbem.WbemClassObject;
 import net.acomputerdog.securitycheckup.test.suite.TestSuite;
-import net.acomputerdog.securitycheckup.test.types.RegTestMatch;
-import net.acomputerdog.securitycheckup.test.types.WMITestMulti;
-import net.acomputerdog.securitycheckup.test.types.WMITestPropBoolean;
+import net.acomputerdog.securitycheckup.test.types.reg.RegTestMatch;
+import net.acomputerdog.securitycheckup.test.types.wmi.WMITestMulti;
+import net.acomputerdog.securitycheckup.test.types.wmi.WMITestPropBoolean;
 
 /**
  * Suite of tests to analyze basic system security.
