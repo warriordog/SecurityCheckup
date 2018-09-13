@@ -1,5 +1,8 @@
 package net.acomputerdog.securitycheckup.test;
 
+/**
+ * The results of a test
+ */
 public class TestResult {
     public static final float SCORE_PASS = 1.0f;
     public static final float SCORE_FAIL = 0.0f;
@@ -47,6 +50,10 @@ public class TestResult {
         return message;
     }
 
+    /**
+     * Gets a human-readable string representing the overall result of this test
+     * @return Return a string representing final results
+     */
     public String getResultString() {
         if (state == Test.State.FINISHED) {
             if (score == SCORE_PASS) {

@@ -5,6 +5,11 @@ import net.acomputerdog.jwmi.nat.ReleasableVariant;
 import net.acomputerdog.jwmi.wbem.WbemClassObject;
 import net.acomputerdog.securitycheckup.test.TestResult;
 
+/**
+ * Parent class for any test type that involves testing a single WMI property.
+ *
+ * If a query run by this class returns multiple results, then only the first is used.
+ */
 public abstract class WMITestProp extends WMITestSingle {
     private final String property;
 
@@ -25,6 +30,11 @@ public abstract class WMITestProp extends WMITestSingle {
         }
     }
 
+    /**
+     * Implemented by subclasses to check if the requested property passes the test
+     * @param property The property to test
+     * @return return true if the test passes, false otherwise
+     */
     public abstract boolean checkProperty(Variant.VARIANT property);
 
 }

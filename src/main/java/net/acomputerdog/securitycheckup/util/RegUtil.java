@@ -6,6 +6,9 @@ import net.acomputerdog.securitycheckup.ex.reg.RegistryKeyMissingException;
 import net.acomputerdog.securitycheckup.ex.reg.RegistryUnknownHiveException;
 import net.acomputerdog.securitycheckup.ex.reg.RegistryValueMissingException;
 
+/**
+ * Registry-related utilities
+ */
 public class RegUtil {
     /**
      * Name of the "default" key value

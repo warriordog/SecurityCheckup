@@ -6,13 +6,30 @@ import net.acomputerdog.securitycheckup.test.TestResult;
 
 import java.util.Objects;
 
+/**
+ * Parent class for normal tests
+ */
 public abstract class BasicTest implements Test {
     public static final String MESSAGE_EXCEPTION = "An unhandled exception occurred.";
 
+    /**
+     * String identifier for this test.  Does not have to be human readable.
+     */
     private final String id;
+
+    /**
+     * String name of this test.  Should be human readable.
+     */
     private final String name;
+
+    /**
+     * String description of this test.  Should be human readable.
+     */
     private final String description;
 
+    /**
+     * Current state of this test
+     */
     private Test.State state = State.NOT_RUN;
 
     public BasicTest(String id, String name, String description) {
@@ -78,5 +95,14 @@ public abstract class BasicTest implements Test {
         return Objects.hash(getID());
     }
 
+    /**
+     * Implemented by subclasses to run the actual test.
+     *
+     * Any exceptions thrown by this method will be caught and stored in the test results,
+     * along with an ERROR result.
+     *
+     * @param environment The test environment
+     * @return return test results
+     */
     protected abstract TestResult runTestSafe(TestEnvironment environment);
 }

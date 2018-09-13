@@ -28,6 +28,10 @@ public abstract class RegTest extends BasicTest {
      */
     private final String value;
 
+    /**
+     * If true, a missing registry key or value will fail the test.
+     * If false, a missing key or value is recorded as NOT_APPLICABLE and passes.
+     */
     boolean failOnMissing = true;
 
     public RegTest(String id, String name, String description, WinReg.HKEY hive, String key, String value) {

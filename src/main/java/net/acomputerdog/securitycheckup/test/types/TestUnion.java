@@ -9,7 +9,13 @@ import java.util.List;
 
 import static net.acomputerdog.securitycheckup.test.TestResult.SCORE_FAIL;
 
+/**
+ * Test that combines multiple other tests into a single unit
+ */
 public class TestUnion extends BasicTest {
+    /**
+     * List of tests to run
+     */
     private final List<Test> subtests = new ArrayList<>();
 
     public TestUnion(String id, String name, String description) {

@@ -2,6 +2,9 @@ package net.acomputerdog.securitycheckup.test.types.wmi;
 
 import com.sun.jna.platform.win32.Variant;
 
+/**
+ * Tests a single WMI boolean property
+ */
 public class WMITestPropBoolean extends WMITestProp {
     private final boolean expected;
 

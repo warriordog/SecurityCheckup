@@ -5,9 +5,18 @@ import net.acomputerdog.jwmi.wbem.WbemLocator;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Environment for the current run of tests
+ */
 public class TestEnvironment {
+    /**
+     * Collection of identified objects to be shared between tests
+     */
     private final Map<Object, Object> sharedResources = new HashMap<>();
 
+    /**
+     * Shared WbemLocator for connecting to WMI
+     */
     private final WbemLocator wbemLocator;
 
     public TestEnvironment(WbemLocator wbemLocator) {
