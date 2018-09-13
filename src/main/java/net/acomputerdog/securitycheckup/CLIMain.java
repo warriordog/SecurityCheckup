@@ -11,6 +11,14 @@ import net.acomputerdog.jwmi.wbem.WbemLocator;
 import net.acomputerdog.jwmi.wbem.WbemServices;
 import net.acomputerdog.securitycheckup.ex.UnknownHiveException;
 import net.acomputerdog.securitycheckup.ex.UnsupportedPlatformException;
+import net.acomputerdog.securitycheckup.test.Test;
+import net.acomputerdog.securitycheckup.test.TestEnvironment;
+import net.acomputerdog.securitycheckup.test.TestResult;
+import net.acomputerdog.securitycheckup.test.types.WMITestMulti;
+import net.acomputerdog.securitycheckup.test.types.WMITestPropBoolean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -23,9 +31,11 @@ public class CLIMain implements AutoCloseable {
     public static final String WMI_NAMESPACE_CIMV2 = "root\\CIMV2";
 
     /**
-     * Instance of WbemServices connected to the CIMV2 namespace
+     * Shared test environment
      */
-    private WbemServices wbemCIMv2;
+    private TestEnvironment testEnvironment;
+
+    private List<Test> tests;
 
     /**
      * CLI constructor, should only be called from main()
@@ -42,33 +52,95 @@ public class CLIMain implements AutoCloseable {
             throw new UnsupportedPlatformException("OS is not windows 10");
         }
 
-        try (WbemLocator locator = JWMI.getInstance().createWbemLocator()) {
-            // connect to primary wmi namespace
-            this.wbemCIMv2 = locator.connectServer(WMI_NAMESPACE_CIMV2);
-        }
+        WbemLocator locator = JWMI.getInstance().createWbemLocator();
+        this.testEnvironment = new TestEnvironment(locator);
+
+        tests = new ArrayList<>();
+
+        //TODO load from some type of config file
+
+        // Check if defender is turned on
+        tests.add(new WMITestPropBoolean(
+                "windows_defender_enabled",
+                "Windows Defender Enabled",
+                "Verifies that Windows Defender is enabled.",
+                "ROOT\\Microsoft\\SecurityClient",
+                "SELECT * FROM ProtectionTechnologyStatus",
+                "Enabled",
+                true
+                ));
+
+        // Check for 3rd party AV
+        tests.add(new WMITestMulti(
+                "av_installed",
+                "Antivirus Software Installed",
+                "Verifies that an antivirus product is installed.",
+                "ROOT\\SecurityCenter2",
+                "SELECT * FROM AntiVirusProduct",
+                false) {
+            @Override
+            public int testObj(WbemClassObject obj) {
+                if (!"Windows Defender".equals(obj.getString("displayName"))) {
+                    return PASS;
+                } else {
+                    return CONTINUE;
+                }
+            }
+        });
     }
 
     /**
      * Runs the security check and prints results
      */
     private void run() {
-        System.out.println("Running test...");
+        System.out.println("Running tests...");
 
-        float overallScore = 0.0f;
+        float scoreTotal = 0.0f;
+        float scoreCount = 0f;
+
+        List<TestResult> testResults = new ArrayList<>();
+        for (Test test : tests) {
+            TestResult result = test.runTest(testEnvironment);
+            testResults.add(result);
+
+            scoreTotal += result.getScore();
+            scoreCount++;
+        }
+
+        float overallScore = scoreCount == 0 ? 0.0f : (scoreTotal / scoreCount);
 
         System.out.println("Test complete!");
         System.out.printf("Overall system score: %2.0f%%\n", overallScore * 100);
+
+        System.out.println("Individual test results:");
+        for (TestResult result : testResults) {
+            System.out.println("----------------------");
+            System.out.printf("|%7s %s\n", result.getResultString(), result.getTest().getID());
+            System.out.printf("|Name:  %s\n", result.getTest().getName());
+            System.out.printf("|Desc:  %s\n", result.getTest().getDescription());
+            System.out.printf("|Score: %1.0f%%\n", result.getScore() * 100);
+            System.out.printf("|State: %s\n", result.getState().name());
+            if (result.getMessage() != null) {
+                System.out.printf("|Message:   %s\n", result.getMessage());
+            }
+            if (result.getException() != null) {
+                System.out.printf("|Exception: %s\n", result.getException().toString());
+                result.getException().printStackTrace();
+            }
+        }
     }
 
     /**
      * Shuts down the program and releases any resources
      */
     public void close() {
-        if (wbemCIMv2 != null) {
+        //TODO release stuff in the shared resources
+
+        if (testEnvironment != null) {
             try {
-                wbemCIMv2.release();
+                testEnvironment.getWbemLocator().release();
             } catch (Throwable t) {
-                System.err.println("Exception releasing CIMv2 WbemServices");
+                System.err.println("Exception releasing WbemLocator");
                 t.printStackTrace();
             }
         }
