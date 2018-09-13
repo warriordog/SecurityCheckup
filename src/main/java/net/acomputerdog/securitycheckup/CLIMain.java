@@ -3,7 +3,9 @@ package net.acomputerdog.securitycheckup;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.jwmi.JWMI;
-import net.acomputerdog.jwmi.WMIException;
+import net.acomputerdog.jwmi.ex.NativeException;
+import net.acomputerdog.jwmi.ex.NativeHresultException;
+import net.acomputerdog.jwmi.ex.WMIException;
 import net.acomputerdog.jwmi.nat.ReleasableVariant;
 import net.acomputerdog.jwmi.wbem.EnumWbemClassObject;
 import net.acomputerdog.jwmi.wbem.WbemClassObject;
@@ -49,7 +51,7 @@ public class CLIMain implements AutoCloseable {
     /**
      * Sets up the program to begin testing
      */
-    private void setup() throws UnsupportedPlatformException, WMIException {
+    private void setup() throws UnsupportedPlatformException, NativeException {
         if (!"Windows 10".equals(System.getProperty("os.name"))) {
             throw new UnsupportedPlatformException("OS is not windows 10");
         }
@@ -226,9 +228,17 @@ public class CLIMain implements AutoCloseable {
                 //e.printStackTrace();
                 exitIncompatible();
             } catch (WMIException e) {
-                System.err.println("WMI exception while loading, hresult = 0x" + Long.toHexString(e.getHresult() == null ? 0 : e.getHresult().longValue()));
+                System.err.printf("WMI exception in object at %s, hresult = 0x%s\n", e.getPointer().toString(), Integer.toHexString(e.getHresult().intValue()));
                 e.printStackTrace();
                 exitWMIError();
+            } catch (NativeHresultException e) {
+                System.err.printf("Error in native function, hresult = 0x%s\n", Integer.toHexString(e.getHresult().intValue()));
+                e.printStackTrace();
+                exitNativeError();
+            } catch (NativeException e) {
+                System.err.println("Unknown error in native code.");
+                e.printStackTrace();
+                exitNativeError();
             }
         } catch (Exception e) {
             System.err.println("Unhandled exception occurred");
@@ -323,5 +333,12 @@ public class CLIMain implements AutoCloseable {
      */
     private static void exitWMIError() {
         System.exit(-4);
+    }
+
+    /**
+     * Exits with an exit code indicating that an error occurred in native code
+     */
+    private static void exitNativeError() {
+        System.exit(-5);
     }
 }

@@ -1,6 +1,8 @@
 package net.acomputerdog.securitycheckup.test.types.wmi;
 
-import net.acomputerdog.jwmi.WMIException;
+import net.acomputerdog.jwmi.ex.NativeException;
+import net.acomputerdog.jwmi.ex.NativeHresultException;
+import net.acomputerdog.jwmi.ex.WMIException;
 import net.acomputerdog.jwmi.wbem.EnumWbemClassObject;
 import net.acomputerdog.jwmi.wbem.WbemServices;
 import net.acomputerdog.securitycheckup.test.BasicTest;
@@ -31,7 +33,17 @@ public abstract class WMITest extends BasicTest {
             return finishTest(results);
         } catch (WMIException e) {
             this.setState(State.ERROR);
-            return new TestResult(this, TestResult.SCORE_FAIL).setException(e).setMessage("WMI error occurred: 0x" + Integer.toHexString(e.getHresult().intValue()));
+            return new TestResult(this, TestResult.SCORE_FAIL).setException(e).setMessage(
+                    String.format("WMI error occurred in object at %s, hresult = 0x%s", e.getPointer().toString(), Integer.toHexString(e.getHresult().intValue()))
+            );
+        } catch (NativeHresultException e) {
+            this.setState(State.ERROR);
+            return new TestResult(this, TestResult.SCORE_FAIL).setException(e).setMessage(
+                    String.format("Error in native function, hresult = 0x%s\n", Integer.toHexString(e.getHresult().intValue()))
+            );
+        } catch (NativeException e) {
+            this.setState(State.ERROR);
+            return new TestResult(this, TestResult.SCORE_FAIL).setException(e).setMessage("Unknown error in native code");
         }
     }
 
