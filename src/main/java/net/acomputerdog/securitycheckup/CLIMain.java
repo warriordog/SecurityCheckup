@@ -125,7 +125,7 @@ public class CLIMain implements AutoCloseable {
             }
             if (result.getException() != null) {
                 System.out.printf("|Exception: %s\n", result.getException().toString());
-                result.getException().printStackTrace();
+                result.getException().printStackTrace(System.out);
             }
         }
     }
@@ -140,6 +140,7 @@ public class CLIMain implements AutoCloseable {
             try {
                 testEnvironment.getWbemLocator().release();
             } catch (Throwable t) {
+                System.out.flush();
                 System.err.println("Exception releasing WbemLocator");
                 t.printStackTrace();
             }
@@ -217,8 +218,9 @@ public class CLIMain implements AutoCloseable {
 
                 exitOK();
             } catch (UnsupportedPlatformException e) {
-                System.err.println("This system or software environment is not supported.  Security Checkup cannot run.");
-                e.printStackTrace();
+                System.err.println("This system or software environment is not supported: " + e.getMessage() + ".");
+                System.err.println("Security Checkup cannot run.");
+                //e.printStackTrace();
                 exitIncompatible();
             } catch (WMIException e) {
                 System.err.println("WMI exception while loading, hresult = 0x" + Long.toHexString(e.getHresult() == null ? 0 : e.getHresult().longValue()));

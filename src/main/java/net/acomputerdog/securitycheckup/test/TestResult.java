@@ -58,6 +58,8 @@ public class TestResult {
             }
         } else if (state == Test.State.ERROR) {
             return "ERROR";
+        } else if (state == Test.State.RUNNING) {
+            return "TIMEOUT";
         } else {
             return "UNKNOWN";
         }
