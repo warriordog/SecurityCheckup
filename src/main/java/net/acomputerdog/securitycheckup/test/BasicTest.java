@@ -1,5 +1,7 @@
 package net.acomputerdog.securitycheckup.test;
 
+import java.util.Objects;
+
 public abstract class BasicTest implements Test {
     public static final String MESSAGE_EXCEPTION = "An unhandled exception occurred.";
 
@@ -57,6 +59,19 @@ public abstract class BasicTest implements Test {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BasicTest)) return false;
+        BasicTest basicTest = (BasicTest) o;
+        return Objects.equals(getID(), basicTest.getID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getID());
     }
 
     protected abstract TestResult runTestSafe(TestEnvironment environment);

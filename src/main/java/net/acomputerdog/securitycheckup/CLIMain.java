@@ -14,11 +14,13 @@ import net.acomputerdog.securitycheckup.ex.UnsupportedPlatformException;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
-import net.acomputerdog.securitycheckup.test.types.WMITestMulti;
-import net.acomputerdog.securitycheckup.test.types.WMITestPropBoolean;
+import net.acomputerdog.securitycheckup.test.suite.TestSuite;
+import net.acomputerdog.securitycheckup.test.suite.def.BasicTests;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -35,7 +37,7 @@ public class CLIMain implements AutoCloseable {
      */
     private TestEnvironment testEnvironment;
 
-    private List<Test> tests;
+    private List<TestSuite> testSuites;
 
     /**
      * CLI constructor, should only be called from main()
@@ -55,38 +57,9 @@ public class CLIMain implements AutoCloseable {
         WbemLocator locator = JWMI.getInstance().createWbemLocator();
         this.testEnvironment = new TestEnvironment(locator);
 
-        tests = new ArrayList<>();
-
-        //TODO load from some type of config file
-
-        // Check if defender is turned on
-        tests.add(new WMITestPropBoolean(
-                "windows_defender_enabled",
-                "Windows Defender Enabled",
-                "Verifies that Windows Defender is enabled.",
-                "ROOT\\Microsoft\\SecurityClient",
-                "SELECT * FROM ProtectionTechnologyStatus",
-                "Enabled",
-                true
-                ));
-
-        // Check for 3rd party AV
-        tests.add(new WMITestMulti(
-                "av_installed",
-                "Antivirus Software Installed",
-                "Verifies that an antivirus product is installed.",
-                "ROOT\\SecurityCenter2",
-                "SELECT * FROM AntiVirusProduct",
-                false) {
-            @Override
-            public int testObj(WbemClassObject obj) {
-                if (!"Windows Defender".equals(obj.getString("displayName"))) {
-                    return PASS;
-                } else {
-                    return CONTINUE;
-                }
-            }
-        });
+        // TODO load externally
+        testSuites = new ArrayList<>();
+        testSuites.add(new BasicTests()); // test for basic system security
     }
 
     /**
@@ -98,13 +71,22 @@ public class CLIMain implements AutoCloseable {
         float scoreTotal = 0.0f;
         float scoreCount = 0f;
 
-        List<TestResult> testResults = new ArrayList<>();
-        for (Test test : tests) {
-            TestResult result = test.runTest(testEnvironment);
-            testResults.add(result);
+        Map<TestSuite, List<TestResult>> testSuiteResults = new HashMap<>();
 
-            scoreTotal += result.getScore();
-            scoreCount++;
+        // Run each suite, and each test in each suite
+        System.out.printf("Running %d test suites.\n", testSuites.size());
+        for (TestSuite tests : testSuites) {
+            System.out.printf("Running %d tests in '%s'.\n", tests.getNumTests(), tests.getName());
+
+            List<TestResult> testResults = new ArrayList<>();
+            for (Test test : tests.getTests()) {
+                TestResult result = test.runTest(testEnvironment);
+                testResults.add(result);
+
+                scoreTotal += result.getScore();
+                scoreCount++;
+            }
+            testSuiteResults.put(tests, testResults);
         }
 
         float overallScore = scoreCount == 0 ? 0.0f : (scoreTotal / scoreCount);
@@ -112,20 +94,29 @@ public class CLIMain implements AutoCloseable {
         System.out.println("Test complete!");
         System.out.printf("Overall system score: %2.0f%%\n", overallScore * 100);
 
+        // print each suite
         System.out.println("Individual test results:");
-        for (TestResult result : testResults) {
+        for (TestSuite suite : testSuites) {
+            System.out.printf("Results for suite '%s':\n", suite.getId());
             System.out.println("----------------------");
-            System.out.printf("|%7s %s\n", result.getResultString(), result.getTest().getID());
-            System.out.printf("|Name:  %s\n", result.getTest().getName());
-            System.out.printf("|Desc:  %s\n", result.getTest().getDescription());
-            System.out.printf("|Score: %1.0f%%\n", result.getScore() * 100);
-            System.out.printf("|State: %s\n", result.getState().name());
-            if (result.getMessage() != null) {
-                System.out.printf("|Message:   %s\n", result.getMessage());
-            }
-            if (result.getException() != null) {
-                System.out.printf("|Exception: %s\n", result.getException().toString());
-                result.getException().printStackTrace(System.out);
+            System.out.printf("  |%s:\n", suite.getName());
+            System.out.printf("  |%s\n", suite.getDescription());
+
+            // print results
+            for (TestResult result : testSuiteResults.get(suite)) {
+                System.out.println("----------------------");
+                System.out.printf("|%7s %s\n", result.getResultString(), result.getTest().getID());
+                System.out.printf("|Name:  %s\n", result.getTest().getName());
+                System.out.printf("|Desc:  %s\n", result.getTest().getDescription());
+                System.out.printf("|Score: %1.0f%%\n", result.getScore() * 100);
+                System.out.printf("|State: %s\n", result.getState().name());
+                if (result.getMessage() != null) {
+                    System.out.printf("|Message:   %s\n", result.getMessage());
+                }
+                if (result.getException() != null) {
+                    System.out.printf("|Exception: %s\n", result.getException().toString());
+                    result.getException().printStackTrace(System.out);
+                }
             }
         }
     }
@@ -135,9 +126,9 @@ public class CLIMain implements AutoCloseable {
      */
     public void close() {
         // clear tests
-        if (tests != null) {
-            tests.clear();
-            tests = null;
+        if (testSuites != null) {
+            testSuites.clear();
+            testSuites = null;
         }
 
         // clear test environment
