@@ -28,6 +28,8 @@ public abstract class RegTest extends BasicTest {
      */
     private final String value;
 
+    boolean failOnMissing = true;
+
     public RegTest(String id, String name, String description, WinReg.HKEY hive, String key, String value) {
         super(id, name, description);
         this.hive = hive;
@@ -61,6 +63,16 @@ public abstract class RegTest extends BasicTest {
         return value;
     }
 
+    public boolean isFailOnMissing() {
+        return failOnMissing;
+    }
+
+    public RegTest setFailOnMissing(boolean failOnMissing) {
+        this.failOnMissing = failOnMissing;
+
+        return this;
+    }
+
     @Override
     protected TestResult runTestSafe(TestEnvironment environment) {
         try {
@@ -68,12 +80,14 @@ public abstract class RegTest extends BasicTest {
 
             this.setState(State.FINISHED);
             return finishTest(environment, contents);
-        } catch (RegistryKeyMissingException e) {
-            this.setState(State.INCOMPATIBLE);
-            return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Required registry key is missing.");
-        } catch (RegistryValueMissingException e) {
-            this.setState(State.INCOMPATIBLE);
-            return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Required registry value is missing.");
+        } catch (RegistryKeyMissingException | RegistryValueMissingException e) {
+            if (failOnMissing) {
+                this.setState(State.INCOMPATIBLE);
+                return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Required registry key or value is missing.");
+            } else {
+                this.setState(State.NOT_APPLICABLE);
+                return new TestResult(this, TestResult.SCORE_PASS).setMessage("Optional registry key or value is missing.");
+            }
         } catch (RegistryException e) {
             this.setState(State.ERROR);
             return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Unknown registry error: " + e.toString());

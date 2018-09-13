@@ -3,6 +3,7 @@ package net.acomputerdog.securitycheckup.test.suite.def;
 import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.jwmi.wbem.WbemClassObject;
 import net.acomputerdog.securitycheckup.test.suite.TestSuite;
+import net.acomputerdog.securitycheckup.test.types.TestUnion;
 import net.acomputerdog.securitycheckup.test.types.reg.RegTestMatch;
 import net.acomputerdog.securitycheckup.test.types.wmi.WMITestMulti;
 import net.acomputerdog.securitycheckup.test.types.wmi.WMITestPropBoolean;
@@ -52,14 +53,36 @@ public class BasicTests extends TestSuite {
         });
 
         // Autoplay disabled
-        addTest(new RegTestMatch(
+        addTest(new TestUnion(
                 "autoplay_disabled",
                 "AutoPlay Disabled",
-                "Verifies that AutoPlay is disabled.",
+                "Verifies that AutoPlay is disabled."
+        ).addTest(new RegTestMatch( // This is the newer, more important key
+                "autoplay_disabled_new",
+                "AutoPlay Disabled (new)",
+                "Verifies that AutoPlay is disabled with the newer registry key.",
                 WinReg.HKEY_CURRENT_USER,
                 "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\AutoplayHandlers",
                 "DisableAutoplay",
                 1
+        )).addTest(new RegTestMatch( // TODO test if necessary
+                "autoplay_disabled_old_system",
+                "AutoPlay Disabled (old, system wide)",
+                "Verifies that AutoPlay is disabled system-wide with the older registry key.",
+                WinReg.HKEY_LOCAL_MACHINE,
+                "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+                "NoDriveTypeAutoRun",
+                0x255
+        ).setFailOnMissing(false) // Probably optional on new systems
+        ).addTest(new RegTestMatch( // TODO test if necessary
+                "autoplay_disabled_old_user",
+                "AutoPlay Disabled (old, user-specific)",
+                "Verifies that AutoPlay is disabled for this user with the older registry key.",
+                WinReg.HKEY_CURRENT_USER,
+                "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+                "NoDriveTypeAutoRun",
+                0x255
+        ).setFailOnMissing(false) // Probably optional on new systems
         ));
     }
 }
