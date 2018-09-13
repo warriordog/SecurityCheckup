@@ -9,13 +9,13 @@ import net.acomputerdog.jwmi.wbem.EnumWbemClassObject;
 import net.acomputerdog.jwmi.wbem.WbemClassObject;
 import net.acomputerdog.jwmi.wbem.WbemLocator;
 import net.acomputerdog.jwmi.wbem.WbemServices;
-import net.acomputerdog.securitycheckup.ex.UnknownHiveException;
 import net.acomputerdog.securitycheckup.ex.UnsupportedPlatformException;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
 import net.acomputerdog.securitycheckup.test.suite.TestSuite;
 import net.acomputerdog.securitycheckup.test.suite.def.BasicTests;
+import net.acomputerdog.securitycheckup.util.RegUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -253,7 +253,7 @@ public class CLIMain implements AutoCloseable {
      * @param value The value in the key (null for default)
      */
     private static void debugPrintReg(String hive, String path, String value) {
-        WinReg.HKEY hkey = hiveToHKEY(hive);
+        WinReg.HKEY hkey = RegUtil.getHiveByName(hive);
 
         // make sure key exists
         if (Advapi32Util.registryKeyExists(hkey, path)) {
@@ -265,47 +265,6 @@ public class CLIMain implements AutoCloseable {
             }
         } else {
             System.out.println("Error: registry key does not exist.");
-        }
-    }
-
-    /**
-     * Finds an HKEY by name.
-     * The name is case-insensitive, and the common "shorthand" key names are supported:
-     * * HKCR = HKEY_CLASSES_ROOT
-     * * HKCU = HKEY_CURRENT_USER
-     * * HKLM = HKEY_LOCAL_MACHINE
-     * * HKCC = HKEY_CURRENT_CONFIG
-     *
-     * @param hive the name of the HKEY
-     * @return return the HKEY that matches the provided name
-     * @throws UnknownHiveException if the name could not be resolved
-     */
-    private static WinReg.HKEY hiveToHKEY(String hive) {
-        switch (hive.toUpperCase()) {
-            case "HKEY_CLASSES_ROOT":
-            case "HKCR":
-                return WinReg.HKEY_CLASSES_ROOT;
-            case "HKEY_CURRENT_USER":
-            case "HKCU":
-                return WinReg.HKEY_CURRENT_USER;
-            case "HKEY_LOCAL_MACHINE":
-            case "HKLM":
-                return WinReg.HKEY_LOCAL_MACHINE;
-            case "HKEY_USERS":
-                return WinReg.HKEY_USERS;
-            case "HKEY_PERFORMANCE_DATA":
-                return WinReg.HKEY_PERFORMANCE_DATA;
-            case "HKEY_PERFORMANCE_TEXT":
-                return WinReg.HKEY_PERFORMANCE_TEXT;
-            case "HKEY_PERFORMANCE_NLSTEXT":
-                return WinReg.HKEY_PERFORMANCE_NLSTEXT;
-            case "HKEY_CURRENT_CONFIG":
-            case "HKCC":
-                return WinReg.HKEY_CURRENT_CONFIG;
-            case "HKEY_DYN_DATA":
-                return WinReg.HKEY_DYN_DATA;
-            default:
-                throw new UnknownHiveException("Unknown registry hive: " + hive);
         }
     }
 
