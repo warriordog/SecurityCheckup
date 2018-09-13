@@ -26,6 +26,10 @@ public class TestEnvironment {
         sharedResources.put(key, value);
     }
 
+    public void clearSharedResources() {
+        sharedResources.clear();
+    }
+
     public WbemLocator getWbemLocator() {
         return wbemLocator;
     }

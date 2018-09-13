@@ -134,9 +134,16 @@ public class CLIMain implements AutoCloseable {
      * Shuts down the program and releases any resources
      */
     public void close() {
-        //TODO release stuff in the shared resources
+        // clear tests
+        if (tests != null) {
+            tests.clear();
+            tests = null;
+        }
 
+        // clear test environment
         if (testEnvironment != null) {
+            testEnvironment.clearSharedResources();
+
             try {
                 testEnvironment.getWbemLocator().release();
             } catch (Throwable t) {
@@ -144,7 +151,12 @@ public class CLIMain implements AutoCloseable {
                 System.err.println("Exception releasing WbemLocator");
                 t.printStackTrace();
             }
+
+            testEnvironment = null;
         }
+
+        // GC to close out any native objects
+        System.gc();
     }
 
     /**
