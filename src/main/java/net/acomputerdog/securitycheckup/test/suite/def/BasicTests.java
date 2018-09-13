@@ -1,7 +1,9 @@
 package net.acomputerdog.securitycheckup.test.suite.def;
 
+import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.jwmi.wbem.WbemClassObject;
 import net.acomputerdog.securitycheckup.test.suite.TestSuite;
+import net.acomputerdog.securitycheckup.test.types.RegTestMatch;
 import net.acomputerdog.securitycheckup.test.types.WMITestMulti;
 import net.acomputerdog.securitycheckup.test.types.WMITestPropBoolean;
 
@@ -48,5 +50,16 @@ public class BasicTests extends TestSuite {
                 }
             }
         });
+
+        // Autoplay disabled
+        addTest(new RegTestMatch(
+                "autoplay_disabled",
+                "AutoPlay Disabled",
+                "Verifies that AutoPlay is disabled.",
+                WinReg.HKEY_CURRENT_USER,
+                "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\AutoplayHandlers",
+                "DisableAutoplay",
+                1
+        ));
     }
 }
