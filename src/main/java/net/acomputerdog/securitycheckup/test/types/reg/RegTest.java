@@ -4,9 +4,9 @@ import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.securitycheckup.ex.reg.RegistryException;
 import net.acomputerdog.securitycheckup.ex.reg.RegistryKeyMissingException;
 import net.acomputerdog.securitycheckup.ex.reg.RegistryValueMissingException;
-import net.acomputerdog.securitycheckup.test.BasicTest;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
+import net.acomputerdog.securitycheckup.test.types.BasicTest;
 import net.acomputerdog.securitycheckup.util.RegUtil;
 
 /**

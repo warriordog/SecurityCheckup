@@ -1,6 +1,5 @@
 package net.acomputerdog.securitycheckup.test.types;
 
-import net.acomputerdog.securitycheckup.test.BasicTest;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;

@@ -5,9 +5,9 @@ import net.acomputerdog.jwmi.ex.NativeHresultException;
 import net.acomputerdog.jwmi.ex.WMIException;
 import net.acomputerdog.jwmi.wbem.EnumWbemClassObject;
 import net.acomputerdog.jwmi.wbem.WbemServices;
-import net.acomputerdog.securitycheckup.test.BasicTest;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
+import net.acomputerdog.securitycheckup.test.types.BasicTest;
 
 public abstract class WMITest extends BasicTest {
     private final String namespace;
