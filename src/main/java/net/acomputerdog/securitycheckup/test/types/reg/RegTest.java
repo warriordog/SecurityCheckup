@@ -29,10 +29,16 @@ public abstract class RegTest extends BasicTest {
     private final String value;
 
     /**
-     * If true, a missing registry key or value will fail the test.
+     * If true, a missing registry key or value will be recorded as INCOMPATIBLE.
      * If false, a missing key or value is recorded as NOT_APPLICABLE and passes.
      */
-    boolean failOnMissing = true;
+    boolean requireAllKeys = true;
+
+    /**
+     * If true, a missing key or value fails.
+     * If fase, a missing key or value is incompatible.
+     */
+    boolean failOnMissingKey = false;
 
     public RegTest(String id, String name, String description, WinReg.HKEY hive, String key, String value) {
         super(id, name, description);
@@ -67,13 +73,22 @@ public abstract class RegTest extends BasicTest {
         return value;
     }
 
-    public boolean isFailOnMissing() {
-        return failOnMissing;
+    public boolean isRequireAllKeys() {
+        return requireAllKeys;
     }
 
-    public RegTest setFailOnMissing(boolean failOnMissing) {
-        this.failOnMissing = failOnMissing;
+    public RegTest setRequireAllKeys(boolean requireAllKeys) {
+        this.requireAllKeys = requireAllKeys;
 
+        return this;
+    }
+
+    public boolean isFailOnMissingKey() {
+        return failOnMissingKey;
+    }
+
+    public RegTest setFailOnMissingKey(boolean failOnMissingKey) {
+        this.failOnMissingKey = failOnMissingKey;
         return this;
     }
 
@@ -85,12 +100,17 @@ public abstract class RegTest extends BasicTest {
             this.setState(State.FINISHED);
             return finishTest(environment, contents);
         } catch (RegistryKeyMissingException | RegistryValueMissingException e) {
-            if (failOnMissing) {
-                this.setState(State.INCOMPATIBLE);
-                return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Required registry key or value is missing.");
+            if (requireAllKeys) {
+                if (failOnMissingKey) {
+                    this.setState(State.FINISHED);
+                    return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Required registry key or value is missing.");
+                } else {
+                    this.setState(State.INCOMPATIBLE);
+                    return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Required registry key or value is missing.");
+                }
             } else {
                 this.setState(State.NOT_APPLICABLE);
-                return new TestResult(this, TestResult.SCORE_PASS).setMessage("Optional registry key or value is missing.");
+                return new TestResult(this, TestResult.SCORE_PASS).setMessage("Test skipped - optional key is missing.");
             }
         } catch (RegistryException e) {
             this.setState(State.ERROR);

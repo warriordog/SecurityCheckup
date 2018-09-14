@@ -93,32 +93,35 @@ public class CLIMain implements AutoCloseable {
 
         float overallScore = scoreCount == 0 ? 0.0f : (scoreTotal / scoreCount);
 
+        System.out.println();
         System.out.println("Test complete!");
         System.out.printf("Overall system score: %2.0f%%\n", overallScore * 100);
+        System.out.println();
 
         // print each suite
         System.out.println("Individual test results:");
         for (TestSuite suite : testSuites) {
             System.out.printf("Results for suite '%s':\n", suite.getId());
             System.out.println("----------------------");
-            System.out.printf("  |%s:\n", suite.getName());
-            System.out.printf("  |%s\n", suite.getDescription());
+            System.out.printf("|%s:\n", suite.getName());
+            System.out.printf("|%s\n", suite.getDescription());
+            System.out.println("----------------------");
 
             // print results
             for (TestResult result : testSuiteResults.get(suite)) {
-                System.out.println("----------------------");
-                System.out.printf("|%7s %s\n", result.getResultString(), result.getTest().getID());
-                System.out.printf("|Name:  %s\n", result.getTest().getName());
-                System.out.printf("|Desc:  %s\n", result.getTest().getDescription());
-                System.out.printf("|Score: %1.0f%%\n", result.getScore() * 100);
-                System.out.printf("|State: %s\n", result.getState().name());
+                System.out.printf("  |%-7s %s\n", result.getResultString(), result.getTest().getID());
+                System.out.printf("  |Name:   %s\n", result.getTest().getName());
+                System.out.printf("  |Desc:   %s\n", result.getTest().getDescription());
+                System.out.printf("  |Score:  %1.0f%%\n", result.getScore() * 100);
+                System.out.printf("  |State:  %s\n", result.getState().name());
                 if (result.getMessage() != null) {
-                    System.out.printf("|Message:   %s\n", result.getMessage());
+                    System.out.printf("  |Message:   %s\n", result.getMessage().replaceAll("\n", "\n  |"));
                 }
                 if (result.getException() != null) {
-                    System.out.printf("|Exception: %s\n", result.getException().toString());
+                    System.out.printf("  |Exception: %s\n", result.getException().toString());
                     result.getException().printStackTrace(System.out);
                 }
+                System.out.println("  ----------------------");
             }
         }
     }

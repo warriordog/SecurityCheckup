@@ -55,20 +55,24 @@ public class TestResult {
      * @return Return a string representing final results
      */
     public String getResultString() {
-        if (state == Test.State.FINISHED) {
-            if (score == SCORE_PASS) {
-                return "PASS";
-            } else if (score == SCORE_FAIL) {
-                return "FAIL";
-            } else {
-                return "PARTIAL";
-            }
-        } else if (state == Test.State.ERROR) {
-            return "ERROR";
-        } else if (state == Test.State.RUNNING) {
-            return "TIMEOUT";
-        } else {
-            return "UNKNOWN";
+        switch (state) {
+            case FINISHED:
+                if (score == SCORE_PASS) {
+                    return "PASS";
+                } else if (score == SCORE_FAIL) {
+                    return "FAIL";
+                } else {
+                    return "PARTIAL";
+                }
+            case ERROR:
+                return "ERROR";
+            case RUNNING:
+                return "TIMEOUT";
+            case NOT_APPLICABLE:
+            case INCOMPATIBLE:
+                return "SKIPPED";
+            default:
+                return "UNKNOWN";
         }
     }
 

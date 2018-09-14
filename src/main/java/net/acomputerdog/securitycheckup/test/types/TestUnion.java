@@ -16,7 +16,7 @@ public class TestUnion extends BasicTest {
     /**
      * List of tests to run
      */
-    private final List<Test> subtests = new ArrayList<>();
+    private final List<Subtest> subtests = new ArrayList<>();
 
     public TestUnion(String id, String name, String description) {
         super(id, name, description);
@@ -30,8 +30,8 @@ public class TestUnion extends BasicTest {
         super(id);
     }
 
-    public TestUnion addTest(Test test) {
-        subtests.add(test);
+    public TestUnion addTest(Subtest subtest) {
+        subtests.add(subtest);
         return this;
     }
 
@@ -44,16 +44,23 @@ public class TestUnion extends BasicTest {
 
         StringBuilder message = new StringBuilder();
         float totalScore = 0.0f;
-        for (Test test : subtests) {
+        float count = 0f;
+        for (Subtest subtest : subtests) {
             try {
+                Test test = subtest.test;
+
                 TestResult result = test.runTest(environment);
 
-                totalScore += result.getScore();
+                // If state is not NA or [it is NA and] we include NA, then include
+                if (result.getState() != State.NOT_APPLICABLE || !subtest.skipNotApplicable) {
+                    totalScore += result.getScore();
+                    count++;
+                }
 
                 message.append("\n");
                 message.append(test.getID());
                 message.append(": ");
-                message.append(result.getState().name());
+                message.append(result.getResultString());
                 if (result.getMessage() != null) {
                     message.append(" - ");
                     message.append(result.getMessage());
@@ -65,12 +72,45 @@ public class TestUnion extends BasicTest {
                 }
             } catch (Throwable t) {
                 totalScore += SCORE_FAIL;
-                //results.add(new TestResult(test, State.ERROR, TestResult.SCORE_FAIL).setException(t).setMessage("Unhandled exception in subtest"));
             }
         }
-        float finalScore = totalScore / (float)subtests.size();
+        float finalScore = count == 0f ? 0f : totalScore / count;
 
         this.setState(State.FINISHED);
         return new TestResult(this, finalScore).setMessage(message.toString());
+    }
+
+    /**
+     * A test to run within a TestUnion, along with parameters to control its execution
+     */
+    public static class Subtest {
+        /**
+         * Test to run
+         */
+        private final Test test;
+
+        /**
+         * If true, and this test returns NOT_APPLICABLE, then its score will not be included in the final
+         * score calculation.
+         */
+        private boolean skipNotApplicable = false;
+
+        public Subtest(Test test) {
+            this.test = test;
+        }
+
+        public boolean isSkipNotApplicable() {
+            return skipNotApplicable;
+        }
+
+        public Subtest setSkipNotApplicable(boolean skipNotApplicable) {
+            this.skipNotApplicable = skipNotApplicable;
+
+            return this;
+        }
+
+        public Test getTest() {
+            return test;
+        }
     }
 }
