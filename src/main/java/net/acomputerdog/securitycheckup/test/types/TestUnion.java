@@ -31,6 +31,10 @@ public class TestUnion extends BasicTest {
         super(id);
     }
 
+    public TestUnion addTest(Test test) {
+        return addTest(new Subtest(test));
+    }
+
     public TestUnion addTest(Subtest subtest) {
         subtests.add(subtest);
         return this;
@@ -43,9 +47,6 @@ public class TestUnion extends BasicTest {
             return new TestResult(this, TestResult.SCORE_PASS).setMessage("No subtests were run.");
         }
 
-        //StringBuilder message = new StringBuilder();
-        //float totalScore = 0.0f;
-        //float count = 0f;
         StringBuilder message = new StringBuilder();
         List<SubtestResults> results = new ArrayList<>();
         for (Subtest subtest : subtests) {
@@ -102,28 +103,12 @@ public class TestUnion extends BasicTest {
                     message.append(result.getException().toString());
                     message.append(")");
                 }
-                /*
 
-                message.append("\n");
-                message.append(test.getID());
-                message.append(": ");
-                message.append(result.getResultString());
-                if (result.getMessage() != null) {
-                    message.append(" - ");
-                    message.append(result.getMessage());
-                }
-                if (result.getException() != null) {
-                    message.append("(");
-                    message.append(result.getException().toString());
-                    message.append(")");
-                }
-                */
                 results.add(new SubtestResults(subtest, result, skip, forcePassed, forceFailed));
             } catch (Throwable t) {
                 results.add(new SubtestResults(subtest,
                         new TestResult(test, SCORE_FAIL).setException(t).setMessage("Subtest threw exception: " + t.toString()),
                         false, false, false));
-                //totalScore += SCORE_FAIL;
             }
         }
 
@@ -132,13 +117,6 @@ public class TestUnion extends BasicTest {
 
         for (SubtestResults subtestResults : results) {
             TestResult result = subtestResults.result;
-
-            // Skip NOT_APPLICABLE (if set) - If state is not NA or [it is NA and] we include NA, then include
-            //if (result.getState() != State.NOT_APPLICABLE || !subtest.skipNotApplicable) {
-            //
-            //    totalScore += result.getScore();
-            //    count++;
-            //}
 
             if (!subtestResults.skip) {
                 if (subtestResults.forceFailed) {

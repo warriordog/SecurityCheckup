@@ -7,21 +7,16 @@ import net.acomputerdog.securitycheckup.test.TestResult;
 /**
  * Tests if the value of a registry key matches an expected value
  */
-public class RegTestMatch extends RegTest {
+public class RegEntryTestMatch extends RegEntryTest {
     private final Object expected;
 
-    public RegTestMatch(String id, String name, String description, WinReg.HKEY hive, String key, String value, Object expected) {
+    public RegEntryTestMatch(String id, String name, String description, WinReg.HKEY hive, String key, String value, Object expected) {
         super(id, name, description, hive, key, value);
         this.expected = expected;
     }
 
-    public RegTestMatch(String id, String name, WinReg.HKEY hive, String key, String value, Object expected) {
-        super(id, name, hive, key, value);
-        this.expected = expected;
-    }
-
-    public RegTestMatch(String id, WinReg.HKEY hive, String key, String value, Object expected) {
-        super(id, hive, key, value);
+    public RegEntryTestMatch(String id, String name, String description, String hive, String key, String value, Object expected) {
+        super(id, name, description, hive, key, value);
         this.expected = expected;
     }
 

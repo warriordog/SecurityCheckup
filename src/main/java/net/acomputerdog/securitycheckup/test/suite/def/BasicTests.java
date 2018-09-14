@@ -4,7 +4,8 @@ import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.jwmi.wbem.WbemClassObject;
 import net.acomputerdog.securitycheckup.test.suite.TestSuite;
 import net.acomputerdog.securitycheckup.test.types.TestUnion;
-import net.acomputerdog.securitycheckup.test.types.reg.RegTestMatch;
+import net.acomputerdog.securitycheckup.test.types.reg.RegEntryTestMatch;
+import net.acomputerdog.securitycheckup.test.types.reg.RegKeyTestEmpty;
 import net.acomputerdog.securitycheckup.test.types.wmi.WMITestMulti;
 import net.acomputerdog.securitycheckup.test.types.wmi.WMITestPropBoolean;
 
@@ -60,7 +61,7 @@ public class BasicTests extends TestSuite {
                 "Verifies that AutoPlay is disabled."
         ).addTest(
             new TestUnion.Subtest(
-                new RegTestMatch( // This is the newer, more important key
+                new RegEntryTestMatch( // This is the newer, more important key
                     "autoplay_disabled_new",
                     "AutoPlay Disabled (new)",
                     "Verifies that AutoPlay is disabled with the newer registry key.",
@@ -72,7 +73,7 @@ public class BasicTests extends TestSuite {
             ).setScoringMode(TestUnion.ScoringMode.MUST_PASS)
         ).addTest(
             new TestUnion.Subtest(
-                new RegTestMatch( // TODO test if necessary
+                new RegEntryTestMatch( // TODO test if necessary
                     "autoplay_disabled_old_system",
                     "AutoPlay Disabled (old, system wide)",
                     "Verifies that AutoPlay is disabled system-wide with the older registry key.",
@@ -84,7 +85,7 @@ public class BasicTests extends TestSuite {
             ).setSkipNotApplicable(true).setScoringMode(TestUnion.ScoringMode.FILTER)
         ).addTest(
             new TestUnion.Subtest(
-                    new RegTestMatch( // TODO test if necessary
+                    new RegEntryTestMatch( // TODO test if necessary
                     "autoplay_disabled_old_user",
                     "AutoPlay Disabled (old, user-specific)",
                     "Verifies that AutoPlay is disabled for this user with the older registry key.",
@@ -94,6 +95,45 @@ public class BasicTests extends TestSuite {
                     0x255
                 ).setRequireAllKeys(false) // Probably optional on new systems
             ).setSkipNotApplicable(true).setScoringMode(TestUnion.ScoringMode.FILTER)
+        ));
+
+        // Windows defender exclusions set
+        addTest(new TestUnion(
+                "defender_exclusions",
+                "Windows Defender Exclusions",
+                "Checks for windows defender exclusions"
+            ).addTest(new TestUnion.Subtest(new RegKeyTestEmpty(
+                    "defender_exclusions_extensions",
+                    "Windows Defender Exclusions (Filename Extensions)",
+                    "Checks for file extensions excluded from windows defender",
+                    WinReg.HKEY_LOCAL_MACHINE,
+                    "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Extensions"
+                ).setRequireExists(true)
+            ).setScoringMode(TestUnion.ScoringMode.MUST_PASS)
+            ).addTest(new TestUnion.Subtest(new RegKeyTestEmpty(
+                        "defender_exclusions_paths",
+                        "Windows Defender Exclusions (Paths)",
+                        "Checks for paths excluded from windows defender",
+                        WinReg.HKEY_LOCAL_MACHINE,
+                        "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Paths"
+                ).setRequireExists(true)
+            ).setScoringMode(TestUnion.ScoringMode.MUST_PASS)
+            ).addTest(new TestUnion.Subtest(new RegKeyTestEmpty(
+                        "defender_exclusions_processes",
+                        "Windows Defender Exclusions (Process)",
+                        "Checks for processes excluded from windows defender",
+                        WinReg.HKEY_LOCAL_MACHINE,
+                        "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Processes"
+                ).setRequireExists(true)
+            ).setScoringMode(TestUnion.ScoringMode.MUST_PASS)
+            ).addTest(new TestUnion.Subtest(new RegKeyTestEmpty(
+                        "defender_exclusions_temppaths",
+                        "Windows Defender Exclusions (Temporary Paths)",
+                        "Checks for temporary paths excluded from windows defender",
+                        WinReg.HKEY_LOCAL_MACHINE,
+                        "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\TemporaryPaths"
+                ).setRequireExists(true)
+            ).setScoringMode(TestUnion.ScoringMode.MUST_PASS)
         ));
     }
 }
