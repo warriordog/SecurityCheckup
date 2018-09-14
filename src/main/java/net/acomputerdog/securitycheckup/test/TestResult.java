@@ -76,6 +76,24 @@ public class TestResult {
         }
     }
 
+    /**
+     * Checks if this test passed, given a provided minimum "passing" score
+     *
+     * @param passingScore Minimum score needed to pass
+     * @return Return true if score >= passing score
+     */
+    public boolean passed(float passingScore) {
+        return this.getScore() >= passingScore;
+    }
+
+    /**
+     * Checks if this test passed with a perfect score (score == SCORE_PASS == 1.0f)
+     * @return Return true if this test passed with a perfect score
+     */
+    public boolean passed() {
+        return passed(SCORE_PASS);
+    }
+
     public TestResult setException(Throwable exception) {
         this.exception = exception;
 

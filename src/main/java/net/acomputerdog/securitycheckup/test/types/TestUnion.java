@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.acomputerdog.securitycheckup.test.TestResult.SCORE_FAIL;
+import static net.acomputerdog.securitycheckup.test.TestResult.SCORE_PASS;
 
 /**
  * Test that combines multiple other tests into a single unit
@@ -42,19 +43,50 @@ public class TestUnion extends BasicTest {
             return new TestResult(this, TestResult.SCORE_PASS).setMessage("No subtests were run.");
         }
 
+        //StringBuilder message = new StringBuilder();
+        //float totalScore = 0.0f;
+        //float count = 0f;
         StringBuilder message = new StringBuilder();
-        float totalScore = 0.0f;
-        float count = 0f;
+        List<SubtestResults> results = new ArrayList<>();
         for (Subtest subtest : subtests) {
+            Test test = subtest.getTest();
             try {
-                Test test = subtest.test;
 
                 TestResult result = test.runTest(environment);
 
-                // If state is not NA or [it is NA and] we include NA, then include
-                if (result.getState() != State.NOT_APPLICABLE || !subtest.skipNotApplicable) {
-                    totalScore += result.getScore();
-                    count++;
+                boolean skip = false;
+                boolean forcePassed = false;
+                boolean forceFailed = false;
+
+                // Skip NOT_APPLICABLE (if set)
+                if (result.getState() == State.NOT_APPLICABLE && subtest.skipNotApplicable) {
+                    skip = true;
+                }
+
+                switch (subtest.getScoringMode()) {
+                    case AVERAGE:
+                        break;
+                    case MUST_PASS:
+                        if (!result.passed()) {
+                            forceFailed = true;
+                        }
+                        break;
+                    case FILTER:
+                        if (result.passed()) {
+                            skip = true;
+                        } else {
+                            forceFailed = true;
+                        }
+                        break;
+                    case SHORT_CIRCUIT:
+                        if (result.passed()) {
+                            forcePassed = true;
+                        } else {
+                            skip = true;
+                        }
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Illegal scoring mode: " + subtest.getScoringMode());
                 }
 
                 message.append("\n");
@@ -70,14 +102,80 @@ public class TestUnion extends BasicTest {
                     message.append(result.getException().toString());
                     message.append(")");
                 }
+                /*
+
+                message.append("\n");
+                message.append(test.getID());
+                message.append(": ");
+                message.append(result.getResultString());
+                if (result.getMessage() != null) {
+                    message.append(" - ");
+                    message.append(result.getMessage());
+                }
+                if (result.getException() != null) {
+                    message.append("(");
+                    message.append(result.getException().toString());
+                    message.append(")");
+                }
+                */
+                results.add(new SubtestResults(subtest, result, skip, forcePassed, forceFailed));
             } catch (Throwable t) {
-                totalScore += SCORE_FAIL;
+                results.add(new SubtestResults(subtest,
+                        new TestResult(test, SCORE_FAIL).setException(t).setMessage("Subtest threw exception: " + t.toString()),
+                        false, false, false));
+                //totalScore += SCORE_FAIL;
             }
         }
+
+        float totalScore = 0.0f;
+        float count = 0f;
+
+        for (SubtestResults subtestResults : results) {
+            TestResult result = subtestResults.result;
+
+            // Skip NOT_APPLICABLE (if set) - If state is not NA or [it is NA and] we include NA, then include
+            //if (result.getState() != State.NOT_APPLICABLE || !subtest.skipNotApplicable) {
+            //
+            //    totalScore += result.getScore();
+            //    count++;
+            //}
+
+            if (!subtestResults.skip) {
+                if (subtestResults.forceFailed) {
+                    totalScore = SCORE_FAIL;
+                    count = 1f;
+                    break;
+                } else if (subtestResults.forcePassed) {
+                    totalScore = SCORE_PASS;
+                    count = 1f;
+                    break;
+                } else {
+                    totalScore += result.getScore();
+                    count++;
+                }
+            }
+        }
+
         float finalScore = count == 0f ? 0f : totalScore / count;
 
         this.setState(State.FINISHED);
         return new TestResult(this, finalScore).setMessage(message.toString());
+    }
+
+    private static class SubtestResults {
+        private final Subtest subtest;
+        private final TestResult result;
+        private final boolean skip;
+        private final boolean forcePassed;
+        private final boolean forceFailed;
+
+        private SubtestResults(Subtest subtest, TestResult result, boolean skip, boolean forcePassed, boolean forceFailed) {
+            this.subtest = subtest;
+            this.result = result;
+            this.skip = skip;
+            this.forcePassed = forcePassed;
+            this.forceFailed = forceFailed;
+        }
     }
 
     /**
@@ -95,6 +193,18 @@ public class TestUnion extends BasicTest {
          */
         private boolean skipNotApplicable = false;
 
+        /**
+         * Determines how this subtest will be scored
+         */
+        private ScoringMode scoringMode = ScoringMode.MUST_PASS;
+
+        /**
+         * If true, this subtest's score will be inverted.
+         *
+         * newScore = 1 - oldScore;
+         */
+        private boolean invertScore = false;
+
         public Subtest(Test test) {
             this.test = test;
         }
@@ -109,8 +219,56 @@ public class TestUnion extends BasicTest {
             return this;
         }
 
+        public ScoringMode getScoringMode() {
+            return scoringMode;
+        }
+
+        public Subtest setScoringMode(ScoringMode scoringMode) {
+            this.scoringMode = scoringMode;
+
+            return this;
+        }
+
+        public boolean isInvertScore() {
+            return invertScore;
+        }
+
+        public Subtest setInvertScore(boolean invertScore) {
+            this.invertScore = invertScore;
+
+            return this;
+        }
+
         public Test getTest() {
             return test;
         }
+    }
+
+    /**
+     * Scoring mode for a subtest
+     */
+    public enum ScoringMode {
+        /**
+         * Subtest score will be averaged with others
+         */
+        AVERAGE,
+
+        /**
+         * This subtest must pass.  If it passes, then its score is averaged with the others.
+         * If it fails, then the test fails.
+         */
+        MUST_PASS,
+
+        /**
+         * This subtest acts as a filter.  If it passes, then its score is disregarded and the
+         * test continues.  If it fails, then the test fails.
+         */
+        FILTER,
+
+        /**
+         * This subtest short-circuits the test.  If it passes, then the test passes.  If it fails,
+         * then it is disregarded.
+         */
+        SHORT_CIRCUIT
     }
 }

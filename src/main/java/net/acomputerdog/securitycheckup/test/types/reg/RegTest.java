@@ -110,7 +110,7 @@ public abstract class RegTest extends BasicTest {
                 }
             } else {
                 this.setState(State.NOT_APPLICABLE);
-                return new TestResult(this, TestResult.SCORE_PASS).setMessage("Test skipped - optional key is missing.");
+                return new TestResult(this, TestResult.SCORE_PASS).setMessage("Optional key or value is missing.");
             }
         } catch (RegistryException e) {
             this.setState(State.ERROR);

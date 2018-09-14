@@ -69,7 +69,8 @@ public class BasicTests extends TestSuite {
                     "DisableAutoplay",
                     1
                 ).setFailOnMissingKey(true) // Windows settings app deletes key when autoplay is turned on
-        )).addTest(
+            ).setScoringMode(TestUnion.ScoringMode.MUST_PASS)
+        ).addTest(
             new TestUnion.Subtest(
                 new RegTestMatch( // TODO test if necessary
                     "autoplay_disabled_old_system",
@@ -80,7 +81,7 @@ public class BasicTests extends TestSuite {
                     "NoDriveTypeAutoRun",
                     0x255
                 ).setRequireAllKeys(false) // Probably optional on new systems
-            ).setSkipNotApplicable(true)
+            ).setSkipNotApplicable(true).setScoringMode(TestUnion.ScoringMode.FILTER)
         ).addTest(
             new TestUnion.Subtest(
                     new RegTestMatch( // TODO test if necessary
@@ -92,7 +93,7 @@ public class BasicTests extends TestSuite {
                     "NoDriveTypeAutoRun",
                     0x255
                 ).setRequireAllKeys(false) // Probably optional on new systems
-            ).setSkipNotApplicable(true)
+            ).setSkipNotApplicable(true).setScoringMode(TestUnion.ScoringMode.FILTER)
         ));
     }
 }
