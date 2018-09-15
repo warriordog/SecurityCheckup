@@ -5,6 +5,9 @@ import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
 
+/**
+ * Tests that checks if a registry key is empty
+ */
 public class RegKeyTestEmpty extends RegKeyTest {
     /**
      * If true, the registry key and hive must exist for the test to pass.

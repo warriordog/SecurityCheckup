@@ -2,6 +2,9 @@ package net.acomputerdog.securitycheckup.test.types.reg;
 
 import com.sun.jna.platform.win32.WinReg;
 
+/**
+ * Superclass for tests involving a registry key
+ */
 public abstract class RegKeyTest extends RegTest {
     /**
      * Registry key to read

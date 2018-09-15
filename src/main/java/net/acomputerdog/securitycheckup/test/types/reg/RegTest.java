@@ -4,6 +4,9 @@ import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.securitycheckup.test.types.BasicTest;
 import net.acomputerdog.securitycheckup.util.RegUtil;
 
+/**
+ * Superclass for a test involving a registry hive
+ */
 public abstract class RegTest extends BasicTest {
     /**
      * Registry hive to access

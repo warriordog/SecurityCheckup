@@ -74,7 +74,7 @@ public class BasicTests extends TestSuite {
             ).setScoringMode(TestUnion.ScoringMode.MUST_PASS)
         ).addTest(
             new TestUnion.Subtest(
-                new RegEntryTestMatch( // TODO test if necessary
+                new RegEntryTestMatch(
                     "autoplay_disabled_old_system",
                     "AutoPlay Disabled (old, system wide)",
                     "Verifies that AutoPlay is disabled system-wide with the older registry key.",
@@ -82,11 +82,11 @@ public class BasicTests extends TestSuite {
                     "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
                     "NoDriveTypeAutoRun",
                     0x255
-                ).setRequireAllKeys(false) // Probably optional on new systems
+                ).setRequireAllKeys(false)
             ).setSkipNotApplicable(true).setScoringMode(TestUnion.ScoringMode.FILTER)
         ).addTest(
             new TestUnion.Subtest(
-                    new RegEntryTestMatch( // TODO test if necessary
+                    new RegEntryTestMatch(
                     "autoplay_disabled_old_user",
                     "AutoPlay Disabled (old, user-specific)",
                     "Verifies that AutoPlay is disabled for this user with the older registry key.",
@@ -94,7 +94,7 @@ public class BasicTests extends TestSuite {
                     "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
                     "NoDriveTypeAutoRun",
                     0x255
-                ).setRequireAllKeys(false) // Probably optional on new systems
+                ).setRequireAllKeys(false)
             ).setSkipNotApplicable(true).setScoringMode(TestUnion.ScoringMode.FILTER)
         ));
 
