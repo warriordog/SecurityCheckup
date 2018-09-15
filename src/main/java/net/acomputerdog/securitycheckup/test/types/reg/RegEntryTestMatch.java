@@ -23,9 +23,9 @@ public class RegEntryTestMatch extends RegEntryTest {
     @Override
     protected TestResult finishTest(TestEnvironment env, Object regContents) {
         if (expected.equals(regContents)) {
-            return new TestResult(this, TestResult.SCORE_PASS).setMessage("Registry contents matched.");
+            return new TestResult(this).setScore(TestResult.SCORE_PASS).setMessage("Registry contents matched.");
         } else {
-            return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Registry contents did not match.");
+            return new TestResult(this).setScore(TestResult.SCORE_FAIL).setMessage("Registry contents did not match.");
         }
     }
 }

@@ -41,10 +41,10 @@ public abstract class WMITestMulti extends WMITest {
                 switch (status) {
                     case FAIL:
                         setState(State.FINISHED);
-                        return new TestResult(this, TestResult.SCORE_FAIL);
+                        return new TestResult(this).setScore(TestResult.SCORE_FAIL);
                     case PASS:
                         setState(State.FINISHED);
-                        return new TestResult(this, TestResult.SCORE_PASS);
+                        return new TestResult(this).setScore(TestResult.SCORE_PASS);
                     case CONTINUE:
                         break;
                     default:
@@ -55,9 +55,9 @@ public abstract class WMITestMulti extends WMITest {
 
         setState(State.FINISHED);
         if (defaultPass) {
-            return new TestResult(this, TestResult.SCORE_PASS).setMessage("No results returned from query; default pass.");
+            return new TestResult(this).setScore(TestResult.SCORE_PASS).setMessage("No results returned from query; default pass.");
         } else {
-            return new TestResult(this, TestResult.SCORE_FAIL).setMessage("No results returned from query; default fail.");
+            return new TestResult(this).setScore(TestResult.SCORE_FAIL).setMessage("No results returned from query; default fail.");
         }
     }
 

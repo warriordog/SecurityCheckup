@@ -23,14 +23,6 @@ public class TestUnion extends BasicTest {
         super(id, name, description);
     }
 
-    public TestUnion(String id, String name) {
-        super(id, name);
-    }
-
-    public TestUnion(String id) {
-        super(id);
-    }
-
     public TestUnion addTest(Test test) {
         return addTest(new Subtest(test));
     }
@@ -44,7 +36,7 @@ public class TestUnion extends BasicTest {
     protected TestResult runTestSafe(TestEnvironment environment) {
         if (subtests.isEmpty()) {
             this.setState(State.NOT_APPLICABLE);
-            return new TestResult(this, TestResult.SCORE_PASS).setMessage("No subtests were run.");
+            return new TestResult(this).setScore(SCORE_PASS).setMessage("No subtests were run.");
         }
 
         StringBuilder message = new StringBuilder();
@@ -53,7 +45,9 @@ public class TestUnion extends BasicTest {
             Test test = subtest.getTest();
             try {
 
+                // get results and invert if needed
                 TestResult result = test.runTest(environment);
+                result.setInverted(subtest.inverted);
 
                 boolean skip = false;
                 boolean forcePassed = false;
@@ -107,7 +101,7 @@ public class TestUnion extends BasicTest {
                 results.add(new SubtestResults(subtest, result, skip, forcePassed, forceFailed));
             } catch (Throwable t) {
                 results.add(new SubtestResults(subtest,
-                        new TestResult(test, SCORE_FAIL).setException(t).setMessage("Subtest threw exception: " + t.toString()),
+                        new TestResult(test).setScore(SCORE_FAIL).setException(t).setMessage("Subtest threw exception: " + t.toString()),
                         false, false, false));
             }
         }
@@ -137,7 +131,7 @@ public class TestUnion extends BasicTest {
         float finalScore = count == 0f ? 0f : totalScore / count;
 
         this.setState(State.FINISHED);
-        return new TestResult(this, finalScore).setMessage(message.toString());
+        return new TestResult(this).setScore(finalScore).setMessage(message.toString());
     }
 
     private static class SubtestResults {
@@ -180,8 +174,9 @@ public class TestUnion extends BasicTest {
          * If true, this subtest's score will be inverted.
          *
          * newScore = 1 - oldScore;
+         * passed = !passed;
          */
-        private boolean invertScore = false;
+        private boolean inverted = false;
 
         public Subtest(Test test) {
             this.test = test;
@@ -207,12 +202,12 @@ public class TestUnion extends BasicTest {
             return this;
         }
 
-        public boolean isInvertScore() {
-            return invertScore;
+        public boolean isInverted() {
+            return inverted;
         }
 
-        public Subtest setInvertScore(boolean invertScore) {
-            this.invertScore = invertScore;
+        public Subtest setInverted(boolean inverted) {
+            this.inverted = inverted;
 
             return this;
         }

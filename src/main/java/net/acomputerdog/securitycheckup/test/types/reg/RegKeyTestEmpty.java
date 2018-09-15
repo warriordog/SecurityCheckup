@@ -38,17 +38,17 @@ public class RegKeyTestEmpty extends RegKeyTest {
         if (Advapi32Util.registryKeyExists(getHive(), getKey())) {
             if (Advapi32Util.registryGetValues(getHive(), getKey()).isEmpty()) {
                 setState(State.FINISHED);
-                return new TestResult(this, TestResult.SCORE_PASS).setMessage("Registry key is empty.");
+                return new TestResult(this).setScore(TestResult.SCORE_PASS).setMessage("Registry key is empty.");
             } else {
                 setState(State.FINISHED);
-                return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Registry key is not empty.");
+                return new TestResult(this).setScore(TestResult.SCORE_FAIL).setMessage("Registry key is not empty.");
             }
         } else if (!requireExists) {
             setState(State.FINISHED);
-            return new TestResult(this, TestResult.SCORE_PASS).setMessage("Required registry key was not found.");
+            return new TestResult(this).setScore(TestResult.SCORE_PASS).setMessage("Required registry key was not found.");
         } else {
             setState(State.INCOMPATIBLE);
-            return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Required registry key is missing.");
+            return new TestResult(this).setScore(TestResult.SCORE_FAIL).setMessage("Required registry key is missing.");
         }
     }
 }

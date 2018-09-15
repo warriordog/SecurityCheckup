@@ -23,9 +23,9 @@ public abstract class WMITestProp extends WMITestSingle {
         try (ReleasableVariant variant = classObject.get(property)) {
             setState(State.FINISHED);
             if (checkProperty(variant)) {
-                return new TestResult(this, TestResult.SCORE_PASS).setMessage("WMI property matched.");
+                return new TestResult(this).setScore(TestResult.SCORE_PASS).setMessage("WMI property matched.");
             } else {
-                return new TestResult(this, TestResult.SCORE_FAIL).setMessage("WMI property did not match.");
+                return new TestResult(this).setScore(TestResult.SCORE_FAIL).setMessage("WMI property did not match.");
             }
         }
     }

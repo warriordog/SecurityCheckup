@@ -33,17 +33,17 @@ public abstract class WMITest extends BasicTest {
             return finishTest(results);
         } catch (WMIException e) {
             this.setState(State.ERROR);
-            return new TestResult(this, TestResult.SCORE_FAIL).setException(e).setMessage(
+            return new TestResult(this).setScore(TestResult.SCORE_FAIL).setException(e).setMessage(
                     String.format("WMI error occurred in object at %s, hresult = 0x%s", e.getPointer().toString(), Integer.toHexString(e.getHresult().intValue()))
             );
         } catch (NativeHresultException e) {
             this.setState(State.ERROR);
-            return new TestResult(this, TestResult.SCORE_FAIL).setException(e).setMessage(
+            return new TestResult(this).setScore(TestResult.SCORE_FAIL).setException(e).setMessage(
                     String.format("Error in native function, hresult = 0x%s\n", Integer.toHexString(e.getHresult().intValue()))
             );
         } catch (NativeException e) {
             this.setState(State.ERROR);
-            return new TestResult(this, TestResult.SCORE_FAIL).setException(e).setMessage("Unknown error in native code");
+            return new TestResult(this).setScore(TestResult.SCORE_FAIL).setException(e).setMessage("Unknown error in native code");
         }
     }
 

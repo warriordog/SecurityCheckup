@@ -22,7 +22,7 @@ public abstract class WMITestSingle extends WMITest {
             }
         } else {
             setState(State.FINISHED);
-            return new TestResult(this, TestResult.SCORE_FAIL).setMessage("No results returned from query.");
+            return new TestResult(this).setScore(TestResult.SCORE_FAIL).setMessage("No results returned from query.");
         }
     }
 

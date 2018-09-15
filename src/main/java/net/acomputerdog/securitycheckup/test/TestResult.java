@@ -7,27 +7,54 @@ public class TestResult {
     public static final float SCORE_PASS = 1.0f;
     public static final float SCORE_FAIL = 0.0f;
 
-    /*
-    These fields are mandatory
-     */
     private final Test test;
-    private final Test.State state;
-    private final float score;
 
-    /*
-    These fields are optional
-     */
+    private Test.State state;
+    private float score = SCORE_FAIL;
     private Throwable exception;
     private String message;
 
-    public TestResult(Test test, Test.State state, float score) {
+    /**
+     * If true, score and results will be inverted.
+     *
+     * score = 1 - score;
+     * passed() = !passed();
+     */
+    private boolean inverted = false;
+
+    public TestResult(Test test) {
         this.test = test;
-        this.state = state;
-        this.score = score;
+        this.state = test.getCurrentState();
     }
 
-    public TestResult(Test test, float score) {
-        this(test, test.getCurrentState(), score);
+    public TestResult setState(Test.State state) {
+        this.state = state;
+
+        return this;
+    }
+
+    public TestResult setScore(float score) {
+        this.score = score;
+
+        return this;
+    }
+
+    public TestResult setInverted(boolean inverted) {
+        this.inverted = inverted;
+
+        return this;
+    }
+
+    public TestResult setException(Throwable exception) {
+        this.exception = exception;
+
+        return this;
+    }
+
+    public TestResult setMessage(String message) {
+        this.message = message;
+
+        return this;
     }
 
     public Test getTest() {
@@ -39,7 +66,11 @@ public class TestResult {
     }
 
     public float getScore() {
-        return score;
+        if (inverted) {
+            return 1 - score;
+        } else {
+            return score;
+        }
     }
 
     public Throwable getException() {
@@ -48,6 +79,10 @@ public class TestResult {
 
     public String getMessage() {
         return message;
+    }
+
+    public boolean isInverted() {
+        return inverted;
     }
 
     /**
@@ -83,7 +118,12 @@ public class TestResult {
      * @return Return true if score >= passing score
      */
     public boolean passed(float passingScore) {
-        return this.getScore() >= passingScore;
+        boolean passed = this.getScore() >= passingScore;
+        if (inverted) {
+            return !passed;
+        } else {
+            return passed;
+        }
     }
 
     /**
@@ -92,17 +132,5 @@ public class TestResult {
      */
     public boolean passed() {
         return passed(SCORE_PASS);
-    }
-
-    public TestResult setException(Throwable exception) {
-        this.exception = exception;
-
-        return this;
-    }
-
-    public TestResult setMessage(String message) {
-        this.message = message;
-
-        return this;
     }
 }

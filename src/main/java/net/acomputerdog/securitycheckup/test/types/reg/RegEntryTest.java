@@ -73,18 +73,18 @@ public abstract class RegEntryTest extends RegKeyTest {
             if (requireAllKeys) {
                 if (failOnMissingKey) {
                     this.setState(State.FINISHED);
-                    return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Required registry key or value is missing.");
+                    return new TestResult(this).setScore(TestResult.SCORE_FAIL).setMessage("Required registry key or value is missing.");
                 } else {
                     this.setState(State.INCOMPATIBLE);
-                    return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Required registry key or value is missing.");
+                    return new TestResult(this).setScore(TestResult.SCORE_FAIL).setMessage("Required registry key or value is missing.");
                 }
             } else {
                 this.setState(State.NOT_APPLICABLE);
-                return new TestResult(this, TestResult.SCORE_PASS).setMessage("Optional key or value is missing.");
+                return new TestResult(this).setScore(TestResult.SCORE_PASS).setMessage("Optional key or value is missing.");
             }
         } catch (RegistryException e) {
             this.setState(State.ERROR);
-            return new TestResult(this, TestResult.SCORE_FAIL).setMessage("Unknown registry error: " + e.toString());
+            return new TestResult(this).setScore(TestResult.SCORE_FAIL).setMessage("Unknown registry error: " + e.toString());
         }
     }
 

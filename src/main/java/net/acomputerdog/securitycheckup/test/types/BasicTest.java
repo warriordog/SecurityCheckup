@@ -54,7 +54,7 @@ public abstract class BasicTest implements Test {
             return runTestSafe(environment);
         } catch (Throwable t) {
             state = State.ERROR;
-            return new TestResult(this, TestResult.SCORE_FAIL).setException(t).setMessage(MESSAGE_EXCEPTION);
+            return new TestResult(this).setScore(TestResult.SCORE_FAIL).setException(t).setMessage(MESSAGE_EXCEPTION);
         }
     }
 
