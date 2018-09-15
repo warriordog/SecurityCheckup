@@ -15,7 +15,8 @@ import net.acomputerdog.securitycheckup.test.types.wmi.WMITestPropBoolean;
  * Currently includes the following tests:
  * * windows_defender_enabled   - Check if windows defender is enabled
  * * av_installed               - Check if a 3rd party (not defender) AV is installed
- * * autoplay_disabled          - Check if AutoPlay is disabled for external media
+ * * autoplay_disabled          - Verify that AutoPlay is disabled for external media
+ * * defender_exclusions        - Check for windows defender exclusions
  */
 public class BasicTests extends TestSuite {
     public BasicTests() {
