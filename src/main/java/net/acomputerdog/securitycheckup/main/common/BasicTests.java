@@ -1,4 +1,4 @@
-package net.acomputerdog.securitycheckup.test.suite.def;
+package net.acomputerdog.securitycheckup.main.common;
 
 import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.jwmi.wbem.WbemClassObject;

@@ -1,4 +1,4 @@
-package net.acomputerdog.securitycheckup;
+package net.acomputerdog.securitycheckup.main.cli;
 
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
@@ -12,11 +12,11 @@ import net.acomputerdog.jwmi.wbem.WbemClassObject;
 import net.acomputerdog.jwmi.wbem.WbemLocator;
 import net.acomputerdog.jwmi.wbem.WbemServices;
 import net.acomputerdog.securitycheckup.ex.UnsupportedPlatformException;
+import net.acomputerdog.securitycheckup.main.common.BasicTests;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
 import net.acomputerdog.securitycheckup.test.suite.TestSuite;
-import net.acomputerdog.securitycheckup.test.suite.def.BasicTests;
 import net.acomputerdog.securitycheckup.util.RegUtil;
 
 import java.util.ArrayList;
