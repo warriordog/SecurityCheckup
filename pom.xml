@@ -43,7 +43,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>net.acomputerdog.securitycheckup.main.cli.CLIMain</mainClass>
+                            <mainClass>net.acomputerdog.securitycheckup.main.gui.GUIMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
