@@ -2,12 +2,12 @@ package net.acomputerdog.securitycheckup.main.gui;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import net.acomputerdog.securitycheckup.main.gui.scene.SceneMain;
+import net.acomputerdog.securitycheckup.main.gui.scene.MainScene;
 
 public class GUIMain extends Application {
 
     private Stage primaryStage;
-    private SceneMain mainWin;
+    private MainScene mainWin;
 
     @Override
     public void init() {
@@ -17,10 +17,10 @@ public class GUIMain extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
-            this.mainWin = new SceneMain(this);
+            this.mainWin = new MainScene(this);
 
             this.primaryStage = primaryStage;
-            this.primaryStage.setScene(mainWin);
+            this.primaryStage.setScene(mainWin.getScene());
             this.primaryStage.setTitle("Security Checkup");
             this.primaryStage.setWidth(800);
             this.primaryStage.setHeight(600);
