@@ -1,5 +1,6 @@
 package net.acomputerdog.securitycheckup.main.gui.panels;
 
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
@@ -7,7 +8,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import net.acomputerdog.securitycheckup.main.gui.test.Profile;
@@ -26,7 +26,7 @@ public class ProfileInfo implements Panel {
     private final Text title;
     private final ListView<ProfileTest> testList;
     private final BorderPane infoPane;
-    private final VBox testInfoPane;
+    private final GridPane testInfoPane;
     private final GridPane detailsPane;
 
     private Profile profile;
@@ -55,10 +55,12 @@ public class ProfileInfo implements Panel {
 
         // profile info
         this.infoPane = new BorderPane();
+        infoPane.setPadding(new Insets(5, 5, 5, 5));
         tabOverview.setContent(infoPane);
 
         // Detailed info
         this.detailsPane = new GridPane();
+        detailsPane.setPadding(new Insets(5, 5, 5, 5));
         detailsPane.setHgap(2);
         detailsPane.setVgap(2);
         tabDetails.setContent(detailsPane);
@@ -66,9 +68,10 @@ public class ProfileInfo implements Panel {
         // test list and info
         this.testList = new ListView<>();
         testList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> ProfileInfo.this.onSelectTest(newValue));
-        this.testInfoPane = new VBox();
+        this.testInfoPane = new GridPane();
         this.testSplit = new SplitPane();
         testSplit.getItems().addAll(testList, testInfoPane);
+        testSplit.setDividerPosition(0, 0.3);
         tabTests.setContent(testSplit);
 
         // default to not visible
@@ -76,9 +79,15 @@ public class ProfileInfo implements Panel {
     }
 
     private void onSelectTest(ProfileTest test) {
+        testInfoPane.getChildren().clear();
 
+        testInfoPane.add(new Text("Name: "), 0, 0);
+        testInfoPane.add(new Text(test.getTest().getName()), 1, 0);
+        testInfoPane.add(new Text("Description: "), 0, 1);
+        testInfoPane.add(new Text(test.getTest().getDescription()), 1, 1);
+        testInfoPane.add(new Text("ID: "), 0, 2);
+        testInfoPane.add(new Text(test.getTest().getID()), 1, 2);
     }
-
 
     public Profile getProfile() {
         return profile;
