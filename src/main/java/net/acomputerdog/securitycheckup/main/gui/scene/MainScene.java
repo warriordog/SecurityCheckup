@@ -20,7 +20,7 @@ public class MainScene {
     private final ListView<Profile> profilesList;
 
     // data
-    private final ObservableList<Profile> profiles = FXCollections.observableArrayList();
+    private final ObservableList<Profile> profiles;
     private final ProfileInfo selectedProfile;
 
     public MainScene(GUIMain guiMain) {
@@ -56,14 +56,20 @@ public class MainScene {
         mainPane.setCenter(profilesSplit);
 
         // Profiles list
-        this.profilesList = new ListView<>(this.profiles);
-        profilesSplit.getItems().add(profilesList);
-
-        // Profile info
         this.selectedProfile = new ProfileInfo();
+        this.profiles = FXCollections.observableArrayList();
+        this.profilesList = new ListView<>(this.profiles);
+        // event handler for select profile
+        profilesList.getSelectionModel().selectedItemProperty().addListener(e -> selectedProfile.setProfile(profilesList.getSelectionModel().getSelectedItem()));
+
+        profilesSplit.getItems().add(profilesList);
         profilesSplit.getItems().add(selectedProfile.getRoot());
 
         scene = new Scene(mainPane);
+    }
+
+    public void addProfile(Profile profile) {
+        profiles.add(profile);
     }
 
     public GUIMain getGuiMain() {

@@ -36,4 +36,9 @@ public class Profile {
     public int hashCode() {
         return Objects.hash(getTestSuite().getId());
     }
+
+    @Override
+    public String toString() {
+        return testSuite.getName();
+    }
 }
