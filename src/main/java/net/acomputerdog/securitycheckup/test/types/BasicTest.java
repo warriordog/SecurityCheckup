@@ -105,4 +105,9 @@ public abstract class BasicTest implements Test {
      * @return return test results
      */
     protected abstract TestResult runTestSafe(TestEnvironment environment);
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

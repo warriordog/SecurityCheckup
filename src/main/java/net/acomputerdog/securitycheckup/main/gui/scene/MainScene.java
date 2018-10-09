@@ -79,4 +79,8 @@ public class MainScene {
     public Scene getScene() {
         return scene;
     }
+
+    public void addRunButtonListener(ProfileInfo.RunListener listener) {
+        this.selectedProfile.addRunButtonListener(listener);
+    }
 }

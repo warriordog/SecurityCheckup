@@ -1,11 +1,9 @@
 package net.acomputerdog.securitycheckup.main.gui.panels;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
@@ -20,6 +18,7 @@ public class ProfileInfo implements Panel {
     private final Tab tabOverview;
     private final Tab tabTests;
     private final Tab tabDetails;
+    private final Tab tabRun;
     private final SplitPane testSplit;
 
     // change with each profile
@@ -28,6 +27,10 @@ public class ProfileInfo implements Panel {
     private final BorderPane infoPane;
     private final GridPane testInfoPane;
     private final GridPane detailsPane;
+    private final BorderPane runPane;
+
+    private final Button runButton;
+    private final RunInfo runInfo;
 
     private Profile profile;
 
@@ -50,20 +53,16 @@ public class ProfileInfo implements Panel {
         this.tabDetails = new Tab();
         tabDetails.setText("Details");
         tabDetails.setClosable(false);
-        tabs.getTabs().addAll(tabOverview, tabTests, tabDetails);
+        this.tabRun = new Tab();
+        tabRun.setText("Run");
+        tabRun.setClosable(false);
+        tabs.getTabs().addAll(tabOverview, tabTests, tabDetails, tabRun);
         root.setCenter(tabs);
 
         // profile info
         this.infoPane = new BorderPane();
         infoPane.setPadding(new Insets(5, 5, 5, 5));
         tabOverview.setContent(infoPane);
-
-        // Detailed info
-        this.detailsPane = new GridPane();
-        detailsPane.setPadding(new Insets(5, 5, 5, 5));
-        detailsPane.setHgap(2);
-        detailsPane.setVgap(2);
-        tabDetails.setContent(detailsPane);
 
         // test list and info
         this.testList = new ListView<>();
@@ -73,6 +72,23 @@ public class ProfileInfo implements Panel {
         testSplit.getItems().addAll(testList, testInfoPane);
         testSplit.setDividerPosition(0, 0.3);
         tabTests.setContent(testSplit);
+
+        // Detailed info
+        this.detailsPane = new GridPane();
+        detailsPane.setPadding(new Insets(5, 5, 5, 5));
+        detailsPane.setHgap(2);
+        detailsPane.setVgap(2);
+        tabDetails.setContent(detailsPane);
+
+        // Run pane
+        this.runPane = new BorderPane();
+        this.runButton = new Button();
+        runButton.setText("Run tests");
+        runPane.setTop(runButton);
+        this.runInfo = new RunInfo();
+        runPane.setCenter(runInfo.getRoot());
+
+        tabRun.setContent(runPane);
 
         // default to not visible
         root.setVisible(false);
@@ -124,8 +140,18 @@ public class ProfileInfo implements Panel {
         }
     }
 
+    public void addRunButtonListener(RunListener listener) {
+        this.runButton.addEventHandler(ActionEvent.ACTION, e -> {
+            listener.onRunClicked(this.profile, this.runInfo);
+        });
+    }
+
     @Override
     public Node getRoot() {
         return root;
+    }
+
+    public interface RunListener {
+        void onRunClicked(Profile selectedProfile, RunInfo runInfo);
     }
 }

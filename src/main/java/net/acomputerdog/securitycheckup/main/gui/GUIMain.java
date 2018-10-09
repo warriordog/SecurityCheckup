@@ -3,6 +3,8 @@ package net.acomputerdog.securitycheckup.main.gui;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import net.acomputerdog.securitycheckup.main.common.BasicTests;
+import net.acomputerdog.securitycheckup.main.gui.panels.RunInfo;
+import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 import net.acomputerdog.securitycheckup.main.gui.scene.MainScene;
 import net.acomputerdog.securitycheckup.main.gui.test.Profile;
 
@@ -29,6 +31,7 @@ public class GUIMain extends Application {
 
             // Add all default profiles
             defaultProfiles.forEach(mainWin::addProfile);
+            mainWin.addRunButtonListener((profile, runInfo) -> this.runProfile(profile, runInfo));
 
             this.primaryStage = primaryStage;
             this.primaryStage.setScene(mainWin.getScene());
@@ -54,6 +57,15 @@ public class GUIMain extends Application {
             t.printStackTrace();
             throw t;
         }
+    }
+
+    private void runProfile(Profile profile, RunInfo runInfo) {
+        System.out.println("Running");
+
+        TestRunner runner = new TestRunner(profile);
+        runInfo.bind(runner);
+
+        new Thread(runner).start();
     }
 
     public static void main(String[] args) {
