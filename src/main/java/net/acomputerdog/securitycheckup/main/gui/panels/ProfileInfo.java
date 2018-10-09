@@ -142,8 +142,12 @@ public class ProfileInfo implements Panel {
 
     public void addRunButtonListener(RunListener listener) {
         this.runButton.addEventHandler(ActionEvent.ACTION, e -> {
-            listener.onRunClicked(this.profile, this.runInfo);
+            listener.onRunClicked(this, this.runInfo);
         });
+    }
+
+    public void setRunButtonEnabled(boolean enabled) {
+        this.runButton.setDisable(enabled);
     }
 
     @Override
@@ -152,6 +156,6 @@ public class ProfileInfo implements Panel {
     }
 
     public interface RunListener {
-        void onRunClicked(Profile selectedProfile, RunInfo runInfo);
+        void onRunClicked(ProfileInfo profileInfo, RunInfo runInfo);
     }
 }

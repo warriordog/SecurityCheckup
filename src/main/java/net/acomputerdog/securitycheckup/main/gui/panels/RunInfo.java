@@ -49,7 +49,7 @@ public class RunInfo implements Panel {
     }
 
     public void bind(TestRunner runner) {
-        statusText.setText("Status: running");
+        //statusText.setText("Status: running");
         runTestMap.clear();
         tests.clear();
 
@@ -58,6 +58,10 @@ public class RunInfo implements Panel {
         root.setVisible(true);
 
         // TODO final result
+    }
+
+    public void setResultString(String message) {
+        statusText.setText(message);
     }
 
     @Override

@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
 import net.acomputerdog.jwmi.JWMI;
+import net.acomputerdog.jwmi.wbem.WbemLocator;
 import net.acomputerdog.securitycheckup.main.gui.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
@@ -30,33 +31,26 @@ public class TestRunner extends Task<Float> {
 
     @Override
     protected Float call() throws Exception {
-        try {
-            TestEnvironment environment = new TestEnvironment(JWMI.getInstance().createWbemLocator());
+        try (WbemLocator locator = JWMI.getInstance().createWbemLocator()) {
+
+            TestEnvironment environment = new TestEnvironment(locator);
+            float scoreTotal = 0.0f;
+            float scoreCount = 0f;
 
             // run each test
             for (RunTest runTest : tests) {
-                try {
-                    Test test = runTest.getTest();
-                    TestResult result = test.runTest(environment);
+                Test test = runTest.getTest();
+                TestResult result = test.runTest(environment);
 
-                    runTest.setStatus(result.getResultString());
-                    //runTest.setStatus("SKIPPED");
-                } catch (Exception e) {
-                    System.err.println("Exception running test " + runTest.getTest().getID());
-                    e.printStackTrace();
+                // TODO store results
+                runTest.setStatus(result.getResultString());
 
-                    runTest.setStatus("Exception");
-                }
+                scoreCount++;
+                scoreTotal += result.getScore();
             }
 
-        } catch (Throwable t) {
-            System.err.println("Uncaught exception in test run thread");
-            t.printStackTrace();
+            return scoreCount == 0 ? 0.0f : (scoreTotal / scoreCount);
         }
-
-        // TODO exception handling by events
-
-        return 0.5f;
     }
 
     public Profile getProfile() {
@@ -73,7 +67,7 @@ public class TestRunner extends Task<Float> {
 
         public RunTest(Test test) {
             this.test.set(test);
-            this.status.set("WAITING");
+            this.status.set(test.getCurrentState().name());
         }
 
         public Test getTest() {

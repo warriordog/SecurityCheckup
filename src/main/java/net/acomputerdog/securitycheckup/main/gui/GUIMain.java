@@ -1,8 +1,10 @@
 package net.acomputerdog.securitycheckup.main.gui;
 
 import javafx.application.Application;
+import javafx.concurrent.Worker;
 import javafx.stage.Stage;
 import net.acomputerdog.securitycheckup.main.common.BasicTests;
+import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfo;
 import net.acomputerdog.securitycheckup.main.gui.panels.RunInfo;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 import net.acomputerdog.securitycheckup.main.gui.scene.MainScene;
@@ -31,7 +33,7 @@ public class GUIMain extends Application {
 
             // Add all default profiles
             defaultProfiles.forEach(mainWin::addProfile);
-            mainWin.addRunButtonListener((profile, runInfo) -> this.runProfile(profile, runInfo));
+            mainWin.addRunButtonListener(this::runProfile);
 
             this.primaryStage = primaryStage;
             this.primaryStage.setScene(mainWin.getScene());
@@ -43,8 +45,6 @@ public class GUIMain extends Application {
             System.err.println("Unhandled exception starting: " + t.toString());
             t.printStackTrace();
             throw t;
-        } finally {
-            // TODO exit
         }
     }
 
@@ -59,9 +59,34 @@ public class GUIMain extends Application {
         }
     }
 
-    private void runProfile(Profile profile, RunInfo runInfo) {
-        TestRunner runner = new TestRunner(profile);
+    private void runProfile(ProfileInfo info, RunInfo runInfo) {
+        info.setRunButtonEnabled(true);
+        runInfo.setResultString("Running");
+
+        TestRunner runner = new TestRunner(info.getProfile());
         runInfo.bind(runner);
+
+        // enable button when run finishes or fails
+        runner.runningProperty().addListener(l -> {
+            if (!runner.isRunning()) {
+                info.setRunButtonEnabled(false);
+            }
+        });
+
+        // handle normal exit
+        runner.stateProperty().addListener(l -> {
+            if (runner.getState() == Worker.State.SUCCEEDED) {
+                runInfo.setResultString(String.format("Success: %2.0f%%", runner.getValue() * 100f));
+            }
+        });
+
+        // handle exceptions
+        runner.exceptionProperty().addListener(l -> {
+            System.err.println("Uncaught exception in test run thread");
+            runner.getException().printStackTrace();
+
+            runInfo.setResultString("Exception: " + runner.getException().toString());
+        });
 
         new Thread(runner).start();
     }
