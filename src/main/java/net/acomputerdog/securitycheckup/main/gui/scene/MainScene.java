@@ -3,9 +3,12 @@ package net.acomputerdog.securitycheckup.main.gui.scene;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import net.acomputerdog.securitycheckup.main.gui.GUIMain;
 import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfo;
 import net.acomputerdog.securitycheckup.main.gui.test.Profile;
@@ -56,13 +59,19 @@ public class MainScene {
         mainPane.setCenter(profilesSplit);
 
         // Profiles list
+        BorderPane profilesPane = new BorderPane();
+        Text profilesListLabel = new Text("Test profiles:");
+        profilesListLabel.setFont(new Font(14));
+        profilesPane.setTop(profilesListLabel);
+        BorderPane.setMargin(profilesListLabel, new Insets(5, 5, 5,5));
         this.selectedProfile = new ProfileInfo();
         this.profiles = FXCollections.observableArrayList();
         this.profilesList = new ListView<>(this.profiles);
         // event handler for select profile
         profilesList.getSelectionModel().selectedItemProperty().addListener(e -> selectedProfile.setProfile(profilesList.getSelectionModel().getSelectedItem()));
+        profilesPane.setCenter(profilesList);
 
-        profilesSplit.getItems().add(profilesList);
+        profilesSplit.getItems().add(profilesPane);
         profilesSplit.getItems().add(selectedProfile.getRoot());
 
         scene = new Scene(mainPane);

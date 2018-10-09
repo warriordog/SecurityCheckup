@@ -2,6 +2,7 @@ package net.acomputerdog.securitycheckup.main.gui.panels;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -33,6 +34,7 @@ public class RunInfo implements Panel {
 
         this.statusText = new Text();
         root.setTop(statusText);
+        BorderPane.setMargin(statusText, new Insets(5, 0, 5, 0));
 
         this.testTable = new TableView<>();
         this.tests = FXCollections.observableArrayList();
@@ -49,15 +51,12 @@ public class RunInfo implements Panel {
     }
 
     public void bind(TestRunner runner) {
-        //statusText.setText("Status: running");
         runTestMap.clear();
         tests.clear();
 
         tests.addAll(runner.getTests());
 
         root.setVisible(true);
-
-        // TODO final result
     }
 
     public void setResultString(String message) {

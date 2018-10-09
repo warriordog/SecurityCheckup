@@ -6,14 +6,11 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import net.acomputerdog.securitycheckup.main.gui.test.Profile;
 import net.acomputerdog.securitycheckup.main.gui.test.ProfileTest;
 
 public class ProfileInfo implements Panel {
-    private final BorderPane root;
-
     private final TabPane tabs;
     private final Tab tabOverview;
     private final Tab tabTests;
@@ -22,7 +19,6 @@ public class ProfileInfo implements Panel {
     private final SplitPane testSplit;
 
     // change with each profile
-    private final Text title;
     private final ListView<ProfileTest> testList;
     private final BorderPane infoPane;
     private final GridPane testInfoPane;
@@ -35,12 +31,6 @@ public class ProfileInfo implements Panel {
     private Profile profile;
 
     public ProfileInfo() {
-        this.root = new BorderPane();
-
-        // Title
-        this.title = new Text();
-        title.setFont(new Font(18));
-        root.setTop(title);
 
         // tabs
         this.tabs = new TabPane();
@@ -57,7 +47,7 @@ public class ProfileInfo implements Panel {
         tabRun.setText("Run");
         tabRun.setClosable(false);
         tabs.getTabs().addAll(tabOverview, tabTests, tabDetails, tabRun);
-        root.setCenter(tabs);
+        //root.setCenter(tabs);
 
         // profile info
         this.infoPane = new BorderPane();
@@ -82,6 +72,7 @@ public class ProfileInfo implements Panel {
 
         // Run pane
         this.runPane = new BorderPane();
+        runPane.setPadding(new Insets(5, 5, 5, 5));
         this.runButton = new Button();
         runButton.setText("Run tests");
         runPane.setTop(runButton);
@@ -91,7 +82,7 @@ public class ProfileInfo implements Panel {
         tabRun.setContent(runPane);
 
         // default to not visible
-        root.setVisible(false);
+        tabs.setVisible(false);
     }
 
     private void onSelectTest(ProfileTest test) {
@@ -118,9 +109,6 @@ public class ProfileInfo implements Panel {
         this.detailsPane.getChildren().clear();
 
         if (profile != null) {
-            // set title
-            this.title.setText(profile.getTestSuite().getName());
-
             // Set overview tab
             this.infoPane.setTop(new Text(profile.getTestSuite().getDescription()));
 
@@ -133,10 +121,9 @@ public class ProfileInfo implements Panel {
             this.detailsPane.add(new Text("Description: "), 0, 1);
             this.detailsPane.add(new Text(profile.getTestSuite().getDescription()), 1, 1);
 
-            root.setVisible(true);
+            tabs.setVisible(true);
         } else {
-            this.title.setText("");
-            root.setVisible(false);
+            tabs.setVisible(false);
         }
     }
 
@@ -152,7 +139,7 @@ public class ProfileInfo implements Panel {
 
     @Override
     public Node getRoot() {
-        return root;
+        return tabs;
     }
 
     public interface RunListener {

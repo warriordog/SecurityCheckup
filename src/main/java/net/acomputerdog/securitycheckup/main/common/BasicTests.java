@@ -20,7 +20,7 @@ import net.acomputerdog.securitycheckup.test.types.wmi.WMITestPropBoolean;
  */
 public class BasicTests extends TestSuite {
     public BasicTests() {
-        super("basic_tests", "Basic Tests", "Tests for basic system security");
+        super("basic_tests", "Basic Tests", "Tests for basic system security.");
 
         // Windows defender enabled
         addTest(new WMITestPropBoolean(
