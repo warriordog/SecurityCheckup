@@ -56,17 +56,8 @@ public class RunInfo implements Panel {
         tests.addAll(runner.getTests());
 
         root.setVisible(true);
-        // add each test
-        /*
-        runner.getProfileInfo().getProfile().getTestSuite().getTests().forEach(test -> {
-            RunTest runTest = new RunTest(test);
-            tests.add(runTest);
-            runTestMap.put(test, runTest);
-        });
-        */
 
-        //TODO bind
-
+        // TODO final result
     }
 
     @Override

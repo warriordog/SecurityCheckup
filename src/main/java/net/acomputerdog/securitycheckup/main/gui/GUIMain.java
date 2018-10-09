@@ -60,8 +60,6 @@ public class GUIMain extends Application {
     }
 
     private void runProfile(Profile profile, RunInfo runInfo) {
-        System.out.println("Running");
-
         TestRunner runner = new TestRunner(profile);
         runInfo.bind(runner);
 

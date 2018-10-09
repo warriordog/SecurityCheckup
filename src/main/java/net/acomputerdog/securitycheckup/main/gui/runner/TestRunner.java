@@ -5,8 +5,11 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
+import net.acomputerdog.jwmi.JWMI;
 import net.acomputerdog.securitycheckup.main.gui.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
+import net.acomputerdog.securitycheckup.test.TestEnvironment;
+import net.acomputerdog.securitycheckup.test.TestResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +30,31 @@ public class TestRunner extends Task<Float> {
 
     @Override
     protected Float call() throws Exception {
-        // run each test
-        for (RunTest runTest : tests) {
-            Test test = runTest.getTest();
-            // TODO test
-            runTest.setStatus("SKIPPED");
+        try {
+            TestEnvironment environment = new TestEnvironment(JWMI.getInstance().createWbemLocator());
+
+            // run each test
+            for (RunTest runTest : tests) {
+                try {
+                    Test test = runTest.getTest();
+                    TestResult result = test.runTest(environment);
+
+                    runTest.setStatus(result.getResultString());
+                    //runTest.setStatus("SKIPPED");
+                } catch (Exception e) {
+                    System.err.println("Exception running test " + runTest.getTest().getID());
+                    e.printStackTrace();
+
+                    runTest.setStatus("Exception");
+                }
+            }
+
+        } catch (Throwable t) {
+            System.err.println("Uncaught exception in test run thread");
+            t.printStackTrace();
         }
+
+        // TODO exception handling by events
 
         return 0.5f;
     }
