@@ -17,6 +17,11 @@ public class TestInfo implements Panel {
     private final Label descText;
     private final Text idText;
 
+    private final Text resultScoreLabel;
+    private final Text resultStateLabel;
+    private final Text resultStringLabel;
+    private final Text resultMessageLabel;
+    private final Text resultExceptionLabel;
     private final Label resultScoreText;
     private final Label resultStateText;
     private final Label resultStringText;
@@ -41,29 +46,37 @@ public class TestInfo implements Panel {
 
         this.idText = new Text();
 
-        this.resultScoreText = new Label();
-        resultScoreText.setWrapText(true);
-        this.resultStateText = new Label();
-        resultStateText.setWrapText(true);
+        this.resultStringLabel = new Text("Result: ");
         this.resultStringText = new Label();
         resultStringText.setWrapText(true);
+
+        this.resultScoreLabel = new Text("Score: ");
+        this.resultScoreText = new Label();
+        resultScoreText.setWrapText(true);
+
+        this.resultStateLabel = new Text("State: ");
+        this.resultStateText = new Label();
+        resultStateText.setWrapText(true);
+
+        this.resultMessageLabel = new Text("Message: ");
         this.resultMessageText = new Label();
         resultMessageText.setWrapText(true);
+
+        this.resultExceptionLabel = new Text("Exception: ");
         this.resultExceptionText = new Label();
         resultExceptionText.setWrapText(true);
-        root.setVisible(false); // defaultHidden
 
         detailsPane.add(new Text("ID: "), 0, 0);
         detailsPane.add(idText, 1, 0);
-        detailsPane.add(new Text("Result: "), 0, 1);
+        detailsPane.add(resultStringLabel, 0, 1);
         detailsPane.add(resultStringText, 1, 1);
-        detailsPane.add(new Text("Score: "), 0, 2);
+        detailsPane.add(resultScoreLabel, 0, 2);
         detailsPane.add(resultScoreText, 1, 2);
-        detailsPane.add(new Text("State: "), 0, 3);
+        detailsPane.add(resultStateLabel, 0, 3);
         detailsPane.add(resultStateText, 1, 3);
-        detailsPane.add(new Text("Message: "), 0, 4);
+        detailsPane.add(resultMessageLabel, 0, 4);
         detailsPane.add(resultMessageText, 1, 4);
-        detailsPane.add(new Text("Exception: "), 0, 5);
+        detailsPane.add(resultExceptionLabel, 0, 5);
         detailsPane.add(resultExceptionText, 1, 5);
     }
 
@@ -96,6 +109,11 @@ public class TestInfo implements Panel {
     }
 
     private void setResultsVisible(boolean visible) {
+        resultExceptionLabel.setVisible(visible);
+        resultMessageLabel.setVisible(visible);
+        resultStringLabel.setVisible(visible);
+        resultStateLabel.setVisible(visible);
+        resultScoreLabel.setVisible(visible);
         resultExceptionText.setVisible(visible);
         resultMessageText.setVisible(visible);
         resultStringText.setVisible(visible);
