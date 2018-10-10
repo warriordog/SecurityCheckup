@@ -120,9 +120,7 @@ public class ProfileInfo implements Panel {
     }
 
     public void addRunButtonListener(RunListener listener) {
-        this.runButton.addEventHandler(ActionEvent.ACTION, e -> {
-            listener.onRunClicked(this, this.runInfo);
-        });
+        this.runButton.addEventHandler(ActionEvent.ACTION, e -> listener.onRunClicked(this, this.runInfo));
     }
 
     public void setRunButtonEnabled(boolean enabled) {

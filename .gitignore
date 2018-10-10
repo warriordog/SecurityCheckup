@@ -1,8 +1,13 @@
 # IntelliJ project files
 .idea/
+*.iml
 
 # Compiled class file
 *.class
+/target/
+/cli/target/
+/core/target/
+/gui/target/
 
 # Log file
 *.log
