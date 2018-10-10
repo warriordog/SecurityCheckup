@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * A collection of tests to run together
  */
-public class TestSuite {
+public class Profile {
     /**
      * String ID of this suite, does not have to be human readable
      */
@@ -31,18 +31,18 @@ public class TestSuite {
      */
     private final Map<String, Test> tests;
 
-    public TestSuite(String id, String name, String description, Map<String, Test> tests) {
+    public Profile(String id, String name, String description, Map<String, Test> tests) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.tests = tests;
     }
 
-    public TestSuite(String id, String name, String description) {
+    public Profile(String id, String name, String description) {
         this(id, name, description, new HashMap<>());
     }
 
-    public TestSuite(String id) {
+    public Profile(String id) {
         this(id, id, "");
     }
 
@@ -106,5 +106,9 @@ public class TestSuite {
 
     public String getDescription() {
         return description;
+    }
+
+    public String toString() {
+        return this.name;
     }
 }

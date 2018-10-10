@@ -7,8 +7,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import net.acomputerdog.securitycheckup.main.gui.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
+import net.acomputerdog.securitycheckup.test.suite.Profile;
 
 public class ProfileInfo implements Panel {
     private final TabPane tabs;
@@ -102,16 +102,16 @@ public class ProfileInfo implements Panel {
 
         if (profile != null) {
             // Set overview tab
-            this.infoPane.setTop(new Text(profile.getTestSuite().getDescription()));
+            this.infoPane.setTop(new Text(profile.getDescription()));
 
             // Set test list tab
             this.testList.getItems().addAll(profile.getTests());
 
             // set details tab
             this.detailsPane.add(new Text("ID: "), 0, 0);
-            this.detailsPane.add(new Text(profile.getTestSuite().getId()), 1, 0);
+            this.detailsPane.add(new Text(profile.getId()), 1, 0);
             this.detailsPane.add(new Text("Description: "), 0, 1);
-            this.detailsPane.add(new Text(profile.getTestSuite().getDescription()), 1, 1);
+            this.detailsPane.add(new Text(profile.getDescription()), 1, 1);
 
             tabs.setVisible(true);
         } else {

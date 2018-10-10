@@ -11,7 +11,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import net.acomputerdog.securitycheckup.main.gui.GUIMain;
 import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfo;
-import net.acomputerdog.securitycheckup.main.gui.test.Profile;
+import net.acomputerdog.securitycheckup.test.suite.Profile;
 
 public class MainScene {
 

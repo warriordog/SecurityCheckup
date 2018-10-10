@@ -8,8 +8,8 @@ import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfo;
 import net.acomputerdog.securitycheckup.main.gui.panels.RunInfo;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 import net.acomputerdog.securitycheckup.main.gui.scene.MainScene;
-import net.acomputerdog.securitycheckup.main.gui.test.Profile;
 import net.acomputerdog.securitycheckup.test.TestResult;
+import net.acomputerdog.securitycheckup.test.suite.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class GUIMain extends Application {
     @Override
     public void init() {
         defaultProfiles = new ArrayList<>();
-        defaultProfiles.add(new Profile(new BasicTests()));
+        defaultProfiles.add(new BasicTests());
     }
 
     @Override

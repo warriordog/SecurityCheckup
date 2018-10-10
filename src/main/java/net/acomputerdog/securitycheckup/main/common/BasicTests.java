@@ -2,7 +2,7 @@ package net.acomputerdog.securitycheckup.main.common;
 
 import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.jwmi.wbem.WbemClassObject;
-import net.acomputerdog.securitycheckup.test.suite.TestSuite;
+import net.acomputerdog.securitycheckup.test.suite.Profile;
 import net.acomputerdog.securitycheckup.test.types.TestUnion;
 import net.acomputerdog.securitycheckup.test.types.reg.RegEntryTestMatch;
 import net.acomputerdog.securitycheckup.test.types.reg.RegKeyTestEmpty;
@@ -18,7 +18,7 @@ import net.acomputerdog.securitycheckup.test.types.wmi.WMITestPropBoolean;
  * * autoplay_disabled          - Verify that AutoPlay is disabled for external media
  * * defender_exclusions        - Check for windows defender exclusions
  */
-public class BasicTests extends TestSuite {
+public class BasicTests extends Profile {
     public BasicTests() {
         super("basic_tests", "Basic Tests", "Tests for basic system security.");
 

@@ -7,10 +7,10 @@ import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
 import net.acomputerdog.jwmi.JWMI;
 import net.acomputerdog.jwmi.wbem.WbemLocator;
-import net.acomputerdog.securitycheckup.main.gui.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
+import net.acomputerdog.securitycheckup.test.suite.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class TestRunner extends Task<Float> {
         this.profile = profile;
         this.tests = new ArrayList<>();
 
-        profile.getTestSuite().getTests().forEach(test -> {
+        profile.getTests().forEach(test -> {
             RunTest runTest = new RunTest(test);
             tests.add(runTest);
         });
