@@ -33,25 +33,33 @@ public class TestRunner extends Task<Float> {
     protected Float call() throws Exception {
         try (WbemLocator locator = JWMI.getInstance().createWbemLocator()) {
 
-            // TODO close all shared instances
             TestEnvironment environment = new TestEnvironment(locator);
-            float scoreTotal = 0.0f;
-            float scoreCount = 0f;
+            try {
+                float scoreTotal = 0.0f;
+                float scoreCount = 0f;
 
-            // run each test
-            for (RunTest runTest : tests) {
-                Test test = runTest.getTest();
-                TestResult result = test.runTest(environment);
+                // run each test
+                for (RunTest runTest : tests) {
+                    Test test = runTest.getTest();
+                    TestResult result = test.runTest(environment);
 
-                runTest.setResults(result);
-                runTest.setStatus(result.getResultString());
-                runTest.setScore(result.getScoreString());
+                    runTest.setResults(result);
+                    runTest.setStatus(result.getResultString());
+                    runTest.setScore(result.getScoreString());
 
-                scoreCount++;
-                scoreTotal += result.getScore();
+                    scoreCount++;
+                    scoreTotal += result.getScore();
+                }
+
+                return scoreCount == 0 ? 0.0f : (scoreTotal / scoreCount);
+            } finally {
+                // Close anything from environment (mostly jWMI objects)
+                for (Object obj : environment.getAllResources()) {
+                    if (obj instanceof AutoCloseable) {
+                        ((AutoCloseable)obj).close();
+                    }
+                }
             }
-
-            return scoreCount == 0 ? 0.0f : (scoreTotal / scoreCount);
         }
     }
 

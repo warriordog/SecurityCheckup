@@ -2,6 +2,8 @@ package net.acomputerdog.securitycheckup.test;
 
 import net.acomputerdog.jwmi.wbem.WbemLocator;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +39,10 @@ public class TestEnvironment {
 
     public void clearSharedResources() {
         sharedResources.clear();
+    }
+
+    public Collection<Object> getAllResources() {
+        return Collections.unmodifiableCollection(sharedResources.values());
     }
 
     public WbemLocator getWbemLocator() {
