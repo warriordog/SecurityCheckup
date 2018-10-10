@@ -33,6 +33,7 @@ public class TestRunner extends Task<Float> {
     protected Float call() throws Exception {
         try (WbemLocator locator = JWMI.getInstance().createWbemLocator()) {
 
+            // TODO close all shared instances
             TestEnvironment environment = new TestEnvironment(locator);
             float scoreTotal = 0.0f;
             float scoreCount = 0f;
@@ -42,8 +43,9 @@ public class TestRunner extends Task<Float> {
                 Test test = runTest.getTest();
                 TestResult result = test.runTest(environment);
 
-                // TODO store results
+                runTest.setResults(result);
                 runTest.setStatus(result.getResultString());
+                runTest.setScore(result.getScoreString());
 
                 scoreCount++;
                 scoreTotal += result.getScore();
@@ -64,14 +66,25 @@ public class TestRunner extends Task<Float> {
     public static class RunTest {
         private ObjectProperty<Test> test = new SimpleObjectProperty<>(null, "test");
         private StringProperty status = new SimpleStringProperty(null, "status");
+        private StringProperty score = new SimpleStringProperty(null, "score");
+        private ObjectProperty<TestResult> results = new SimpleObjectProperty<>(null, "results");
 
         public RunTest(Test test) {
             this.test.set(test);
             this.status.set(test.getCurrentState().name());
+            this.results.set(null);
         }
 
         public Test getTest() {
             return test.get();
+        }
+
+        public TestResult getResults() {
+            return results.get();
+        }
+
+        public void setResults(TestResult results) {
+            this.results.set(results);
         }
 
         public String getStatus() {
@@ -82,12 +95,28 @@ public class TestRunner extends Task<Float> {
             this.status.set(status);
         }
 
+        public String getScore() {
+            return score.get();
+        }
+
+        public void setScore(String score) {
+            this.score.set(score);
+        }
+
         public ObjectProperty<Test> testProperty() {
             return test;
         }
 
         public StringProperty statusProperty() {
             return status;
+        }
+
+        public ObjectProperty<TestResult> resultsProperty() {
+            return results;
+        }
+
+        public StringProperty scoreProperty() {
+            return score;
         }
     }
 }

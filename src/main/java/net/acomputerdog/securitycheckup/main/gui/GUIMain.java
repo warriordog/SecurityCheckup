@@ -9,6 +9,7 @@ import net.acomputerdog.securitycheckup.main.gui.panels.RunInfo;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 import net.acomputerdog.securitycheckup.main.gui.scene.MainScene;
 import net.acomputerdog.securitycheckup.main.gui.test.Profile;
+import net.acomputerdog.securitycheckup.test.TestResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class GUIMain extends Application {
         // handle normal exit
         runner.stateProperty().addListener(l -> {
             if (runner.getState() == Worker.State.SUCCEEDED) {
-                runInfo.setResultString(String.format("Success: %2.0f%%", runner.getValue() * 100f));
+                runInfo.setResultString("Success: " + TestResult.formatScore(runner.getValue()));
             }
         });
 

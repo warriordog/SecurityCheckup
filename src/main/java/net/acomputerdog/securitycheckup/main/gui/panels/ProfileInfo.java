@@ -21,7 +21,7 @@ public class ProfileInfo implements Panel {
     // change with each profile
     private final ListView<ProfileTest> testList;
     private final BorderPane infoPane;
-    private final GridPane testInfoPane;
+    private final TestInfo testInfoPane;
     private final GridPane detailsPane;
     private final BorderPane runPane;
 
@@ -47,7 +47,6 @@ public class ProfileInfo implements Panel {
         tabRun.setText("Run");
         tabRun.setClosable(false);
         tabs.getTabs().addAll(tabOverview, tabTests, tabDetails, tabRun);
-        //root.setCenter(tabs);
 
         // profile info
         this.infoPane = new BorderPane();
@@ -57,9 +56,9 @@ public class ProfileInfo implements Panel {
         // test list and info
         this.testList = new ListView<>();
         testList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> ProfileInfo.this.onSelectTest(newValue));
-        this.testInfoPane = new GridPane();
+        this.testInfoPane = new TestInfo();
         this.testSplit = new SplitPane();
-        testSplit.getItems().addAll(testList, testInfoPane);
+        testSplit.getItems().addAll(testList, testInfoPane.getRoot());
         testSplit.setDividerPosition(0, 0.3);
         tabTests.setContent(testSplit);
 
@@ -86,14 +85,7 @@ public class ProfileInfo implements Panel {
     }
 
     private void onSelectTest(ProfileTest test) {
-        testInfoPane.getChildren().clear();
-
-        testInfoPane.add(new Text("Name: "), 0, 0);
-        testInfoPane.add(new Text(test.getTest().getName()), 1, 0);
-        testInfoPane.add(new Text("Description: "), 0, 1);
-        testInfoPane.add(new Text(test.getTest().getDescription()), 1, 1);
-        testInfoPane.add(new Text("ID: "), 0, 2);
-        testInfoPane.add(new Text(test.getTest().getID()), 1, 2);
+        testInfoPane.showTest(test.getTest());
     }
 
     public Profile getProfile() {
@@ -105,8 +97,8 @@ public class ProfileInfo implements Panel {
 
         this.testList.getItems().clear();
         this.infoPane.getChildren().clear();
-        this.testInfoPane.getChildren().clear();
         this.detailsPane.getChildren().clear();
+        testInfoPane.showTest(null);
 
         if (profile != null) {
             // Set overview tab

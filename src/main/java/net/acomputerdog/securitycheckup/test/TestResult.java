@@ -111,6 +111,10 @@ public class TestResult {
         }
     }
 
+    public String getScoreString() {
+        return formatScore(this.getScore());
+    }
+
     /**
      * Checks if this test passed, given a provided minimum "passing" score
      *
@@ -132,5 +136,9 @@ public class TestResult {
      */
     public boolean passed() {
         return passed(SCORE_PASS);
+    }
+
+    public static String formatScore(float score) {
+        return String.format("%2.0f%%", score * 100f);
     }
 }
