@@ -1,5 +1,6 @@
 package net.acomputerdog.securitycheckup.main.gui.test;
 
+import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.suite.TestSuite;
 
 import java.util.ArrayList;
@@ -8,19 +9,19 @@ import java.util.Objects;
 
 public class Profile {
     private final TestSuite testSuite;
-    private final List<ProfileTest> tests;
+    private final List<Test> tests;
 
     public Profile(TestSuite testSuite) {
         this.testSuite = testSuite;
         this.tests = new ArrayList<>();
-        testSuite.getTests().forEach(test -> tests.add(new ProfileTest(this, test)));
+        tests.addAll(testSuite.getTests());
     }
 
     public TestSuite getTestSuite() {
         return testSuite;
     }
 
-    public List<ProfileTest> getTests() {
+    public List<Test> getTests() {
         return tests;
     }
 

@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import net.acomputerdog.securitycheckup.main.gui.test.Profile;
-import net.acomputerdog.securitycheckup.main.gui.test.ProfileTest;
+import net.acomputerdog.securitycheckup.test.Test;
 
 public class ProfileInfo implements Panel {
     private final TabPane tabs;
@@ -19,7 +19,7 @@ public class ProfileInfo implements Panel {
     private final SplitPane testSplit;
 
     // change with each profile
-    private final ListView<ProfileTest> testList;
+    private final ListView<Test> testList;
     private final BorderPane infoPane;
     private final TestInfo testInfoPane;
     private final GridPane detailsPane;
@@ -84,8 +84,8 @@ public class ProfileInfo implements Panel {
         tabs.setVisible(false);
     }
 
-    private void onSelectTest(ProfileTest test) {
-        testInfoPane.showTest(test.getTest());
+    private void onSelectTest(Test test) {
+        testInfoPane.showTest(test);
     }
 
     public Profile getProfile() {
