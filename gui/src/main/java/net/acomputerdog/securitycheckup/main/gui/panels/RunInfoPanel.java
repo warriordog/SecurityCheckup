@@ -79,8 +79,8 @@ public class RunInfoPanel implements Panel {
     private void selectTest(RunTest test) {
         // is null if a test is selected when "Run" is clicked
         if (test != null) {
-            testInfo.showTest(test.getTest());
-            testInfo.showResult(test.getResults());
+            testInfo.showTest(test.getTest(), test.getResults());
+            //testInfo.showResult(test.getResults());
         } else {
             testInfo.showTest(null);
         }

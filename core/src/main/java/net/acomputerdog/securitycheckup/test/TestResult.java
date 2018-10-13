@@ -5,8 +5,12 @@ import net.acomputerdog.securitycheckup.util.Informable;
 import java.util.*;
 
 public class TestResult implements Informable {
-    public static String KEY_EXCEPTION = "exception";
-    public static String KEY_MESSAGE = "message";
+    public static String KEY_PASSED = "Passed";
+    public static String KEY_SCORE = "Score";
+    public static String KEY_CAUSE = "Cause";
+    public static String KEY_EXCEPTION = "Exception";
+    public static String KEY_MESSAGE = "Message";
+    public static String KEY_STRING = "String";
 
     public static final float SCORE_PASS = 1.0f;
     public static final float SCORE_FAIL = 0.0f;
@@ -24,6 +28,11 @@ public class TestResult implements Informable {
         this.passed = passed;
         this.score = score;
         this.resultCause = resultCause;
+
+        extraInfo.put(KEY_PASSED, String.valueOf(passed));
+        extraInfo.put(KEY_SCORE, getScoreString());
+        extraInfo.put(KEY_CAUSE, getResultCause().prettyName);
+        extraInfo.put(KEY_STRING, getResultString());
     }
 
     public boolean isPassed() {

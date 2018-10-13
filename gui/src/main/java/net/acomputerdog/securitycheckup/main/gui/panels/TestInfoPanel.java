@@ -1,22 +1,29 @@
 package net.acomputerdog.securitycheckup.main.gui.panels;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestResult;
 
 public class TestInfoPanel implements Panel {
 
     private final VBox root;
-    private final GridPane detailsPane;
+    private final TableView<ExtraInfo> detailsPane;
 
     private final Label descText;
-    private final Text idText;
 
+    private final ObservableList<ExtraInfo> testInfo;
+
+    /*
     private final Text resultScoreLabel;
     private final Text resultStateLabel;
     private final Text resultStringLabel;
@@ -27,6 +34,7 @@ public class TestInfoPanel implements Panel {
     private final Label resultStringText;
     private final Label resultMessageText;
     private final Label resultExceptionText;
+    */
 
 
     public TestInfoPanel() {
@@ -39,13 +47,20 @@ public class TestInfoPanel implements Panel {
         descText.setWrapText(true);
         root.getChildren().add(descText);
 
-        this.detailsPane = new GridPane();
-        detailsPane.setHgap(2);
-        detailsPane.setVgap(2);
+        this.testInfo = FXCollections.observableArrayList();
+        this.detailsPane = new TableView<>();
+        detailsPane.setItems(testInfo);
+        TableColumn<ExtraInfo, String> keys = new TableColumn<>();
+        keys.setCellValueFactory(new PropertyValueFactory<>("key"));
+        TableColumn<ExtraInfo, String> vals = new TableColumn<>();
+        vals.setCellValueFactory(new PropertyValueFactory<>("value"));
+        detailsPane.getColumns().addAll(keys, vals);
+        //detailsPane.setHgap(2);
+        //detailsPane.setVgap(2);
         root.getChildren().add(detailsPane);
 
-        this.idText = new Text();
 
+        /*
         this.resultStringLabel = new Text("Result: ");
         this.resultStringText = new Label();
         resultStringText.setWrapText(true);
@@ -66,6 +81,7 @@ public class TestInfoPanel implements Panel {
         this.resultExceptionText = new Label();
         resultExceptionText.setWrapText(true);
 
+
         detailsPane.add(new Text("ID: "), 0, 0);
         detailsPane.add(idText, 1, 0);
         detailsPane.add(resultStringLabel, 0, 1);
@@ -78,22 +94,35 @@ public class TestInfoPanel implements Panel {
         detailsPane.add(resultMessageText, 1, 4);
         detailsPane.add(resultExceptionLabel, 0, 5);
         detailsPane.add(resultExceptionText, 1, 5);
+        */
     }
 
     public void showTest(Test test) {
+        this.showTest(test, null);
+    }
+
+    public void showTest(Test test, TestResult result) {
         // Reset results pane
-        showResult(null);
+        //showResult(null);
+        testInfo.clear();
 
         if (test != null) {
-            root.setVisible(true);
-
             descText.setText(test.getInfo().getDescription());
-            idText.setText(test.getInfo().getID());
+            //idText.setText(test.getInfo().getID());
+
+            test.getInfo().getInfoMap().forEach((k, v) -> testInfo.add(new ExtraInfo(k, v)));
+
+            if (result != null) {
+                result.getInfoMap().forEach((k, v) -> testInfo.add(new ExtraInfo(k, v)));
+            }
+
+            root.setVisible(true);
         } else {
             root.setVisible(false);
         }
     }
 
+    /*
     public void showResult(TestResult result) {
         if (result != null) {
             setResultsVisible(true);
@@ -120,10 +149,36 @@ public class TestInfoPanel implements Panel {
         resultStateText.setVisible(visible);
         resultScoreText.setVisible(visible);
     }
-
+*/
 
     @Override
     public Node getRoot() {
         return root;
+    }
+
+    public static class ExtraInfo {
+        private StringProperty key = new SimpleStringProperty(null, "key");
+        private StringProperty value = new SimpleStringProperty(null, "value");
+
+        public ExtraInfo(String key, String value) {
+            this.key.setValue(key);
+            this.value.setValue(value);
+        }
+
+        public String getKey() {
+            return key.get();
+        }
+
+        public StringProperty keyProperty() {
+            return key;
+        }
+
+        public String getValue() {
+            return value.get();
+        }
+
+        public StringProperty valueProperty() {
+            return value;
+        }
     }
 }
