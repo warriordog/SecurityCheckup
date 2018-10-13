@@ -12,11 +12,11 @@ import net.acomputerdog.jwmi.wbem.WbemClassObject;
 import net.acomputerdog.jwmi.wbem.WbemLocator;
 import net.acomputerdog.jwmi.wbem.WbemServices;
 import net.acomputerdog.securitycheckup.ex.UnsupportedPlatformException;
-import net.acomputerdog.securitycheckup.main.common.BasicTests;
+import net.acomputerdog.securitycheckup.profiles.BasicTests;
+import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
-import net.acomputerdog.securitycheckup.test.suite.Profile;
 import net.acomputerdog.securitycheckup.util.RegUtil;
 
 import java.util.ArrayList;
@@ -78,11 +78,12 @@ public class CLIMain implements AutoCloseable {
         // Run each suite, and each test in each suite
         System.out.printf("Running %d test suites.\n", profiles.size());
         for (Profile tests : profiles) {
-            System.out.printf("Running %d tests in '%s'.\n", tests.getNumTests(), tests.getName());
+            System.out.printf("Running %d tests in '%s'.\n", tests.getNumTests(), tests.getInfo().getName());
 
             List<TestResult> testResults = new ArrayList<>();
             for (Test test : tests.getTests()) {
-                TestResult result = test.runTest(testEnvironment);
+                testEnvironment.setCurrentTest(test);
+                TestResult result = test.getRootStep().run(testEnvironment);
                 testResults.add(result);
 
                 scoreTotal += result.getScore();
@@ -101,25 +102,27 @@ public class CLIMain implements AutoCloseable {
         // print each suite
         System.out.println("Individual test results:");
         for (Profile suite : profiles) {
-            System.out.printf("Results for suite '%s':\n", suite.getId());
+            System.out.printf("Results for suite '%s':\n", suite.getInfo().getID());
             System.out.println("----------------------");
-            System.out.printf("|%s:\n", suite.getName());
-            System.out.printf("|%s\n", suite.getDescription());
+            System.out.printf("|%s:\n", suite.getInfo().getName());
+            System.out.printf("|%s\n", suite.getInfo().getDescription());
             System.out.println("----------------------");
 
             // print results
             for (TestResult result : testSuiteResults.get(suite)) {
-                System.out.printf("  |%-7s %s\n", result.getResultString(), result.getTest().getID());
-                System.out.printf("  |Name:   %s\n", result.getTest().getName());
-                System.out.printf("  |Desc:   %s\n", result.getTest().getDescription());
+                String resultMessage = result.getInfo(TestResult.KEY_MESSAGE);
+                String resultEx = result.getInfo(TestResult.KEY_EXCEPTION);
+
+                System.out.printf("  |%-7s %s\n", result.getResultString(), result.getTestInfo().getID());
+                System.out.printf("  |Name:   %s\n", result.getTestInfo().getName());
+                System.out.printf("  |Desc:   %s\n", result.getTestInfo().getDescription());
                 System.out.printf("  |Score:  %1.0f%%\n", result.getScore() * 100);
-                System.out.printf("  |State:  %s\n", result.getState().name());
-                if (result.getMessage() != null) {
-                    System.out.printf("  |Message:   %s\n", result.getMessage().replaceAll("\n", "\n  |"));
+                System.out.printf("  |Reason: %s\n", result.getResultCause().name());
+                if (resultMessage != null) {
+                    System.out.printf("  |Message:   %s\n", resultMessage.replaceAll("\n", "\n  |"));
                 }
-                if (result.getException() != null) {
-                    System.out.printf("  |Exception: %s\n", result.getException().toString());
-                    result.getException().printStackTrace(System.out);
+                if (resultEx != null) {
+                    System.out.printf("  |Exception: %s\n", resultEx);
                 }
                 System.out.println("  ----------------------");
             }

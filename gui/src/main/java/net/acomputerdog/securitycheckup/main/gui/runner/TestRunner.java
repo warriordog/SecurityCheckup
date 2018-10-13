@@ -7,10 +7,10 @@ import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
 import net.acomputerdog.jwmi.JWMI;
 import net.acomputerdog.jwmi.wbem.WbemLocator;
+import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
-import net.acomputerdog.securitycheckup.test.suite.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,8 @@ public class TestRunner extends Task<Float> {
                 // run each test
                 for (RunTest runTest : tests) {
                     Test test = runTest.getTest();
-                    TestResult result = test.runTest(environment);
+                    environment.setCurrentTest(test);
+                    TestResult result = test.getRootStep().run(environment);
 
                     runTest.setResults(result);
                     runTest.setStatus(result.getResultString());
@@ -79,7 +80,7 @@ public class TestRunner extends Task<Float> {
 
         public RunTest(Test test) {
             this.test.set(test);
-            this.status.set(test.getCurrentState().name());
+            this.status.set(TestResult.ResultCause.NOT_RUN.prettyName);
             this.results.set(null);
         }
 

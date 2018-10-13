@@ -7,9 +7,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Environment for the current run of tests
- */
 public class TestEnvironment {
     /**
      * Collection of identified objects to be shared between tests
@@ -21,8 +18,18 @@ public class TestEnvironment {
      */
     private final WbemLocator wbemLocator;
 
+    private Test currentTest;
+
     public TestEnvironment(WbemLocator wbemLocator) {
         this.wbemLocator = wbemLocator;
+    }
+
+    public void setCurrentTest(Test currentTest) {
+        this.currentTest = currentTest;
+    }
+
+    public Test getCurrentTest() {
+        return currentTest;
     }
 
     public boolean hasSharedResource(Object key) {

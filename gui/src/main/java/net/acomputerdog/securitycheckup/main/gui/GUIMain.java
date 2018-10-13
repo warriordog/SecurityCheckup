@@ -3,13 +3,13 @@ package net.acomputerdog.securitycheckup.main.gui;
 import javafx.application.Application;
 import javafx.concurrent.Worker;
 import javafx.stage.Stage;
-import net.acomputerdog.securitycheckup.main.common.BasicTests;
-import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfo;
-import net.acomputerdog.securitycheckup.main.gui.panels.RunInfo;
+import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfoPanel;
+import net.acomputerdog.securitycheckup.main.gui.panels.RunInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 import net.acomputerdog.securitycheckup.main.gui.scene.MainScene;
+import net.acomputerdog.securitycheckup.profiles.BasicTests;
+import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.TestResult;
-import net.acomputerdog.securitycheckup.test.suite.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class GUIMain extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         try {
             this.mainWin = new MainScene(this);
 
@@ -50,7 +50,7 @@ public class GUIMain extends Application {
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() {
         try {
             //TODO cleanup resources
         } catch (Throwable t) {
@@ -60,7 +60,7 @@ public class GUIMain extends Application {
         }
     }
 
-    private void runProfile(ProfileInfo info, RunInfo runInfo) {
+    private void runProfile(ProfileInfoPanel info, RunInfoPanel runInfo) {
         info.setRunButtonEnabled(true);
         runInfo.setResultString("Running");
 

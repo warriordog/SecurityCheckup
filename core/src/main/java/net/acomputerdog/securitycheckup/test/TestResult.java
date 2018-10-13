@@ -1,96 +1,53 @@
 package net.acomputerdog.securitycheckup.test;
 
-/**
- * The results of a test
- */
-public class TestResult {
+import net.acomputerdog.securitycheckup.util.Informable;
+
+import java.util.*;
+
+public class TestResult implements Informable {
+    public static String KEY_EXCEPTION = "exception";
+    public static String KEY_MESSAGE = "message";
+
     public static final float SCORE_PASS = 1.0f;
     public static final float SCORE_FAIL = 0.0f;
 
-    private final Test test;
+    private final boolean passed;
+    private final float score;
+    private final ResultCause resultCause;
 
-    private Test.State state;
-    private float score = SCORE_FAIL;
-    private Throwable exception;
-    private String message;
+    private final TestInfo testInfo;
 
-    /**
-     * If true, score and results will be inverted.
-     *
-     * score = 1 - score;
-     * passed() = !passed();
-     */
-    private boolean inverted = false;
+    private final Map<String, String> extraInfo = new HashMap<>();
 
-    public TestResult(Test test) {
-        this.test = test;
-        this.state = test.getCurrentState();
-    }
-
-    public TestResult setState(Test.State state) {
-        this.state = state;
-
-        return this;
-    }
-
-    public TestResult setScore(float score) {
+    public TestResult(TestInfo testInfo, boolean passed, float score, ResultCause resultCause) {
+        this.testInfo = testInfo;
+        this.passed = passed;
         this.score = score;
-
-        return this;
+        this.resultCause = resultCause;
     }
 
-    public TestResult setInverted(boolean inverted) {
-        this.inverted = inverted;
-
-        return this;
-    }
-
-    public TestResult setException(Throwable exception) {
-        this.exception = exception;
-
-        return this;
-    }
-
-    public TestResult setMessage(String message) {
-        this.message = message;
-
-        return this;
-    }
-
-    public Test getTest() {
-        return test;
-    }
-
-    public Test.State getState() {
-        return state;
+    public boolean isPassed() {
+        return passed;
     }
 
     public float getScore() {
-        if (inverted) {
-            return 1 - score;
-        } else {
-            return score;
-        }
+        return score;
     }
 
-    public Throwable getException() {
-        return exception;
+    public ResultCause getResultCause() {
+        return resultCause;
     }
 
-    public String getMessage() {
-        return message;
+    public void setExtraInfo(String key, String value) {
+        extraInfo.put(key, value);
     }
 
-    public boolean isInverted() {
-        return inverted;
+    public TestInfo getTestInfo() {
+        return testInfo;
     }
 
-    /**
-     * Gets a human-readable string representing the overall result of this test
-     * @return Return a string representing final results
-     */
     public String getResultString() {
-        switch (state) {
+        switch (resultCause) {
             case FINISHED:
                 if (score == SCORE_PASS) {
                     return "PASS";
@@ -99,12 +56,12 @@ public class TestResult {
                 } else {
                     return "PARTIAL";
                 }
-            case ERROR:
+            case FAILED:
+            case EXCEPTION:
                 return "ERROR";
-            case RUNNING:
-                return "TIMEOUT";
-            case NOT_APPLICABLE:
+            case SKIPPED:
             case INCOMPATIBLE:
+            case NOT_RUN:
                 return "SKIPPED";
             default:
                 return "UNKNOWN";
@@ -115,30 +72,51 @@ public class TestResult {
         return formatScore(this.getScore());
     }
 
-    /**
-     * Checks if this test passed, given a provided minimum "passing" score
-     *
-     * @param passingScore Minimum score needed to pass
-     * @return Return true if score >= passing score
-     */
-    public boolean passed(float passingScore) {
-        boolean passed = this.getScore() >= passingScore;
-        if (inverted) {
-            return !passed;
-        } else {
-            return passed;
+    @Override
+    public String getInfo(String key) {
+        return extraInfo.get(key);
+    }
+
+    @Override
+    public Map<String, String> getInfoMap() {
+        return Collections.unmodifiableMap(extraInfo);
+    }
+
+    @Override
+    public List<String> getLabeledInfo() {
+        List<String> info = new ArrayList<>(extraInfo.size());
+        extraInfo.forEach((key, value) -> info.add(key + ": " + value));
+        return info;
+    }
+
+    public static TestResult createNormalScore(TestInfo testInfo, float score) {
+        return new TestResult(testInfo, score == SCORE_PASS, score, ResultCause.FINISHED);
+    }
+
+    public static TestResult createNormalPass(TestInfo testInfo) {
+        return new TestResult(testInfo, true, SCORE_PASS, ResultCause.FINISHED);
+    }
+
+    public static TestResult createNormalFail(TestInfo testInfo) {
+        return new TestResult(testInfo, false, SCORE_FAIL, ResultCause.FINISHED);
+    }
+
+    public enum ResultCause {
+        FINISHED("Finished"),
+        SKIPPED("Skipped"),
+        NOT_RUN("Not run"),
+        INCOMPATIBLE("Incompatible"),
+        FAILED("Failed"),
+        EXCEPTION("Exception");
+
+        public final String prettyName;
+
+        ResultCause(String prettyName) {
+            this.prettyName = prettyName;
         }
     }
 
-    /**
-     * Checks if this test passed with a perfect score (score == SCORE_PASS == 1.0f)
-     * @return Return true if this test passed with a perfect score
-     */
-    public boolean passed() {
-        return passed(SCORE_PASS);
-    }
-
     public static String formatScore(float score) {
-        return String.format("%2.0f%%", score * 100f);
+        return String.format("%1.0f%%", score * 100f);
     }
 }

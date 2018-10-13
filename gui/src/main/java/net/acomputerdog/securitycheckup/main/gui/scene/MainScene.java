@@ -10,8 +10,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import net.acomputerdog.securitycheckup.main.gui.GUIMain;
-import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfo;
-import net.acomputerdog.securitycheckup.test.suite.Profile;
+import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfoPanel;
+import net.acomputerdog.securitycheckup.test.Profile;
 
 public class MainScene {
 
@@ -24,7 +24,7 @@ public class MainScene {
 
     // data
     private final ObservableList<Profile> profiles;
-    private final ProfileInfo selectedProfile;
+    private final ProfileInfoPanel selectedProfile;
 
     public MainScene(GUIMain guiMain) {
         this.guiMain = guiMain;
@@ -64,7 +64,7 @@ public class MainScene {
         profilesListLabel.setFont(new Font(14));
         profilesPane.setTop(profilesListLabel);
         BorderPane.setMargin(profilesListLabel, new Insets(5, 5, 5,5));
-        this.selectedProfile = new ProfileInfo();
+        this.selectedProfile = new ProfileInfoPanel();
         this.profiles = FXCollections.observableArrayList();
         this.profilesList = new ListView<>(this.profiles);
         // event handler for select profile
@@ -89,7 +89,7 @@ public class MainScene {
         return scene;
     }
 
-    public void addRunButtonListener(ProfileInfo.RunListener listener) {
+    public void addRunButtonListener(ProfileInfoPanel.RunListener listener) {
         this.selectedProfile.addRunButtonListener(listener);
     }
 }
