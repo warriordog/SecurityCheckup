@@ -32,6 +32,7 @@ public class BasicTests extends Profile {
         addTest(createAVInstalled());
         addTest(createAutoPlayDisabled());
         addTest(createDefenderExclusions());
+        addTest(createUACEnabled());
     }
 
     private static TestInfo createInfo() {
@@ -196,5 +197,40 @@ public class BasicTests extends Profile {
                 );
 
         return new Test(testInfo, new FinalStep(defenderExclusions));
+    }
+
+    private static Test createUACEnabled() {
+        TestInfo testInfo = new TestInfo(
+                "uac_enabled",
+                "UAC Enabled",
+                "Checks if User Account Control is enabled"
+        );
+
+        Step<Float> uacEnabled = new BoolToScoreStep(
+                new PassEveryStep(
+                        new CompareStep<>(
+                                new EqualsComparison<>(),
+                                new RegValueStep<>(
+                                        WinReg.HKEY_LOCAL_MACHINE,
+                                        "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+                                        "EnableLUA"
+                                ),
+                                new PushStep<>(1)
+                        ),
+                        new CompareStep<>(
+                                new EqualsComparison<>()
+                                        .setInverted(true),
+                                new RegValueStep<>(
+                                        WinReg.HKEY_LOCAL_MACHINE,
+                                        "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+                                        "ConsentPromptBehaviorAdmin"
+                                ),
+                                new PushStep<>(0)
+                        )
+                )
+
+        );
+
+        return new Test(testInfo, new FinalStep(uacEnabled));
     }
 }
