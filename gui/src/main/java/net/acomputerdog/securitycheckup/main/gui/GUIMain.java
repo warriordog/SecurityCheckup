@@ -39,8 +39,8 @@ public class GUIMain extends Application {
             this.primaryStage = primaryStage;
             this.primaryStage.setScene(mainWin.getScene());
             this.primaryStage.setTitle("Security Checkup");
-            this.primaryStage.setWidth(800);
-            this.primaryStage.setHeight(600);
+            this.primaryStage.setWidth(1200);
+            this.primaryStage.setHeight(800);
             this.primaryStage.show();
         } catch (Throwable t) {
             System.err.println("Unhandled exception starting: " + t.toString());

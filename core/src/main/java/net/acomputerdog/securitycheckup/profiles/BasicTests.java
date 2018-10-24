@@ -11,9 +11,12 @@ import net.acomputerdog.securitycheckup.test.step.compare.CompareStep;
 import net.acomputerdog.securitycheckup.test.step.compare.ConstCompareStep;
 import net.acomputerdog.securitycheckup.test.step.compare.MatchAnyStep;
 import net.acomputerdog.securitycheckup.test.step.data.PushStep;
+import net.acomputerdog.securitycheckup.test.step.flow.AverageEveryStep;
 import net.acomputerdog.securitycheckup.test.step.flow.PassEveryStep;
+import net.acomputerdog.securitycheckup.test.step.flow.RequireThenStep;
 import net.acomputerdog.securitycheckup.test.step.reg.RegEntryExistsStep;
 import net.acomputerdog.securitycheckup.test.step.reg.RegKeyEmptyStep;
+import net.acomputerdog.securitycheckup.test.step.reg.RegKeyExistsStep;
 import net.acomputerdog.securitycheckup.test.step.reg.RegValueStep;
 import net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep;
 import net.acomputerdog.securitycheckup.test.step.score.FinalStep;
@@ -43,7 +46,7 @@ public class BasicTests extends Profile {
         );
 
         Step<Float> windowsDefenderEnabled =
-                new BoolToScoreStep(
+                new RequireThenStep(
                         new ConstCompareStep<>(
                                 new EqualsComparison<>(),
                                 new ClsPropertyStep<>(
@@ -56,6 +59,30 @@ public class BasicTests extends Profile {
                                         "Enabled"
                                 ),
                                 true
+                        ),
+                        new AverageEveryStep(
+                                new BoolToScoreStep(
+                                        new ConstCompareStep<>(
+                                                new EqualsComparison<>(),
+                                                new RegValueStep<>(
+                                                        WinReg.HKEY_LOCAL_MACHINE,
+                                                        "SOFTWARE\\Microsoft\\Windows Defender",
+                                                        "DisableAntiSpyware"
+                                                ),
+                                                0
+                                        )
+                                ),
+                                new BoolToScoreStep(
+                                        new ConstCompareStep<>(
+                                                new EqualsComparison<>(),
+                                                new RegValueStep<>(
+                                                        WinReg.HKEY_LOCAL_MACHINE,
+                                                        "SOFTWARE\\Microsoft\\Windows Defender",
+                                                        "DisableAntiVirus"
+                                                ),
+                                                0
+                                        )
+                                )
                         )
                 );
 
@@ -69,19 +96,40 @@ public class BasicTests extends Profile {
                 "Verifies that an antivirus product is installed."
         );
 
+        // TODO resource leak
         Step<Float> avInstalled =
                 new BoolToScoreStep(
-                        new MatchAnyStep<>(
-                                new WMIStep(
-                                        "ROOT\\SecurityCenter2",
-                                        "SELECT * FROM AntiVirusProduct"
-                                ),
-                                new PushStep<>("Windows Defender"),
-                                new WMIPropertyComparison<>(
-                                        new EqualsComparison<String>().setInverted(true),
-                                        "displayName"
-                                )
+                        new PassEveryStep(
+                                new MatchAnyStep<>(
+                                        new WMIStep(
+                                                "ROOT\\SecurityCenter2",
+                                                "SELECT * FROM AntiVirusProduct"
+                                        ),
+                                        new PushStep<>("Windows Defender"),
+                                        new WMIPropertyComparison<>(
+                                                new EqualsComparison<String>().setInverted(true),
+                                                "displayName"
+                                        )
 
+                                ),
+                                new RegKeyExistsStep(
+                                        WinReg.HKEY_LOCAL_MACHINE,
+                                        "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\QualityCompat"
+                                ),
+                                new RegEntryExistsStep(
+                                        WinReg.HKEY_LOCAL_MACHINE,
+                                        "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\QualityCompat",
+                                        "cadca5fe-87d3-4b96-b7fb-a231484277cc"
+                                ),
+                                new ConstCompareStep<>(
+                                        new EqualsComparison<>(),
+                                        new RegValueStep<>(
+                                                WinReg.HKEY_LOCAL_MACHINE,
+                                                "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\QualityCompat",
+                                                "cadca5fe-87d3-4b96-b7fb-a231484277cc"
+                                        ),
+                                        0
+                                )
                         )
                 );
 
