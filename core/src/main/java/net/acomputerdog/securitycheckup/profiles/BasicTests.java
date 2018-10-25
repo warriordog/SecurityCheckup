@@ -6,10 +6,12 @@ import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestInfo;
 import net.acomputerdog.securitycheckup.test.comparison.EqualsComparison;
 import net.acomputerdog.securitycheckup.test.comparison.WMIPropertyComparison;
+import net.acomputerdog.securitycheckup.test.password.UserPasswordIsEmptyStep;
 import net.acomputerdog.securitycheckup.test.step.Step;
 import net.acomputerdog.securitycheckup.test.step.compare.CompareStep;
 import net.acomputerdog.securitycheckup.test.step.compare.ConstCompareStep;
 import net.acomputerdog.securitycheckup.test.step.compare.MatchAnyStep;
+import net.acomputerdog.securitycheckup.test.step.data.InvertStep;
 import net.acomputerdog.securitycheckup.test.step.data.PushStep;
 import net.acomputerdog.securitycheckup.test.step.flow.AverageEveryStep;
 import net.acomputerdog.securitycheckup.test.step.flow.PassEveryStep;
@@ -33,6 +35,7 @@ public class BasicTests extends Profile {
         addTest(createAutoPlayDisabled());
         addTest(createDefenderExclusions());
         addTest(createUACEnabled());
+        addTest(createPasswordSet());
     }
 
     private static TestInfo createInfo() {
@@ -232,5 +235,22 @@ public class BasicTests extends Profile {
         );
 
         return new Test(testInfo, new FinalStep(uacEnabled));
+    }
+
+    private static Test createPasswordSet() {
+        TestInfo testInfo = new TestInfo(
+                "password_set",
+                "Password Set",
+                "Verifies that a password is set on the current Windows account."
+        );
+
+        Step<Float> passwordEmpty =
+                new BoolToScoreStep(
+                        new InvertStep(
+                                new UserPasswordIsEmptyStep()
+                        )
+                );
+
+        return new Test(testInfo, new FinalStep(passwordEmpty));
     }
 }
