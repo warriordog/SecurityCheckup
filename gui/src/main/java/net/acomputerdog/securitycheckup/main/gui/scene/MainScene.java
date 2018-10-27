@@ -61,12 +61,25 @@ public class MainScene {
         // Profiles list
         BorderPane profilesPane = new BorderPane();
         Text profilesListLabel = new Text("Test profiles:");
-        profilesListLabel.setFont(new Font(14));
+        profilesListLabel.setFont(new Font(18));
         profilesPane.setTop(profilesListLabel);
         BorderPane.setMargin(profilesListLabel, new Insets(5, 5, 5,5));
         this.selectedProfile = new ProfileInfoPanel();
         this.profiles = FXCollections.observableArrayList();
         this.profilesList = new ListView<>(this.profiles);
+
+        // Create cell factory that will set font size
+        profilesList.setCellFactory(cell -> new ListCell<Profile>() {
+            @Override
+            protected void updateItem(Profile item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    setText(item.toString());
+                    setFont(Font.font(16));
+                }
+            }
+        });
+
         // event handler for select profile
         profilesList.getSelectionModel().selectedItemProperty().addListener(e -> selectedProfile.setProfile(profilesList.getSelectionModel().getSelectedItem()));
         profilesPane.setCenter(profilesList);

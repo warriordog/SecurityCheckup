@@ -10,7 +10,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestResult;
 
@@ -44,20 +47,24 @@ public class TestInfoPanel implements Panel {
         root.setPadding(new Insets(5, 5, 5, 5));
 
         this.descText = new Label();
+        descText.setFont(Font.font(14));
         descText.setWrapText(true);
         root.getChildren().add(descText);
 
         this.testInfo = FXCollections.observableArrayList();
         this.detailsPane = new TableView<>();
+        detailsPane.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         detailsPane.setItems(testInfo);
-        TableColumn<ExtraInfo, String> keys = new TableColumn<>();
+        TableColumn<ExtraInfo, String> keys = new TableColumn<>("Property");
         keys.setCellValueFactory(new PropertyValueFactory<>("key"));
-        TableColumn<ExtraInfo, String> vals = new TableColumn<>();
+        TableColumn<ExtraInfo, String> vals = new TableColumn<>("Value");
         vals.setCellValueFactory(new PropertyValueFactory<>("value"));
         detailsPane.getColumns().addAll(keys, vals);
-        //detailsPane.setHgap(2);
-        //detailsPane.setVgap(2);
+
+        root.getChildren().add(new Text("Advanced info:"));
         root.getChildren().add(detailsPane);
+        VBox.setVgrow(detailsPane, Priority.ALWAYS);
+
 
 
         /*
@@ -123,19 +130,6 @@ public class TestInfoPanel implements Panel {
     }
 
     /*
-    public void showResult(TestResult result) {
-        if (result != null) {
-            setResultsVisible(true);
-
-            resultScoreText.setText(result.getScoreString());
-            resultStateText.setText(result.getResultCause().prettyName);
-            resultStringText.setText(result.getResultString());
-            resultMessageText.setText(String.valueOf(result.getInfo(TestResult.KEY_MESSAGE)));
-            resultExceptionText.setText(String.valueOf(result.getInfo(TestResult.KEY_EXCEPTION)));
-        } else {
-            setResultsVisible(false);
-        }
-    }
 
     private void setResultsVisible(boolean visible) {
         resultExceptionLabel.setVisible(visible);

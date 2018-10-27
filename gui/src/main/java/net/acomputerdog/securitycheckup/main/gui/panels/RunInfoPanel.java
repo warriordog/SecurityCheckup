@@ -9,6 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner.RunTest;
@@ -37,10 +38,12 @@ public class RunInfoPanel implements Panel {
         root.setVisible(false); //default hidden
 
         this.statusText = new Text();
+        statusText.setFont(Font.font(16));
         root.setTop(statusText);
         BorderPane.setMargin(statusText, new Insets(5, 0, 5, 0));
 
         this.testTable = new TableView<>();
+        testTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         this.tests = FXCollections.observableArrayList();
         testTable.setItems(tests);
         testTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> this.selectTest(newValue));
