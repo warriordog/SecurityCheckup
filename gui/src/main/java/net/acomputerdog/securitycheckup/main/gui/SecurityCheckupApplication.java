@@ -2,9 +2,11 @@ package net.acomputerdog.securitycheckup.main.gui;
 
 import javafx.application.Application;
 import javafx.concurrent.Worker;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
+import net.acomputerdog.securitycheckup.main.gui.controller.AboutController;
 import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.panels.RunInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
@@ -25,8 +27,13 @@ public class SecurityCheckupApplication extends Application {
 
     private List<Profile> defaultProfiles;
 
+    private FXMLLoader fxmlLoader;
+
     private Stage primaryStage;
     private MainScene mainWin;
+
+    private AboutController aboutController;
+    private Stage aboutStage;
 
     @Override
     public void init() {
@@ -35,10 +42,16 @@ public class SecurityCheckupApplication extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws Exception {
         try {
+            this.fxmlLoader = new FXMLLoader();
 
+            // load main window
             this.mainWin = new MainScene(this);
+
+            // load about window
+            this.aboutStage = fxmlLoader.load(getClass().getResourceAsStream("/ui/about.fxml"));
+            this.aboutController = fxmlLoader.getController();
 
             // Add all default profiles
             defaultProfiles.forEach(mainWin::addProfile);
@@ -50,7 +63,7 @@ public class SecurityCheckupApplication extends Application {
             this.primaryStage.setWidth(1200);
             this.primaryStage.setHeight(800);
             this.primaryStage.show();
-        }catch (Throwable t) {
+        } catch (Throwable t) {
             System.err.println("Unhandled exception starting: " + t.toString());
             t.printStackTrace();
 
@@ -106,6 +119,12 @@ public class SecurityCheckupApplication extends Application {
         });
 
         new Thread(runner).start();
+    }
+
+    public void showAbout() {
+        if (!aboutStage.isShowing()) {
+            aboutStage.show();
+        }
     }
 
     public static void launch(String[] args) {

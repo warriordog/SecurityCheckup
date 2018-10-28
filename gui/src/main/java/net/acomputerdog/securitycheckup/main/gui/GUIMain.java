@@ -5,8 +5,6 @@ import net.acomputerdog.securitycheckup.ex.UnsupportedPlatformException;
 import javax.swing.*;
 
 public class GUIMain {
-
-
     public static void main(String[] args) {
         try {
             // check environment

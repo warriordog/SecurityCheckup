@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.Scene?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.stage.Stage?>
+<Stage title="About"
+       xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="net.acomputerdog.securitycheckup.main.gui.controller.AboutController">
+    <scene>
+        <Scene>
+            <BorderPane prefHeight="400.0"
+                        prefWidth="600.0">
+                <padding><Insets bottom="5"/></padding>
+                <center>
+                    <WebView fx:id="webView"/>
+                </center>
+            </BorderPane>
+        </Scene>
+    </scene>
+</Stage>

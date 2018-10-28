@@ -46,6 +46,7 @@ public class MainScene {
         // Help menu
         Menu menuHelp = new Menu("Help");
         MenuItem menuHelpAbout = new MenuItem("About");
+        menuHelpAbout.setOnAction(v -> guiMain.showAbout());
         menuHelp.getItems().add(menuHelpAbout);
 
         // Menubar
