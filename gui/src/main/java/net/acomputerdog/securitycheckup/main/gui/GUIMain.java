@@ -1,98 +1,58 @@
 package net.acomputerdog.securitycheckup.main.gui;
 
-import javafx.application.Application;
-import javafx.concurrent.Worker;
-import javafx.stage.Stage;
-import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfoPanel;
-import net.acomputerdog.securitycheckup.main.gui.panels.RunInfoPanel;
-import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
-import net.acomputerdog.securitycheckup.main.gui.scene.MainScene;
-import net.acomputerdog.securitycheckup.profiles.BasicTests;
-import net.acomputerdog.securitycheckup.test.Profile;
-import net.acomputerdog.securitycheckup.test.TestResult;
+import net.acomputerdog.securitycheckup.ex.UnsupportedPlatformException;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.*;
 
-public class GUIMain extends Application {
+public class GUIMain {
 
-    private List<Profile> defaultProfiles;
-
-    private Stage primaryStage;
-    private MainScene mainWin;
-
-    @Override
-    public void init() {
-        defaultProfiles = new ArrayList<>();
-        defaultProfiles.add(new BasicTests());
-    }
-
-    @Override
-    public void start(Stage primaryStage) {
-        try {
-            this.mainWin = new MainScene(this);
-
-            // Add all default profiles
-            defaultProfiles.forEach(mainWin::addProfile);
-            mainWin.addRunButtonListener(this::runProfile);
-
-            this.primaryStage = primaryStage;
-            this.primaryStage.setScene(mainWin.getScene());
-            this.primaryStage.setTitle("Security Checkup");
-            this.primaryStage.setWidth(1200);
-            this.primaryStage.setHeight(800);
-            this.primaryStage.show();
-        } catch (Throwable t) {
-            System.err.println("Unhandled exception starting: " + t.toString());
-            t.printStackTrace();
-            throw t;
-        }
-    }
-
-    @Override
-    public void stop() {
-        try {
-            //TODO cleanup resources
-        } catch (Throwable t) {
-            System.err.println("Unhandled exception while stopping: " + t.toString());
-            t.printStackTrace();
-            throw t;
-        }
-    }
-
-    private void runProfile(ProfileInfoPanel info, RunInfoPanel runInfo) {
-        info.setRunButtonEnabled(true);
-        runInfo.setResultString("Running");
-
-        TestRunner runner = new TestRunner(info.getProfile());
-        runInfo.bind(runner);
-
-        // enable button when run finishes or fails
-        runner.runningProperty().addListener(l -> {
-            if (!runner.isRunning()) {
-                info.setRunButtonEnabled(false);
-            }
-        });
-
-        // handle normal exit
-        runner.stateProperty().addListener(l -> {
-            if (runner.getState() == Worker.State.SUCCEEDED) {
-                runInfo.setResultString("Success: " + TestResult.formatScore(runner.getValue()));
-            }
-        });
-
-        // handle exceptions
-        runner.exceptionProperty().addListener(l -> {
-            System.err.println("Uncaught exception in test run thread");
-            runner.getException().printStackTrace();
-
-            runInfo.setResultString("Exception: " + runner.getException().toString());
-        });
-
-        new Thread(runner).start();
-    }
 
     public static void main(String[] args) {
-        launch(args);
+        try {
+            // check environment
+            checkEnvironment();
+
+            SecurityCheckupApplication.launch(args);
+        } catch (UnsupportedPlatformException e) {
+            System.out.println("Unsupported platform!");
+            e.printStackTrace();
+
+            displayWarning("You are using an unsupported platform.\r\n\r\n" + e.getMessage(), "Unsupported platform");
+        } catch (Throwable t) {
+            System.err.println("Exception starting application");
+            t.printStackTrace();
+
+            displayException("Exception occurred while starting SecurityCheckup.  The program must now close.", t);
+        }
+    }
+
+    public static void displayException(String message, Throwable throwable) {
+        String fullMessage = message + "\r\n\r\nException: " + String.valueOf(throwable);
+        JOptionPane.showMessageDialog(null, fullMessage, "Unhandled exception", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void displayWarning(String message, String title) {
+        JOptionPane.showMessageDialog(null, message, title, JOptionPane.WARNING_MESSAGE);
+    }
+
+    private static void checkEnvironment() throws UnsupportedPlatformException {
+        // check for windows 10
+        if (!"Windows 10".equals(System.getProperty("os.name"))) {
+            throw new UnsupportedPlatformException("Only Windows 10 is supported.  Other versions of windows and " +
+                    "non-windows operating systems are unsupported.");
+        }
+
+        // check for java 8
+        if (!System.getProperty("java.specification.version").startsWith("1.8")) {
+            throw new UnsupportedPlatformException("Java 8 is required.  Older and newer versions are unsupported.");
+        }
+
+        // check for JavaFX
+        try {
+            Class.forName("javafx.application.Application", false, ClassLoader.getSystemClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new UnsupportedPlatformException("JavaFX is required.  Please install the full, non-headless " +
+                    "version of Java 8 JRE or JDK.");
+        }
     }
 }

@@ -9,13 +9,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import net.acomputerdog.securitycheckup.main.gui.GUIMain;
+import net.acomputerdog.securitycheckup.main.gui.SecurityCheckupApplication;
 import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfoPanel;
 import net.acomputerdog.securitycheckup.test.Profile;
 
 public class MainScene {
 
-    private final GUIMain guiMain;
+    private final SecurityCheckupApplication guiMain;
     private final Scene scene;
 
     // components
@@ -26,7 +26,7 @@ public class MainScene {
     private final ObservableList<Profile> profiles;
     private final ProfileInfoPanel selectedProfile;
 
-    public MainScene(GUIMain guiMain) {
+    public MainScene(SecurityCheckupApplication guiMain) {
         this.guiMain = guiMain;
 
         // Pane with Menubar and content
@@ -94,7 +94,7 @@ public class MainScene {
         profiles.add(profile);
     }
 
-    public GUIMain getGuiMain() {
+    public SecurityCheckupApplication getGuiMain() {
         return guiMain;
     }
 
