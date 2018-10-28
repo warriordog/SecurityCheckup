@@ -2,10 +2,7 @@ package net.acomputerdog.securitycheckup.test;
 
 import net.acomputerdog.jwmi.wbem.WbemLocator;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class TestEnvironment {
     /**
@@ -17,6 +14,11 @@ public class TestEnvironment {
      * Shared WbemLocator for connecting to WMI
      */
     private final WbemLocator wbemLocator;
+
+    /**
+     * List of messages generated during testing
+     */
+    private final List<String> testMessages = new ArrayList<>();
 
     private Test currentTest;
 
@@ -30,6 +32,10 @@ public class TestEnvironment {
 
     public Test getCurrentTest() {
         return currentTest;
+    }
+
+    public List<String> getTestMessages() {
+        return testMessages;
     }
 
     public boolean hasSharedResource(Object key) {

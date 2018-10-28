@@ -50,6 +50,9 @@ public class TestRunner extends Task<Float> {
 
                     scoreCount++;
                     scoreTotal += result.getScore();
+
+                    // reset messages for each test
+                    environment.getTestMessages().clear();
                 }
 
                 return scoreCount == 0 ? 0.0f : (scoreTotal / scoreCount);

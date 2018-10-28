@@ -2,6 +2,8 @@ package net.acomputerdog.securitycheckup.main.gui;
 
 import javafx.application.Application;
 import javafx.concurrent.Worker;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.panels.RunInfoPanel;
@@ -17,6 +19,9 @@ import java.util.List;
 import static net.acomputerdog.securitycheckup.main.gui.GUIMain.displayException;
 
 public class SecurityCheckupApplication extends Application {
+    // TODO settings
+    public static final float PERFECT_SCORE = 1.0f;
+    public static final float PASSING_SCORE = 0.75f;
 
     private List<Profile> defaultProfiles;
 
@@ -70,7 +75,7 @@ public class SecurityCheckupApplication extends Application {
 
     private void runProfile(ProfileInfoPanel info, RunInfoPanel runInfo) {
         info.setRunButtonEnabled(true);
-        runInfo.setResultString("Running");
+        runInfo.setRunStatus("Running", Color.DIMGREY);
 
         TestRunner runner = new TestRunner(info.getProfile());
         runInfo.bind(runner);
@@ -85,7 +90,10 @@ public class SecurityCheckupApplication extends Application {
         // handle normal exit
         runner.stateProperty().addListener(l -> {
             if (runner.getState() == Worker.State.SUCCEEDED) {
-                runInfo.setResultString("Success: " + TestResult.formatScore(runner.getValue()));
+                float result = runner.getValue();
+                Paint color = result >= PERFECT_SCORE ? Color.GREEN : result >= PASSING_SCORE ? Color.ORANGE : Color.RED;
+
+                runInfo.setRunStatus("Success: " + TestResult.formatScore(runner.getValue()), color);
             }
         });
 
@@ -94,7 +102,7 @@ public class SecurityCheckupApplication extends Application {
             System.err.println("Uncaught exception in test run thread");
             runner.getException().printStackTrace();
 
-            runInfo.setResultString("Exception: " + runner.getException().toString());
+            runInfo.setRunStatus("Exception: " + runner.getException().toString(), Color.RED);
         });
 
         new Thread(runner).start();

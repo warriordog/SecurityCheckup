@@ -8,26 +8,30 @@ public class TestInfo implements Informable {
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
     public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_FAILURE_ADVICE = "failure_advice";
 
     private final String id;
     private final String name;
     private final String description;
+    private final String failureAdvice;
 
     private final Map<String, String> extraInfo = new HashMap<>();
 
     // constructor for deserializing
     private TestInfo() {
-        this (null, null, null);
+        this (null, null, null, null);
     }
 
-    public TestInfo(String id, String name, String description) {
+    public TestInfo(String id, String name, String description, String failureAdvice) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.failureAdvice = failureAdvice;
 
         extraInfo.put(KEY_ID, id);
         extraInfo.put(KEY_NAME, name);
         extraInfo.put(KEY_DESCRIPTION, description);
+        extraInfo.put(KEY_FAILURE_ADVICE, failureAdvice);
     }
 
     public String getName() {
@@ -40,6 +44,10 @@ public class TestInfo implements Informable {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getFailureAdvice() {
+        return failureAdvice;
     }
 
     public void addInfo(String key, String value) {

@@ -23,6 +23,6 @@ public class TestRegistry {
     }
 
     public void addProfile(Profile profile) {
-        profileMap.put(profile.getInfo().getID(), profile);
+        profileMap.put(profile.getId(), profile);
     }
 }

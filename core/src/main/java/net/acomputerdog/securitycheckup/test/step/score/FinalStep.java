@@ -25,16 +25,16 @@ public class FinalStep extends Step<TestResult> {
         try {
             Float score = child.run(environment);
             if (score != null) {
-                result = TestResult.createNormalScore(environment.getCurrentTest().getInfo(), score);
+                result = TestResult.createNormalScore(environment.getCurrentTest().getInfo(), environment.getTestMessages(), score);
             } else {
-                result = new TestResult(environment.getCurrentTest().getInfo(), false, TestResult.SCORE_FAIL, TestResult.ResultCause.FAILED);
+                result = new TestResult(environment.getCurrentTest().getInfo(), false, TestResult.SCORE_FAIL, TestResult.ResultCause.FAILED, environment.getTestMessages());
                 result.setExtraInfo(TestResult.KEY_MESSAGE, "Child test returned null");
             }
         } catch (Exception e) {
             System.err.println("Exception during test");
             e.printStackTrace();
 
-            result = new TestResult(environment.getCurrentTest().getInfo(), false, TestResult.SCORE_FAIL, TestResult.ResultCause.EXCEPTION);
+            result = new TestResult(environment.getCurrentTest().getInfo(), false, TestResult.SCORE_FAIL, TestResult.ResultCause.EXCEPTION, environment.getTestMessages());
             result.setExtraInfo(TestResult.KEY_EXCEPTION, e.getMessage());
         }
 

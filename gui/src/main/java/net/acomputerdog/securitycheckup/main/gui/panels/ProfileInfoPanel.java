@@ -31,8 +31,6 @@ public class ProfileInfoPanel implements Panel {
     private final Text descriptionText;
     private final Button runButton;
     private final RunInfoPanel runInfo;
-
-
     private final Text selectProfileMessage;
 
     private Profile profile;
@@ -59,7 +57,7 @@ public class ProfileInfoPanel implements Panel {
         tabOverview.setContent(overviewPane);
 
         this.descriptionText = new Text();
-        descriptionText.setFont(Font.font(14));
+        descriptionText.setFont(Font.font(16));
 
         this.runButton = new Button();
         runButton.setText("Run tests");
@@ -74,6 +72,7 @@ public class ProfileInfoPanel implements Panel {
         this.testSplit = new SplitPane();
         testSplit.getItems().addAll(testList, testInfoPane.getRoot());
         testSplit.setDividerPosition(0, 0.3);
+        SplitPane.setResizableWithParent(testList, false);
         tabTests.setContent(testSplit);
 
         // Detailed info
@@ -110,16 +109,16 @@ public class ProfileInfoPanel implements Panel {
         testInfoPane.showTest(null);
 
         if (profile != null) {
-            this.descriptionText.setText(profile.getInfo().getDescription());
+            this.descriptionText.setText(profile.getDescription());
 
             // Set test list tab
             this.testList.getItems().addAll(profile.getTests());
 
             // set details tab
             this.detailsPane.add(new Text("ID: "), 0, 0);
-            this.detailsPane.add(new Text(profile.getInfo().getID()), 1, 0);
+            this.detailsPane.add(new Text(profile.getId()), 1, 0);
             this.detailsPane.add(new Text("Description: "), 0, 1);
-            this.detailsPane.add(new Text(profile.getInfo().getDescription()), 1, 1);
+            this.detailsPane.add(new Text(profile.getDescription()), 1, 1);
 
             tabs.setVisible(true);
             selectProfileMessage.setVisible(false);

@@ -9,20 +9,24 @@ import java.util.Map;
  * A collection of tests to run together
  */
 public class Profile {
-    private final TestInfo info;
+    private final String id;
+    private final String name;
+    private final String description;
 
     /**
      * Mapping of test IDs to test instances
      */
     private final Map<String, Test> tests = new HashMap<>();
 
-    public Profile(TestInfo info, Map<String, Test> tests) {
-        this(info);
+    public Profile(String id, String name, String description, Map<String, Test> tests) {
+        this(id, name, description);
         tests.forEach(this.tests::put);
     }
 
-    public Profile(TestInfo info) {
-        this.info = info;
+    public Profile(String id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
     }
 
     /**
@@ -75,12 +79,20 @@ public class Profile {
         return testList;
     }
 
-    public TestInfo getInfo() {
-        return info;
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override
     public String toString() {
-        return info.toString();
+        return name;
     }
 }

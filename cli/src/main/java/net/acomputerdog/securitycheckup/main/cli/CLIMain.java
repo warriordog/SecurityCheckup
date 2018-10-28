@@ -78,7 +78,7 @@ public class CLIMain implements AutoCloseable {
         // Run each suite, and each test in each suite
         System.out.printf("Running %d test suites.\n", profiles.size());
         for (Profile tests : profiles) {
-            System.out.printf("Running %d tests in '%s'.\n", tests.getNumTests(), tests.getInfo().getName());
+            System.out.printf("Running %d tests in '%s'.\n", tests.getNumTests(), tests.getName());
 
             List<TestResult> testResults = new ArrayList<>();
             for (Test test : tests.getTests()) {
@@ -102,10 +102,10 @@ public class CLIMain implements AutoCloseable {
         // print each suite
         System.out.println("Individual test results:");
         for (Profile suite : profiles) {
-            System.out.printf("Results for suite '%s':\n", suite.getInfo().getID());
+            System.out.printf("Results for suite '%s':\n", suite.getId());
             System.out.println("----------------------");
-            System.out.printf("|%s:\n", suite.getInfo().getName());
-            System.out.printf("|%s\n", suite.getInfo().getDescription());
+            System.out.printf("|%s:\n", suite.getName());
+            System.out.printf("|%s\n", suite.getDescription());
             System.out.println("----------------------");
 
             // print results

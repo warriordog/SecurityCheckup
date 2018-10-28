@@ -21,13 +21,16 @@ public class TestResult implements Informable {
 
     private final TestInfo testInfo;
 
+    private final List<String> testMessages = new ArrayList<>();
+
     private final Map<String, String> extraInfo = new HashMap<>();
 
-    public TestResult(TestInfo testInfo, boolean passed, float score, ResultCause resultCause) {
+    public TestResult(TestInfo testInfo, boolean passed, float score, ResultCause resultCause, List<String> testMessages) {
         this.testInfo = testInfo;
         this.passed = passed;
         this.score = score;
         this.resultCause = resultCause;
+        this.testMessages.addAll(testMessages);
 
         extraInfo.put(KEY_PASSED, String.valueOf(passed));
         extraInfo.put(KEY_SCORE, getScoreString());
@@ -53,6 +56,10 @@ public class TestResult implements Informable {
 
     public TestInfo getTestInfo() {
         return testInfo;
+    }
+
+    public List<String> getTestMessages() {
+        return testMessages;
     }
 
     public String getResultString() {
@@ -98,16 +105,16 @@ public class TestResult implements Informable {
         return info;
     }
 
-    public static TestResult createNormalScore(TestInfo testInfo, float score) {
-        return new TestResult(testInfo, score == SCORE_PASS, score, ResultCause.FINISHED);
+    public static TestResult createNormalScore(TestInfo testInfo, List<String> testMessages, float score) {
+        return new TestResult(testInfo, score == SCORE_PASS, score, ResultCause.FINISHED, testMessages);
     }
 
-    public static TestResult createNormalPass(TestInfo testInfo) {
-        return new TestResult(testInfo, true, SCORE_PASS, ResultCause.FINISHED);
+    public static TestResult createNormalPass(TestInfo testInfo, List<String> testMessages) {
+        return new TestResult(testInfo, true, SCORE_PASS, ResultCause.FINISHED, testMessages);
     }
 
-    public static TestResult createNormalFail(TestInfo testInfo) {
-        return new TestResult(testInfo, false, SCORE_FAIL, ResultCause.FINISHED);
+    public static TestResult createNormalFail(TestInfo testInfo, List<String> testMessages) {
+        return new TestResult(testInfo, false, SCORE_FAIL, ResultCause.FINISHED, testMessages);
     }
 
     public enum ResultCause {

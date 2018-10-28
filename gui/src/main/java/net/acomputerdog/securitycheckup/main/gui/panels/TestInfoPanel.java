@@ -7,11 +7,13 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import net.acomputerdog.securitycheckup.test.Test;
@@ -23,22 +25,11 @@ public class TestInfoPanel implements Panel {
     private final TableView<ExtraInfo> detailsPane;
 
     private final Label descText;
+    private final Label resultText;
+
+    private final ListView<String> testMessages;
 
     private final ObservableList<ExtraInfo> testInfo;
-
-    /*
-    private final Text resultScoreLabel;
-    private final Text resultStateLabel;
-    private final Text resultStringLabel;
-    private final Text resultMessageLabel;
-    private final Text resultExceptionLabel;
-    private final Label resultScoreText;
-    private final Label resultStateText;
-    private final Label resultStringText;
-    private final Label resultMessageText;
-    private final Label resultExceptionText;
-    */
-
 
     public TestInfoPanel() {
         this.root = new VBox();
@@ -47,9 +38,25 @@ public class TestInfoPanel implements Panel {
         root.setPadding(new Insets(5, 5, 5, 5));
 
         this.descText = new Label();
-        descText.setFont(Font.font(14));
+        descText.setFont(Font.font(16));
         descText.setWrapText(true);
         root.getChildren().add(descText);
+
+        this.resultText = new Label();
+        resultText.setFont(Font.font(16));
+        resultText.setWrapText(true);
+        resultText.managedProperty().bind(resultText.visibleProperty()); // don't take space when invisible
+        VBox.setVgrow(resultText, Priority.ALWAYS);
+        root.getChildren().add(resultText);
+
+        Text messagesText = new Text("Test messages:");
+        messagesText.managedProperty().bind(messagesText.visibleProperty()); // don't take space when invisible
+        root.getChildren().add(messagesText);
+
+        this.testMessages = new ListView<>();
+        testMessages.managedProperty().bind(testMessages.visibleProperty()); // don't take space when invisible
+        messagesText.visibleProperty().bind(testMessages.visibleProperty()); // hide label with list
+        root.getChildren().add(testMessages);
 
         this.testInfo = FXCollections.observableArrayList();
         this.detailsPane = new TableView<>();
@@ -64,44 +71,6 @@ public class TestInfoPanel implements Panel {
         root.getChildren().add(new Text("Advanced info:"));
         root.getChildren().add(detailsPane);
         VBox.setVgrow(detailsPane, Priority.ALWAYS);
-
-
-
-        /*
-        this.resultStringLabel = new Text("Result: ");
-        this.resultStringText = new Label();
-        resultStringText.setWrapText(true);
-
-        this.resultScoreLabel = new Text("Score: ");
-        this.resultScoreText = new Label();
-        resultScoreText.setWrapText(true);
-
-        this.resultStateLabel = new Text("State: ");
-        this.resultStateText = new Label();
-        resultStateText.setWrapText(true);
-
-        this.resultMessageLabel = new Text("Message: ");
-        this.resultMessageText = new Label();
-        resultMessageText.setWrapText(true);
-
-        this.resultExceptionLabel = new Text("Exception: ");
-        this.resultExceptionText = new Label();
-        resultExceptionText.setWrapText(true);
-
-
-        detailsPane.add(new Text("ID: "), 0, 0);
-        detailsPane.add(idText, 1, 0);
-        detailsPane.add(resultStringLabel, 0, 1);
-        detailsPane.add(resultStringText, 1, 1);
-        detailsPane.add(resultScoreLabel, 0, 2);
-        detailsPane.add(resultScoreText, 1, 2);
-        detailsPane.add(resultStateLabel, 0, 3);
-        detailsPane.add(resultStateText, 1, 3);
-        detailsPane.add(resultMessageLabel, 0, 4);
-        detailsPane.add(resultMessageText, 1, 4);
-        detailsPane.add(resultExceptionLabel, 0, 5);
-        detailsPane.add(resultExceptionText, 1, 5);
-        */
     }
 
     public void showTest(Test test) {
@@ -110,16 +79,44 @@ public class TestInfoPanel implements Panel {
 
     public void showTest(Test test, TestResult result) {
         // Reset results pane
-        //showResult(null);
         testInfo.clear();
+        resultText.setVisible(false);
+        testMessages.getItems().clear();
+        testMessages.setVisible(false);
 
         if (test != null) {
             descText.setText(test.getInfo().getDescription());
-            //idText.setText(test.getInfo().getID());
 
             test.getInfo().getInfoMap().forEach((k, v) -> testInfo.add(new ExtraInfo(k, v)));
 
+            // If there is a result to display
             if (result != null) {
+                // create results line
+                StringBuilder resultString = new StringBuilder();
+                resultString.append(result.getResultString());
+
+                // only add instructions if it failed but the test ran correctly
+                if (!result.isPassed() && result.getResultCause() == TestResult.ResultCause.FINISHED) {
+                    resultString.append(" - ");
+                    resultString.append(test.getInfo().getFailureAdvice());
+                }
+
+                // set result value
+                resultText.setText(resultString.toString());
+                resultText.setVisible(true);
+
+                // set result color
+                if (result.isPassed()) {
+                    resultText.setTextFill(Color.GREEN);
+                } else {
+                    resultText.setTextFill(Color.RED);
+                }
+
+                // write
+                testMessages.getItems().addAll(result.getTestMessages());
+                testMessages.setVisible(true);
+
+                // write extra info
                 result.getInfoMap().forEach((k, v) -> testInfo.add(new ExtraInfo(k, v)));
             }
 
@@ -128,22 +125,6 @@ public class TestInfoPanel implements Panel {
             root.setVisible(false);
         }
     }
-
-    /*
-
-    private void setResultsVisible(boolean visible) {
-        resultExceptionLabel.setVisible(visible);
-        resultMessageLabel.setVisible(visible);
-        resultStringLabel.setVisible(visible);
-        resultStateLabel.setVisible(visible);
-        resultScoreLabel.setVisible(visible);
-        resultExceptionText.setVisible(visible);
-        resultMessageText.setVisible(visible);
-        resultStringText.setVisible(visible);
-        resultStateText.setVisible(visible);
-        resultScoreText.setVisible(visible);
-    }
-*/
 
     @Override
     public Node getRoot() {
