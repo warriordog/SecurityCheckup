@@ -18,3 +18,9 @@ Security Checkup is written in pure java, however some 3rd party libraries inclu
 Java 8, 9, and 10 are supported.  Make sure to install a 64 bit JVM and include Java FX (so no headless versions).
 
 Please note that this software is being developed for class credit and may not be supported long-term.
+
+Screenshots:
+
+![Screenshot 1](doc/img/ss1.png?raw=true)
+
+![Screenshot 2](doc/img/ss2.png?raw=true)
