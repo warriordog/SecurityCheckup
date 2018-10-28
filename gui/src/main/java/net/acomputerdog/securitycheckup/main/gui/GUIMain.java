@@ -42,9 +42,9 @@ public class GUIMain {
 
         // check for java 8
         String javaVersion = System.getProperty("java.specification.version");
-        if (!javaVersion.startsWith("1.8") && !javaVersion.startsWith("1.9") && !javaVersion.startsWith("10")) {
+        if (!javaVersion.startsWith("1.8") && !javaVersion.startsWith("9") && !javaVersion.startsWith("10")) {
             //displayWarning("Allowing untested java version: " + javaVersion, "Warning");
-            throw new UnsupportedPlatformException("Unsupported java version.  Java 8, 9, or 10 is required.  " +
+            throw new UnsupportedPlatformException("Unsupported java version: " + javaVersion + ".  Java 8, 9, or 10 is required.  " +
                     "Older and newer versions are unsupported.");
         }
 

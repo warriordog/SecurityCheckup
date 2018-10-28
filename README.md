@@ -15,6 +15,6 @@ Security Checkup is written in pure java, however some 3rd party libraries inclu
 * [Java Native Access](https://github.com/java-native-access/jna)
 * [jWMI](https://github.com/warriordog/jwmi)
 
-Java 8, 9, and 10 are supported, however Java 9 is untested.  Make sure to install a 64 bit JVM and include Java FX (so no headless versions).
+Java 8, 9, and 10 are supported.  Make sure to install a 64 bit JVM and include Java FX (so no headless versions).
 
 Please note that this software is being developed for class credit and may not be supported long-term.
