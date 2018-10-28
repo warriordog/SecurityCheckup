@@ -41,7 +41,9 @@ public class MainScene {
         // Tests menu
         Menu menuTest = new Menu("Tests");
         MenuItem menuProfilesManage = new MenuItem("Manage profiles");
+        menuProfilesManage.setDisable(true);
         MenuItem menuTestsManage = new MenuItem("Manage tests");
+        menuTestsManage.setDisable(true);
         menuTest.getItems().addAll(menuProfilesManage, menuTestsManage);
         // Help menu
         Menu menuHelp = new Menu("Help");
