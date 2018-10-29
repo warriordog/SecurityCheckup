@@ -16,17 +16,17 @@ public class Profile {
     /**
      * Mapping of test IDs to test instances
      */
-    private final Map<String, Test> tests = new HashMap<>();
+    private final Map<String, Test> tests;
 
     public Profile(String id, String name, String description, Map<String, Test> tests) {
-        this(id, name, description);
-        tests.forEach(this.tests::put);
-    }
-
-    public Profile(String id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.tests = tests;
+    }
+
+    public Profile(String id, String name, String description) {
+        this(id, name, description, new HashMap<>());
     }
 
     /**

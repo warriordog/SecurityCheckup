@@ -39,7 +39,7 @@ public class BasicTests extends Profile {
     public static final String ID_UAC_ENABLED = "uac_enabled";
     public static final String ID_PASSWORD_SET = "password_set";
 
-    protected BasicTests(TestRegistry testRegistry) {
+    public BasicTests(TestRegistry testRegistry) {
         super(ID_BASIC_TESTS, "Basic Tests", "Tests for basic system security.");
 
         addTest(getOrCreateWinDefenderEnabled(testRegistry));

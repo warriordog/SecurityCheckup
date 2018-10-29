@@ -58,7 +58,9 @@ public class RunInfoPanel implements Panel {
         testScoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
         testScoreColumn.setCellFactory(new ColoredCellFactory<>());
 
-        testTable.getColumns().addAll(testNameColumn, testStatusColumn, testScoreColumn);
+        testTable.getColumns().add(testNameColumn);
+        testTable.getColumns().add(testStatusColumn);
+        testTable.getColumns().add(testScoreColumn);
 
         this.testInfo = new TestInfoPanel();
 
@@ -70,9 +72,14 @@ public class RunInfoPanel implements Panel {
         root.setCenter(testPane);
     }
 
-    public void bind(TestRunner runner) {
+    public void clear() {
         runTestMap.clear();
         tests.clear();
+        root.setVisible(false);
+    }
+
+    public void bind(TestRunner runner) {
+        clear();
 
         tests.addAll(runner.getTests());
 

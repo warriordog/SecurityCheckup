@@ -1,12 +1,20 @@
 package net.acomputerdog.securitycheckup.main.gui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-import net.acomputerdog.securitycheckup.main.gui.controller.AboutController;
+import net.acomputerdog.securitycheckup.main.gui.fxml.controller.AboutController;
+import net.acomputerdog.securitycheckup.main.gui.fxml.controller.AddTestController;
+import net.acomputerdog.securitycheckup.main.gui.fxml.controller.NewProfileController;
+import net.acomputerdog.securitycheckup.main.gui.fxml.controller.ProfileManagerController;
+import net.acomputerdog.securitycheckup.main.gui.fxml.window.AboutWindow;
+import net.acomputerdog.securitycheckup.main.gui.fxml.window.AddTestWindow;
+import net.acomputerdog.securitycheckup.main.gui.fxml.window.NewProfileWindow;
+import net.acomputerdog.securitycheckup.main.gui.fxml.window.ProfileManagerWindow;
 import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.panels.RunInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
@@ -14,6 +22,8 @@ import net.acomputerdog.securitycheckup.main.gui.scene.MainScene;
 import net.acomputerdog.securitycheckup.profiles.BasicTests;
 import net.acomputerdog.securitycheckup.test.TestResult;
 import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
+
+import java.io.IOException;
 
 import static net.acomputerdog.securitycheckup.main.gui.GUIMain.displayException;
 
@@ -24,13 +34,13 @@ public class SecurityCheckupApplication extends Application {
 
     private TestRegistry testRegistry;
 
-    private FXMLLoader fxmlLoader;
-
     private Stage primaryStage;
     private MainScene mainWin;
 
     private AboutController aboutController;
-    private Stage aboutStage;
+    private ProfileManagerController profileManagerController;
+    private NewProfileController newProfileController;
+    private AddTestController addTestController;
 
     @Override
     public void init() {
@@ -41,22 +51,53 @@ public class SecurityCheckupApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
-            this.fxmlLoader = new FXMLLoader();
-
-            // load main window
+            // load windows
             this.mainWin = new MainScene(this);
+            this.aboutController = loadFXMLController("/ui/about.fxml");
+            this.profileManagerController = loadFXMLController("/ui/profile_manager.fxml");
+            profileManagerController.initData(this);
+            this.newProfileController = loadFXMLController("/ui/new_profile.fxml");
+            newProfileController.initData(this);
+            this.addTestController = loadFXMLController("/ui/add_test.fxml");
+            addTestController.initData(this);
 
-            // load about window
-            this.aboutStage = fxmlLoader.load(getClass().getResourceAsStream("/ui/about.fxml"));
-            this.aboutController = fxmlLoader.getController();
-
+            // register events
             mainWin.addRunButtonListener(this::runProfile);
 
+            profileManagerController.addTestRemoveListener((profile, test) -> {
+                // Triggers when test removed from registry
+                // TODO selective refresh
+                mainWin.refreshProfiles();
+            });
+            profileManagerController.addProfileRemoveListener(profile -> {
+                // Triggers profile removed from registry
+                // TODO selective refresh
+                mainWin.refreshProfiles();
+            });
+
+            newProfileController.addCreateProfileListener(profile -> {
+                // Triggers when profile created
+                profileManagerController.refreshProfilesList();
+
+                // TODO selective refresh
+                mainWin.refreshProfiles();
+            });
+
+            addTestController.addAddTestListener((profile, test) -> {
+                // triggers when test added to profile
+                profileManagerController.showProfile(profile);
+
+                // TODO selective refresh
+                mainWin.refreshProfiles();
+            });
+
+            // show main window
             this.primaryStage = primaryStage;
             this.primaryStage.setScene(mainWin.getScene());
             this.primaryStage.setTitle("Security Checkup");
             this.primaryStage.setWidth(1200);
             this.primaryStage.setHeight(800);
+            this.primaryStage.setOnCloseRequest(e -> Platform.exit());
             this.primaryStage.show();
         } catch (Throwable t) {
             System.err.println("Unhandled exception starting: " + t.toString());
@@ -70,6 +111,7 @@ public class SecurityCheckupApplication extends Application {
 
     @Override
     public void stop() {
+        /*
         try {
             //TODO cleanup resources
         } catch (Throwable t) {
@@ -79,6 +121,7 @@ public class SecurityCheckupApplication extends Application {
 
             throw t;
         }
+        */
     }
 
     private void runProfile(ProfileInfoPanel info, RunInfoPanel runInfo) {
@@ -116,14 +159,30 @@ public class SecurityCheckupApplication extends Application {
         new Thread(runner).start();
     }
 
-    public void showAbout() {
-        if (!aboutStage.isShowing()) {
-            aboutStage.show();
-        }
+    public AboutWindow getAboutWindow() {
+        return aboutController;
+    }
+
+    public ProfileManagerWindow getProfileManagerWindow() {
+        return profileManagerController;
+    }
+
+    public NewProfileWindow getNewProfileWindow() {
+        return newProfileController;
+    }
+
+    public AddTestWindow getAddTestWindow() {
+        return addTestController;
     }
 
     public TestRegistry getTestRegistry() {
         return testRegistry;
+    }
+
+    private <T> T loadFXMLController(String path) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.load(getClass().getResourceAsStream(path));
+        return fxmlLoader.getController();
     }
 
     public static void launch(String[] args) {

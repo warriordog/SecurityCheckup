@@ -33,6 +33,7 @@ public class ProfileInfoPanel implements Panel {
     private final RunInfoPanel runInfo;
     private final Text selectProfileMessage;
 
+    //private MapChangeListener<String, Test> profileListener;
     private Profile profile;
 
     public ProfileInfoPanel() {
@@ -107,8 +108,10 @@ public class ProfileInfoPanel implements Panel {
         this.testList.getItems().clear();
         this.detailsPane.getChildren().clear();
         testInfoPane.showTest(null);
+        runInfo.clear();
 
         if (profile != null) {
+
             this.descriptionText.setText(profile.getDescription());
 
             // Set test list tab

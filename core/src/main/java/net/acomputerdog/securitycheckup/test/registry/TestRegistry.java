@@ -9,8 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TestRegistry {
-    private final Map<String, Test> testMap = new HashMap<>();
-    private final Map<String, Profile> profileMap = new HashMap<>();
+    private final Map<String, Test> testMap;
+    private final Map<String, Profile> profileMap;
+
+    public TestRegistry() {
+        this(new HashMap<>(), new HashMap<>());
+    }
+
+    public TestRegistry(Map<String, Profile> profileMap, Map<String, Test> testMap) {
+        this.testMap = testMap;
+        this.profileMap = profileMap;
+    }
 
     public Test getTest(String id) {
         return testMap.get(id);
@@ -50,6 +59,22 @@ public class TestRegistry {
 
     public int getTestCount() {
         return testMap.size();
+    }
+
+    public void removeProfile(String id) {
+        profileMap.remove(id);
+    }
+
+    public void removeProfile(Profile profile) {
+        this.removeProfile(profile.getId());
+    }
+
+    public void removeTest(String id) {
+        testMap.remove(id);
+    }
+
+    public void removeTest(Test test) {
+        this.removeTest(test.getInfo().getID());
     }
 
     public void clear() {

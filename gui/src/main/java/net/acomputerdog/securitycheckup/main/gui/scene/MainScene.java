@@ -41,14 +41,14 @@ public class MainScene {
         // Tests menu
         Menu menuTest = new Menu("Tests");
         MenuItem menuProfilesManage = new MenuItem("Manage profiles");
-        menuProfilesManage.setDisable(true);
+        menuProfilesManage.setOnAction(v -> securityCheckupApp.getProfileManagerWindow().getStage().show());
         MenuItem menuTestsManage = new MenuItem("Manage tests");
         menuTestsManage.setDisable(true);
         menuTest.getItems().addAll(menuProfilesManage, menuTestsManage);
         // Help menu
         Menu menuHelp = new Menu("Help");
         MenuItem menuHelpAbout = new MenuItem("About");
-        menuHelpAbout.setOnAction(v -> securityCheckupApp.showAbout());
+        menuHelpAbout.setOnAction(v -> securityCheckupApp.getAboutWindow().getStage().show());
         menuHelp.getItems().add(menuHelpAbout);
 
         // Menubar
@@ -69,7 +69,6 @@ public class MainScene {
         BorderPane.setMargin(profilesListLabel, new Insets(5, 5, 5,5));
         this.selectedProfile = new ProfileInfoPanel();
         this.profiles = FXCollections.observableArrayList();
-        refreshProfiles(); // load profiles
         this.profilesList = new ListView<>(this.profiles);
 
         // Create cell factory that will set font size
@@ -77,9 +76,11 @@ public class MainScene {
             @Override
             protected void updateItem(Profile item, boolean empty) {
                 super.updateItem(item, empty);
-                if (item != null) {
+                if (item != null && !empty) {
                     setText(item.toString());
                     setFont(Font.font(16));
+                } else {
+                    setText("");
                 }
             }
         });
@@ -92,11 +93,13 @@ public class MainScene {
         profilesSplit.getItems().add(selectedProfile.getRoot());
         SplitPane.setResizableWithParent(profilesListPane, false);
 
+        refreshProfiles(); // load profiles
+
         scene = new Scene(mainPane);
     }
 
     public void refreshProfiles() {
-        // TODO find some way to combine ObservableList and TestRegistry
+        selectedProfile.setProfile(null);
         profiles.clear();
         profiles.addAll(securityCheckupApp.getTestRegistry().getProfiles());
     }
