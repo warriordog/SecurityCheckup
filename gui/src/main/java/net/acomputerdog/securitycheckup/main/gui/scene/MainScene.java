@@ -15,7 +15,7 @@ import net.acomputerdog.securitycheckup.test.Profile;
 
 public class MainScene {
 
-    private final SecurityCheckupApplication guiMain;
+    private final SecurityCheckupApplication securityCheckupApp;
     private final Scene scene;
 
     // components
@@ -26,8 +26,8 @@ public class MainScene {
     private final ObservableList<Profile> profiles;
     private final ProfileInfoPanel selectedProfile;
 
-    public MainScene(SecurityCheckupApplication guiMain) {
-        this.guiMain = guiMain;
+    public MainScene(SecurityCheckupApplication securityCheckupApp) {
+        this.securityCheckupApp = securityCheckupApp;
 
         // Pane with Menubar and content
         this.mainPane = new BorderPane();
@@ -48,7 +48,7 @@ public class MainScene {
         // Help menu
         Menu menuHelp = new Menu("Help");
         MenuItem menuHelpAbout = new MenuItem("About");
-        menuHelpAbout.setOnAction(v -> guiMain.showAbout());
+        menuHelpAbout.setOnAction(v -> securityCheckupApp.showAbout());
         menuHelp.getItems().add(menuHelpAbout);
 
         // Menubar
@@ -69,6 +69,7 @@ public class MainScene {
         BorderPane.setMargin(profilesListLabel, new Insets(5, 5, 5,5));
         this.selectedProfile = new ProfileInfoPanel();
         this.profiles = FXCollections.observableArrayList();
+        refreshProfiles(); // load profiles
         this.profilesList = new ListView<>(this.profiles);
 
         // Create cell factory that will set font size
@@ -94,12 +95,14 @@ public class MainScene {
         scene = new Scene(mainPane);
     }
 
-    public void addProfile(Profile profile) {
-        profiles.add(profile);
+    public void refreshProfiles() {
+        // TODO find some way to combine ObservableList and TestRegistry
+        profiles.clear();
+        profiles.addAll(securityCheckupApp.getTestRegistry().getProfiles());
     }
 
-    public SecurityCheckupApplication getGuiMain() {
-        return guiMain;
+    public SecurityCheckupApplication getSecurityCheckupApp() {
+        return securityCheckupApp;
     }
 
     public Scene getScene() {

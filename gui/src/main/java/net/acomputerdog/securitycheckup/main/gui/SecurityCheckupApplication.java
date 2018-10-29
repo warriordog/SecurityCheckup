@@ -12,11 +12,8 @@ import net.acomputerdog.securitycheckup.main.gui.panels.RunInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 import net.acomputerdog.securitycheckup.main.gui.scene.MainScene;
 import net.acomputerdog.securitycheckup.profiles.BasicTests;
-import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.TestResult;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
 
 import static net.acomputerdog.securitycheckup.main.gui.GUIMain.displayException;
 
@@ -25,7 +22,7 @@ public class SecurityCheckupApplication extends Application {
     public static final float PERFECT_SCORE = 1.0f;
     public static final float PASSING_SCORE = 0.75f;
 
-    private List<Profile> defaultProfiles;
+    private TestRegistry testRegistry;
 
     private FXMLLoader fxmlLoader;
 
@@ -37,8 +34,8 @@ public class SecurityCheckupApplication extends Application {
 
     @Override
     public void init() {
-        defaultProfiles = new ArrayList<>();
-        defaultProfiles.add(new BasicTests());
+        testRegistry = new TestRegistry();
+        BasicTests.lookupOrRegister(testRegistry);
     }
 
     @Override
@@ -53,8 +50,6 @@ public class SecurityCheckupApplication extends Application {
             this.aboutStage = fxmlLoader.load(getClass().getResourceAsStream("/ui/about.fxml"));
             this.aboutController = fxmlLoader.getController();
 
-            // Add all default profiles
-            defaultProfiles.forEach(mainWin::addProfile);
             mainWin.addRunButtonListener(this::runProfile);
 
             this.primaryStage = primaryStage;
@@ -125,6 +120,10 @@ public class SecurityCheckupApplication extends Application {
         if (!aboutStage.isShowing()) {
             aboutStage.show();
         }
+    }
+
+    public TestRegistry getTestRegistry() {
+        return testRegistry;
     }
 
     public static void launch(String[] args) {
