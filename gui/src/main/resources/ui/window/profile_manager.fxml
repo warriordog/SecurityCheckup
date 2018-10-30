@@ -12,7 +12,7 @@
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.ProfileManagerController">
     <scene>
-        <Scene>
+        <Scene stylesheets="/ui/css/default.css">
             <BorderPane prefHeight="600.0"
                         prefWidth="800.0">
                 <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
@@ -30,7 +30,7 @@
                         <BorderPane>
                             <top>
                                 <Label  text="Profiles:"
-                                        style="-fx-font-size: 14;">
+                                        styleClass="big_text">
                                     <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
                                 </Label>
                             </top>
@@ -47,7 +47,7 @@
                                 <HBox alignment="CENTER_LEFT" spacing="5">
                                     <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
                                     <Label text="Tests:"
-                                           style="-fx-font-size: 14;"/>
+                                           styleClass="big_text"/>
                                     <Button onAction="#onAddTest" text="Add"/>
                                     <Button onAction="#onRemoveTest" text="Remove"/>
                                 </HBox>

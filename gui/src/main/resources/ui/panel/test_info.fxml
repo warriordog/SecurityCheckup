@@ -14,7 +14,7 @@
     <TitledPane text="Description">
         <padding><Insets top="5" bottom="5" left="5" right="5"/></padding>
         <VBox>
-            <Label fx:id="descriptionText" wrapText="true" style="-fx-font-size: 16;"/>
+            <Label fx:id="descriptionText" wrapText="true" styleClass="big_text"/>
         </VBox>
     </TitledPane>
 

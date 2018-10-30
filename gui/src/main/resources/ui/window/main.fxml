@@ -13,7 +13,7 @@
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.MainController">
     <scene>
-        <Scene>
+        <Scene stylesheets="/ui/css/default.css">
             <BorderPane prefHeight="800.0"
                         prefWidth="1200.0">
                 <top>
@@ -34,7 +34,7 @@
                     <SplitPane dividerPositions="0.15">
                         <BorderPane SplitPane.resizableWithParent="false">
                             <top>
-                                <Label text="Test profiles:" style="-fx-font-size: 18;">
+                                <Label text="Test profiles:" styleClass="header_text">
                                     <BorderPane.margin>
                                         <Insets top="5" right="5" bottom="5" left="5"/>
                                     </BorderPane.margin>

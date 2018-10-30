@@ -11,7 +11,7 @@
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.NewProfileController">
     <scene>
-        <Scene>
+        <Scene stylesheets="/ui/css/default.css">
             <BorderPane prefWidth="300" prefHeight="200">
                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
                 <center>

@@ -98,21 +98,6 @@ public class SecurityCheckupApplication extends Application {
         }
     }
 
-    @Override
-    public void stop() {
-        /*
-        try {
-            //TODO cleanup resources
-        } catch (Throwable t) {
-            t.printStackTrace();
-
-            displayException("Exception occurred during shutdown.", t);
-
-            throw t;
-        }
-        */
-    }
-
     private void runProfile(ProfileInfoPanel info, RunInfoPanel runInfo) {
         info.setRunButtonEnabled(true);
         runInfo.setRunStatus("Running", Color.DIMGREY);

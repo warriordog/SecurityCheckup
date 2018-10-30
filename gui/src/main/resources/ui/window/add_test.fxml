@@ -15,7 +15,7 @@
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.AddTestController">
     <scene>
-        <Scene>
+        <Scene stylesheets="/ui/css/default.css">
             <VBox prefWidth="300" prefHeight="100" spacing="10">
                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
                 <Label text="Test to add:"/>

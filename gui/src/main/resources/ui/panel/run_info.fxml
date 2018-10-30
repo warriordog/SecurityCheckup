@@ -10,7 +10,7 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.RunInfoPanelController">
     <top>
-        <Label fx:id="statusText" style="-fx-font-size: 16;"/>
+        <Label fx:id="statusText" styleClass="big_text"/>
     </top>
     <center>
         <SplitPane dividerPositions="0.3">
