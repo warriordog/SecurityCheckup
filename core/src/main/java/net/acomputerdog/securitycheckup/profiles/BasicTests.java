@@ -14,6 +14,7 @@ import net.acomputerdog.securitycheckup.test.step.compare.MatchAnyStep;
 import net.acomputerdog.securitycheckup.test.step.data.InvertStep;
 import net.acomputerdog.securitycheckup.test.step.data.PushStep;
 import net.acomputerdog.securitycheckup.test.step.flow.AverageEveryStep;
+import net.acomputerdog.securitycheckup.test.step.flow.PassAnyStep;
 import net.acomputerdog.securitycheckup.test.step.flow.PassEveryStep;
 import net.acomputerdog.securitycheckup.test.step.flow.RequireThenStep;
 import net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep;
@@ -190,34 +191,45 @@ public class BasicTests extends Profile {
 
         Step<Float> defenderExclusions =
                 new BoolToScoreStep(
-                        new PassEveryStep(
-                                new AddDataMessageStep<>(
-                                        new RegKeyEmptyStep(
-                                                WinReg.HKEY_LOCAL_MACHINE,
-                                                "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Extensions"
-                                        ),
-                                        "Excluded extensions: %s"
+                        new PassAnyStep(
+                                new InvertStep(
+                                    new AddDataMessageStep<>(
+                                            new RegKeyExistsStep(
+                                                    WinReg.HKEY_LOCAL_MACHINE,
+                                                    "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Extensions"
+                                            ),
+                                            "Exclusions registry key exists: %s"
+                                    )
                                 ),
-                                new AddDataMessageStep<>(
-                                        new RegKeyEmptyStep(
-                                                WinReg.HKEY_LOCAL_MACHINE,
-                                                "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Paths"
+                                new PassEveryStep(
+                                        new AddDataMessageStep<>(
+                                                new RegKeyEmptyStep(
+                                                        WinReg.HKEY_LOCAL_MACHINE,
+                                                        "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Extensions"
+                                                ),
+                                                "Excluded extensions: %s"
                                         ),
-                                        "Excluded paths: %s"
-                                ),
-                                new AddDataMessageStep<>(
-                                        new RegKeyEmptyStep(
-                                                WinReg.HKEY_LOCAL_MACHINE,
-                                                "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Processes"
+                                        new AddDataMessageStep<>(
+                                                new RegKeyEmptyStep(
+                                                        WinReg.HKEY_LOCAL_MACHINE,
+                                                        "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Paths"
+                                                ),
+                                                "Excluded paths: %s"
                                         ),
-                                        "Excluded processes: %s"
-                                ),
-                                new AddDataMessageStep<>(
-                                        new RegKeyEmptyStep(
-                                                WinReg.HKEY_LOCAL_MACHINE,
-                                                "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\TemporaryPaths"
+                                        new AddDataMessageStep<>(
+                                                new RegKeyEmptyStep(
+                                                        WinReg.HKEY_LOCAL_MACHINE,
+                                                        "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Processes"
+                                                ),
+                                                "Excluded processes: %s"
                                         ),
-                                        "Excluded temporary paths: %s"
+                                        new AddDataMessageStep<>(
+                                                new RegKeyEmptyStep(
+                                                        WinReg.HKEY_LOCAL_MACHINE,
+                                                        "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\TemporaryPaths"
+                                                ),
+                                                "Excluded temporary paths: %s"
+                                        )
                                 )
                         )
                 );
