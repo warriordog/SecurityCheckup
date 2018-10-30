@@ -11,10 +11,7 @@ import javafx.stage.Stage;
 import net.acomputerdog.securitycheckup.main.gui.fxml.controller.*;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.ProfileInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.RunInfoPanel;
-import net.acomputerdog.securitycheckup.main.gui.fxml.window.AboutWindow;
-import net.acomputerdog.securitycheckup.main.gui.fxml.window.AddTestWindow;
-import net.acomputerdog.securitycheckup.main.gui.fxml.window.NewProfileWindow;
-import net.acomputerdog.securitycheckup.main.gui.fxml.window.ProfileManagerWindow;
+import net.acomputerdog.securitycheckup.main.gui.fxml.window.*;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 import net.acomputerdog.securitycheckup.profiles.BasicTests;
 import net.acomputerdog.securitycheckup.test.Profile;
@@ -110,7 +107,7 @@ public class SecurityCheckupApplication extends Application {
         info.setRunButtonEnabled(true);
         runInfo.setRunStatus("Running", Color.DIMGREY);
 
-        TestRunner runner = new TestRunner(info.getProfile());
+        TestRunner runner = new TestRunner(testRegistry, info.getProfile());
         runInfo.bind(runner);
 
         // enable button when run finishes or fails
@@ -141,22 +138,17 @@ public class SecurityCheckupApplication extends Application {
         new Thread(runner).start();
     }
 
+    // TODO in utility class
     public void saveProfile(Profile profile, File saveFile) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile))) {
             gson.toJson(profile, writer);
         }
     }
 
+    // TODO in utility class
     public Profile loadProfile(File profileFile) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(profileFile))) {
-            Profile prof = gson.fromJson(reader, Profile.class);
-            testRegistry.addProfile(prof);
-
-            // TODO selective refresh
-            mainController.refreshProfiles();
-            profileManagerController.refreshProfilesList();
-
-            return prof;
+            return gson.fromJson(reader, Profile.class);
         }
     }
 
@@ -170,6 +162,10 @@ public class SecurityCheckupApplication extends Application {
 
     public NewProfileWindow getNewProfileWindow() {
         return newProfileController;
+    }
+
+    public MainWindow getMainWindow() {
+        return mainController;
     }
 
     public AddTestWindow getAddTestWindow() {

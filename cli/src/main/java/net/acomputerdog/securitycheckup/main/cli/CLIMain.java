@@ -85,7 +85,7 @@ public class CLIMain implements AutoCloseable {
             System.out.printf("Running %d tests in '%s'.\n", tests.getNumTests(), tests.getName());
 
             List<TestResult> testResults = new ArrayList<>();
-            for (Test test : tests.getTests()) {
+            for (Test test : tests.getTestsFrom(testRegistry)) {
                 testEnvironment.setCurrentTest(test);
                 TestResult result = test.getRootStep().run(testEnvironment);
                 testResults.add(result);

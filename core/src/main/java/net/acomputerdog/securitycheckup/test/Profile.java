@@ -1,9 +1,8 @@
 package net.acomputerdog.securitycheckup.test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
+
+import java.util.*;
 
 /**
  * A collection of tests to run together
@@ -14,19 +13,19 @@ public class Profile {
     private final String description;
 
     /**
-     * Mapping of test IDs to test instances
+     * List of IDs of tests that are included in this profile
      */
-    private final Map<String, Test> tests;
+    private final Set<String> testIDs;
 
-    public Profile(String id, String name, String description, Map<String, Test> tests) {
+    public Profile(String id, String name, String description, Set<String> testIDs) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.tests = tests;
+        this.testIDs = testIDs;
     }
 
     public Profile(String id, String name, String description) {
-        this(id, name, description, new HashMap<>());
+        this(id, name, description, new HashSet<>());
     }
 
     /**
@@ -41,11 +40,11 @@ public class Profile {
             throw new IllegalArgumentException("Test cannot be null");
         }
 
-        if (tests.containsKey(test.getInfo().getID())) {
+        if (testIDs.contains(test.getInfo().getID())) {
             throw new IllegalStateException("Duplicate test ID");
         }
 
-        tests.put(test.getInfo().getID(), test);
+        testIDs.add(test.getInfo().getID());
     }
 
     /**
@@ -53,19 +52,15 @@ public class Profile {
      * @param id ID of test to remove
      */
     public void removeTest(String id) {
-        tests.remove(id);
+        testIDs.remove(id);
     }
 
     public void removeTest(Test test) {
         removeTest(test.getInfo().getID());
     }
 
-    public Test getTest(String id) {
-        return tests.get(id);
-    }
-
     public int getNumTests() {
-        return tests.size();
+        return testIDs.size();
     }
 
     /**
@@ -73,10 +68,21 @@ public class Profile {
      *
      * @return return list containing all tests
      */
-    public List<Test> getTests() {
-        List<Test> testList = new ArrayList<>(tests.size());
-        testList.addAll(tests.values());
-        return testList;
+    public Set<String> getTests() {
+        return Collections.unmodifiableSet(testIDs);
+    }
+
+    public List<Test> getTestsFrom(TestRegistry registry) {
+        List<Test> tests = new ArrayList<>(testIDs.size());
+        for (String testId : testIDs) {
+            Test test = registry.getTest(testId);
+            if (test == null) {
+                throw new RuntimeException("No test found for id: " + testId);
+            }
+            tests.add(test);
+        }
+
+        return tests;
     }
 
     public String getId() {

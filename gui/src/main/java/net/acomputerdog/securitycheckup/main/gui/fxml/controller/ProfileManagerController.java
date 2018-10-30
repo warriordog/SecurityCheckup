@@ -87,8 +87,16 @@ public class ProfileManagerController implements ProfileManagerWindow {
                     task.setOnCancelled(e -> AlertUtils.showWarning("Security Checkup", "Error importing profile", task.getMessage()));
                     task.setOnFailed(e -> AlertUtils.showError("Security Checkup", "Unhandled error importing profile", String.valueOf(task.getException())));
                     task.setOnSucceeded(e -> {
-                        AlertUtils.showInformation("Security Checkup", "Success", "Profile loaded successfully.");
+                        Profile profile = task.getValue();
+
+                        securityCheckupApp.getTestRegistry().addProfile(profile);
+
+                        // TODO selective refresh
+                        this.refreshProfilesList();
+                        securityCheckupApp.getMainWindow().refreshProfiles();
+
                         showProfile(task.getValue());
+                        AlertUtils.showInformation("Security Checkup", "Success", "Profile loaded successfully.");
                     });
 
                     new Thread(task).start();
@@ -191,7 +199,7 @@ public class ProfileManagerController implements ProfileManagerWindow {
         testsList.getItems().clear();
 
         if (profile != null) {
-            testsList.getItems().addAll(profile.getTests());
+            testsList.getItems().addAll(profile.getTestsFrom(securityCheckupApp.getTestRegistry()));
         }
     }
 

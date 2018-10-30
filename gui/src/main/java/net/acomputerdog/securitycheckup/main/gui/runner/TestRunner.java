@@ -11,6 +11,7 @@ import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
+import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +20,11 @@ public class TestRunner extends Task<Float> {
     private final Profile profile;
     private final List<RunTest> tests;
 
-    public TestRunner(Profile profile) {
+    public TestRunner(TestRegistry testRegistry, Profile profile) {
         this.profile = profile;
         this.tests = new ArrayList<>();
 
-        profile.getTests().forEach(test -> {
+        profile.getTestsFrom(testRegistry).forEach(test -> {
             RunTest runTest = new RunTest(test);
             tests.add(runTest);
         });

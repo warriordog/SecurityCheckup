@@ -22,7 +22,10 @@ public class MainController implements MainWindow {
 
     @FXML
     private void initialize() {
-        profilesList.getSelectionModel().selectedItemProperty().addListener(e -> profileInfoController.setProfile(profilesList.getSelectionModel().getSelectedItem()));
+        profilesList.getSelectionModel().selectedItemProperty().addListener(e ->
+                profileInfoController.setProfile(
+                        securityCheckupApp.getTestRegistry(),
+                        profilesList.getSelectionModel().getSelectedItem()));
         stage.setOnCloseRequest(e -> Platform.exit());
     }
 
@@ -47,7 +50,7 @@ public class MainController implements MainWindow {
 
     @Override
     public void refreshProfiles() {
-        profileInfoController.setProfile(null);
+        profileInfoController.clear();
         profilesList.getItems().clear();
         profilesList.getItems().addAll(securityCheckupApp.getTestRegistry().getProfiles());
     }

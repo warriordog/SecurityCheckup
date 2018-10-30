@@ -14,6 +14,7 @@ import net.acomputerdog.securitycheckup.main.gui.fxml.panel.RunInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.TestInfoPanel;
 import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
+import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
 
 public class ProfileInfoPanelController implements ProfileInfoPanel {
     @FXML
@@ -54,18 +55,16 @@ public class ProfileInfoPanelController implements ProfileInfoPanel {
     }
 
     @Override
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-
-        this.testList.getItems().clear();
-        testInfoController.showTest(null);
-        runInfoController.clear();
+    public void setProfile(TestRegistry testRegistry, Profile profile) {
+        clear();
 
         if (profile != null) {
+            this.profile = profile;
+
             this.descriptionText.setText(profile.getDescription());
 
             // Set test list tab
-            this.testList.getItems().addAll(profile.getTests());
+            this.testList.getItems().addAll(profile.getTestsFrom(testRegistry));
 
             // set details tab
             profileIdText.setText(profile.getId());
@@ -82,6 +81,14 @@ public class ProfileInfoPanelController implements ProfileInfoPanel {
     @Override
     public void addRunButtonListener(RunListener listener) {
         this.runButton.addEventHandler(ActionEvent.ACTION, e -> listener.onRunClicked(this, this.runInfoController));
+    }
+
+    @Override
+    public void clear() {
+        this.profile = null;
+        this.testList.getItems().clear();
+        testInfoController.showTest(null);
+        runInfoController.clear();
     }
 
     @Override
