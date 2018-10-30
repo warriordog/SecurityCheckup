@@ -1,14 +1,18 @@
 package net.acomputerdog.securitycheckup.main.gui.fxml.controller;
 
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.acomputerdog.securitycheckup.main.gui.SecurityCheckupApplication;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.ProfileManagerWindow;
+import net.acomputerdog.securitycheckup.main.gui.util.AlertUtils;
 import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -63,12 +67,67 @@ public class ProfileManagerController implements ProfileManagerWindow {
 
     @FXML
     private void onImportProfile(ActionEvent actionEvent) {
+            FileChooser openChooser = new FileChooser();
+            openChooser.setTitle("Import profile");
+            openChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("JSON files", "*.json"),
+                    new FileChooser.ExtensionFilter("All files", "*.*")
+            );
 
+            File profileFile = openChooser.showOpenDialog(stage);
+
+            if (profileFile != null) {
+                if (profileFile.isFile()) {
+                    Task<Profile> task = new Task<Profile>() {
+                        @Override
+                        protected Profile call() throws Exception {
+                            return securityCheckupApp.loadProfile(profileFile);
+                        }
+                    };
+                    task.setOnCancelled(e -> AlertUtils.showWarning("Security Checkup", "Error importing profile", task.getMessage()));
+                    task.setOnFailed(e -> AlertUtils.showError("Security Checkup", "Unhandled error importing profile", String.valueOf(task.getException())));
+                    task.setOnSucceeded(e -> {
+                        AlertUtils.showInformation("Security Checkup", "Success", "Profile loaded successfully.");
+                        showProfile(task.getValue());
+                    });
+
+                    new Thread(task).start();
+                } else {
+                    AlertUtils.showWarning("Security Checkup", "Error importing profile", "The selected file does not exist or is a directory.");
+                }
+            }
     }
 
     @FXML
     private void onExportProfile(ActionEvent actionEvent) {
+        Profile profile = getSelectedProfile();
 
+        // null if nothing selected
+        if (profile != null) {
+
+            FileChooser saveChooser = new FileChooser();
+            saveChooser.setTitle("Export profile");
+            saveChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("JSON files", "*.json"),
+                    new FileChooser.ExtensionFilter("All files", "*.*")
+            );
+
+            File saveFile = saveChooser.showSaveDialog(stage);
+
+            if (saveFile != null) {
+                Task task = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        securityCheckupApp.saveProfile(profile,saveFile);
+                        return null;
+                    }
+                };
+                task.setOnFailed(e -> AlertUtils.showError("Security Checkup","Unhandled error exporting profile",String.valueOf(task.getException())));
+                task.setOnSucceeded(e -> AlertUtils.showInformation("Security Checkup","Success", "Profile saved successfully."));
+
+                new Thread(task).start();
+            }
+        }
     }
 
     @FXML

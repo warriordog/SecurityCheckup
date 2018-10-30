@@ -1,5 +1,7 @@
 package net.acomputerdog.securitycheckup.main.gui;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javafx.application.Application;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXMLLoader;
@@ -15,10 +17,11 @@ import net.acomputerdog.securitycheckup.main.gui.fxml.window.NewProfileWindow;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.ProfileManagerWindow;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 import net.acomputerdog.securitycheckup.profiles.BasicTests;
+import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.TestResult;
 import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
 
-import java.io.IOException;
+import java.io.*;
 
 import static net.acomputerdog.securitycheckup.main.gui.GUIMain.displayException;
 
@@ -28,6 +31,7 @@ public class SecurityCheckupApplication extends Application {
     public static final float PASSING_SCORE = 0.75f;
 
     private TestRegistry testRegistry;
+    private Gson gson;
 
     private MainController mainController;
     private AboutController aboutController;
@@ -37,7 +41,11 @@ public class SecurityCheckupApplication extends Application {
 
     @Override
     public void init() {
-        testRegistry = new TestRegistry();
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        this.gson = builder.create();
+
+        this.testRegistry = new TestRegistry();
         BasicTests.lookupOrRegister(testRegistry);
     }
 
@@ -131,6 +139,25 @@ public class SecurityCheckupApplication extends Application {
         });
 
         new Thread(runner).start();
+    }
+
+    public void saveProfile(Profile profile, File saveFile) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile))) {
+            gson.toJson(profile, writer);
+        }
+    }
+
+    public Profile loadProfile(File profileFile) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(profileFile))) {
+            Profile prof = gson.fromJson(reader, Profile.class);
+            testRegistry.addProfile(prof);
+
+            // TODO selective refresh
+            mainController.refreshProfiles();
+            profileManagerController.refreshProfilesList();
+
+            return prof;
+        }
     }
 
     public AboutWindow getAboutWindow() {

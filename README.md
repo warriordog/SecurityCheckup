@@ -14,6 +14,7 @@ Currently, the following indicators are checked:
 Security Checkup is written in pure java, however some 3rd party libraries include native code to interface to low-level Windows features.  The following libraries are currently used:
 * [Java Native Access](https://github.com/java-native-access/jna)
 * [jWMI](https://github.com/warriordog/jwmi)
+* [Gson](https://github.com/google/gson)
 
 Java 8, 9, and 10 are supported.  Make sure to install a 64 bit JVM and include Java FX (so no headless versions).
 

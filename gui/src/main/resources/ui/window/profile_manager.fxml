@@ -21,8 +21,8 @@
                         <padding><Insets bottom="5"/></padding>
                         <Button onAction="#onAddProfile" text="Add"/>
                         <Button onAction="#onRemoveProfile" text="Remove"/>
-                        <Button onAction="#onImportProfile" text="Import" disable="true"/>
-                        <Button onAction="#onExportProfile" text="Export" disable="true"/>
+                        <Button onAction="#onImportProfile" text="Import"/>
+                        <Button onAction="#onExportProfile" text="Export"/>
                     </HBox>
                 </top>
                 <center>

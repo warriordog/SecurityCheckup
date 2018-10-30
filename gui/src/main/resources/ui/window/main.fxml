@@ -8,7 +8,7 @@
 <?import javafx.stage.Stage?>
 <?import net.acomputerdog.securitycheckup.main.gui.util.Size16CellFactory?>
 <Stage fx:id="stage"
-       title="Profile Manager"
+       title="Security Checkup"
        xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.MainController">
