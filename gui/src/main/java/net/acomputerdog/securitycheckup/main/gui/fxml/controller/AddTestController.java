@@ -25,7 +25,7 @@ public class AddTestController implements AddTestWindow {
     private Set<AddTestListener> addTestListeners;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         addTestListeners = new HashSet<>();
     }
 
@@ -34,7 +34,7 @@ public class AddTestController implements AddTestWindow {
     }
 
     @FXML
-    public void onAddTest(ActionEvent actionEvent) {
+    private void onAddTest(ActionEvent actionEvent) {
         Test test = testCombo.getValue();
 
         if (test != null) {
@@ -46,7 +46,7 @@ public class AddTestController implements AddTestWindow {
     }
 
     @FXML
-    public void onCancel(ActionEvent actionEvent) {
+    private void onCancel(ActionEvent actionEvent) {
         stage.hide();
     }
 

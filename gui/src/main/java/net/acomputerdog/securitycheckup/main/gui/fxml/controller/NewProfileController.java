@@ -26,7 +26,7 @@ public class NewProfileController implements NewProfileWindow {
     private Set<CreateProfileListener> createProfileListeners;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         createProfileListeners = new HashSet<>();
     }
 
@@ -35,7 +35,7 @@ public class NewProfileController implements NewProfileWindow {
     }
 
     @FXML
-    public void onCreateProfile(ActionEvent actionEvent) {
+    private void onCreateProfile(ActionEvent actionEvent) {
         Profile profile = new Profile(idText.getText(), nameText.getText(), descriptionText.getText());
 
         securityCheckupApp.getTestRegistry().addProfile(profile);
@@ -46,7 +46,7 @@ public class NewProfileController implements NewProfileWindow {
     }
 
     @FXML
-    public void onCancel(ActionEvent actionEvent) {
+    private void onCancel(ActionEvent actionEvent) {
         stage.hide();
     }
 

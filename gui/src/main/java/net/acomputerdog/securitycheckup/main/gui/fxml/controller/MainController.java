@@ -24,7 +24,7 @@ public class MainController implements MainWindow {
     private SecurityCheckupApplication securityCheckupApp;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         profilesList.getSelectionModel().selectedItemProperty().addListener(e -> profileInfoController.setProfile(profilesList.getSelectionModel().getSelectedItem()));
         stage.setOnCloseRequest(e -> Platform.exit());
     }
@@ -34,17 +34,17 @@ public class MainController implements MainWindow {
     }
 
     @FXML
-    public void onExit(ActionEvent actionEvent) {
+    private void onExit(ActionEvent actionEvent) {
         Platform.exit();
     }
 
     @FXML
-    public void onManageProfiles(ActionEvent actionEvent) {
+    private void onManageProfiles(ActionEvent actionEvent) {
         securityCheckupApp.getProfileManagerWindow().getStage().show();
     }
 
     @FXML
-    public void onAbout(ActionEvent actionEvent) {
+    private void onAbout(ActionEvent actionEvent) {
         securityCheckupApp.getAboutWindow().getStage().show();
     }
 

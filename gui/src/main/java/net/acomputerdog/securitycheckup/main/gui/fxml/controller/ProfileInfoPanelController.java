@@ -46,7 +46,7 @@ public class ProfileInfoPanelController implements ProfileInfoPanel {
     private Profile profile;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         testList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> this.onSelectTest(newValue));
     }
 

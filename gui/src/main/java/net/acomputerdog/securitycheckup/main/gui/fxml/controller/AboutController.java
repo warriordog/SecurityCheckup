@@ -14,7 +14,7 @@ public class AboutController implements AboutWindow {
     private WebView webView;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         URL url = getClass().getResource("/doc/about.html");
         if (url != null) {
             webView.getEngine().load(url.toString());

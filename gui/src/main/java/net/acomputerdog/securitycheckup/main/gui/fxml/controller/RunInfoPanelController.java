@@ -14,17 +14,17 @@ import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 
 public class RunInfoPanelController implements RunInfoPanel {
     @FXML
-    public BorderPane root;
+    private BorderPane root;
     @FXML
-    public Label statusText;
+    private Label statusText;
     @FXML
-    public VBox testInfo;
+    private VBox testInfo;
     @FXML
-    public TestResultsPanel testInfoController;
+    private TestResultsPanel testInfoController;
     @FXML
-    public TableView<TestRunner.RunTest> testTable;
+    private TableView<TestRunner.RunTest> testTable;
     @FXML
-    public SplitPane testSplit;
+    private SplitPane testSplit;
 
     @FXML
     public void initialize() {

@@ -12,11 +12,11 @@ import net.acomputerdog.securitycheckup.test.Test;
 
 public class TestInfoPanelController implements TestInfoPanel {
     @FXML
-    public Label descriptionText;
+    private Label descriptionText;
     @FXML
-    public TableView<ExtraInfo> testInfoView;
+    private TableView<ExtraInfo> testInfoView;
     @FXML
-    public VBox root;
+    private VBox root;
 
     @Override
     public void showTest(Test test) {

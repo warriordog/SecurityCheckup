@@ -26,7 +26,7 @@ public class ProfileManagerController implements ProfileManagerWindow {
     private Set<TestRemoveListener> testRemoveListeners;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         profileRemoveListeners = new HashSet<>();
         testRemoveListeners = new HashSet<>();
 
@@ -40,12 +40,12 @@ public class ProfileManagerController implements ProfileManagerWindow {
     }
 
     @FXML
-    public void onAddProfile(ActionEvent actionEvent) {
+    private void onAddProfile(ActionEvent actionEvent) {
         securityCheckupApp.getNewProfileWindow().getStage().show();
     }
 
     @FXML
-    public void onRemoveProfile(ActionEvent actionEvent) {
+    private void onRemoveProfile(ActionEvent actionEvent) {
         Profile profile = getSelectedProfile();
 
         // null if nothing selected
@@ -62,17 +62,17 @@ public class ProfileManagerController implements ProfileManagerWindow {
     }
 
     @FXML
-    public void onImportProfile(ActionEvent actionEvent) {
+    private void onImportProfile(ActionEvent actionEvent) {
 
     }
 
     @FXML
-    public void onExportProfile(ActionEvent actionEvent) {
+    private void onExportProfile(ActionEvent actionEvent) {
 
     }
 
     @FXML
-    public void onAddTest(ActionEvent actionEvent) {
+    private void onAddTest(ActionEvent actionEvent) {
         Profile profile = getSelectedProfile();
 
         if (profile != null) {
@@ -81,7 +81,7 @@ public class ProfileManagerController implements ProfileManagerWindow {
     }
 
     @FXML
-    public void onRemoveTest(ActionEvent actionEvent) {
+    private void onRemoveTest(ActionEvent actionEvent) {
         Profile profile = getSelectedProfile();
         Test test = testsList.getSelectionModel().getSelectedItem();
 

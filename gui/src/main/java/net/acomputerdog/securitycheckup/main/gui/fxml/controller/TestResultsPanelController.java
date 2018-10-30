@@ -11,13 +11,13 @@ import net.acomputerdog.securitycheckup.test.TestResult;
 
 public class TestResultsPanelController implements TestResultsPanel {
     @FXML
-    public VBox root;
+    private VBox root;
     @FXML
-    public Label resultText;
+    private Label resultText;
     @FXML
-    public Label descriptionText;
+    private Label descriptionText;
     @FXML
-    public ListView<String> messagesList;
+    private ListView<String> messagesList;
 
 
     @Override
