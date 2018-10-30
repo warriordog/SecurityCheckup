@@ -5,12 +5,11 @@ import net.acomputerdog.securitycheckup.test.Profile;
 public interface ProfileInfoPanel extends Panel {
 
     Profile getProfile();
-
     void setProfile(Profile profile);
 
-    void addRunButtonListener(RunListener listener);
-
     void setRunButtonEnabled(boolean enabled);
+
+    void addRunButtonListener(RunListener listener);
 
     interface RunListener {
         void onRunClicked(ProfileInfoPanel profileInfo, RunInfoPanel runInfo);

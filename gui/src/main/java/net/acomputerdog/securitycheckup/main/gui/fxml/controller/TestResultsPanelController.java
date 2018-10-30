@@ -19,7 +19,6 @@ public class TestResultsPanelController implements TestResultsPanel {
     @FXML
     private ListView<String> messagesList;
 
-
     @Override
     public void showResults(TestResult result) {
         // Reset results list
@@ -28,18 +27,8 @@ public class TestResultsPanelController implements TestResultsPanel {
         if (result != null) {
             descriptionText.setText(result.getTestInfo().getDescription());
 
-            // create results line
-            StringBuilder resultString = new StringBuilder();
-            resultString.append(result.getResultString());
-
-            // only add instructions if it failed but the test ran correctly
-            if (!result.isPassed() && result.getResultCause() == TestResult.ResultCause.FINISHED) {
-                resultString.append(" - ");
-                resultString.append(result.getTestInfo().getFailureAdvice());
-            }
-
             // set result value
-            resultText.setText(resultString.toString());
+            resultText.setText(result.getResultLine());
 
             // set result color
             if (result.isPassed()) {

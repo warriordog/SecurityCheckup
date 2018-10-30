@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import net.acomputerdog.securitycheckup.main.gui.SecurityCheckupApplication;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.ProfileInfoPanel;
@@ -16,8 +15,6 @@ public class MainController implements MainWindow {
     private Stage stage;
     @FXML
     private ListView<Profile> profilesList;
-    @FXML
-    private StackPane profileInfo;
     @FXML
     private ProfileInfoPanel profileInfoController;
 
@@ -53,11 +50,6 @@ public class MainController implements MainWindow {
         profileInfoController.setProfile(null);
         profilesList.getItems().clear();
         profilesList.getItems().addAll(securityCheckupApp.getTestRegistry().getProfiles());
-    }
-
-    @Override
-    public SecurityCheckupApplication getSecurityCheckupApp() {
-        return securityCheckupApp;
     }
 
     @Override

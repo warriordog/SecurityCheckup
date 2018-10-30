@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 import net.acomputerdog.securitycheckup.main.gui.fxml.controller.*;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.ProfileInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.RunInfoPanel;
-import net.acomputerdog.securitycheckup.main.gui.fxml.panel.TestInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.AboutWindow;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.AddTestWindow;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.NewProfileWindow;
@@ -36,11 +35,6 @@ public class SecurityCheckupApplication extends Application {
     private NewProfileController newProfileController;
     private AddTestController addTestController;
 
-    // TODO in place as-needed
-    private TestInfoPanelController testInfoPanelController;
-    private RunInfoPanelController runInfoPanelController;
-    private ProfileInfoPanel profileInfoPanelController;
-
     @Override
     public void init() {
         testRegistry = new TestRegistry();
@@ -50,11 +44,6 @@ public class SecurityCheckupApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
-            //TODO load as needed
-            this.testInfoPanelController = loadFXMLController("/ui/panel/test_info.fxml");
-            this.runInfoPanelController = loadFXMLController("/ui/panel/run_info.fxml");
-            this.profileInfoPanelController = loadFXMLController("/ui/panel/profile_info.fxml");
-
             // load windows
             this.mainController = loadFXMLController("/ui/window/main.fxml");
             mainController.initData(this);
@@ -97,15 +86,6 @@ public class SecurityCheckupApplication extends Application {
             });
 
             // show main window
-            /*
-            this.primaryStage = primaryStage;
-            this.primaryStage.setScene(mainWin.getScene());
-            this.primaryStage.setTitle("Security Checkup");
-            this.primaryStage.setWidth(1200);
-            this.primaryStage.setHeight(800);
-            this.primaryStage.setOnCloseRequest(e -> Platform.exit());
-            this.primaryStage.show();
-            */
             mainController.refreshProfiles();
             mainController.getStage().show();
         } catch (Throwable t) {
@@ -186,18 +166,6 @@ public class SecurityCheckupApplication extends Application {
 
     public TestRegistry getTestRegistry() {
         return testRegistry;
-    }
-
-    public TestInfoPanel getTestInfoPanel() {
-        return testInfoPanelController;
-    }
-
-    public RunInfoPanel getRunInfoPanel() {
-        return runInfoPanelController;
-    }
-
-    public ProfileInfoPanel getProfileInfoPanel() {
-        return profileInfoPanelController;
     }
 
     private <T> T loadFXMLController(String path) throws IOException {

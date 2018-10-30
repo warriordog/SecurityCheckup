@@ -21,7 +21,6 @@ public class AddTestController implements AddTestWindow {
     private SecurityCheckupApplication securityCheckupApplication;
 
     private Profile currentProfile;
-
     private Set<AddTestListener> addTestListeners;
 
     @FXML

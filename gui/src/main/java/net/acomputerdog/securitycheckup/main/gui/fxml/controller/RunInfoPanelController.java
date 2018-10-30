@@ -3,10 +3,8 @@ package net.acomputerdog.securitycheckup.main.gui.fxml.controller;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.RunInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.TestResultsPanel;
@@ -18,18 +16,13 @@ public class RunInfoPanelController implements RunInfoPanel {
     @FXML
     private Label statusText;
     @FXML
-    private VBox testInfo;
-    @FXML
     private TestResultsPanel testInfoController;
     @FXML
     private TableView<TestRunner.RunTest> testTable;
-    @FXML
-    private SplitPane testSplit;
 
     @FXML
     public void initialize() {
         testTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> this.selectTest(newValue));
-        //testSplit.setDividerPositions(0.3);
     }
 
     @Override

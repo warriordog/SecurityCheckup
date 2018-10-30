@@ -84,6 +84,22 @@ public class TestResult implements Informable {
         }
     }
 
+    public String getResultLine() {
+        // create results line
+        StringBuilder line = new StringBuilder();
+
+        // Add base result
+        line.append(getResultString());
+
+        // only add instructions if it failed AND the test ran correctly
+        if (!isPassed() && resultCause == ResultCause.FINISHED) {
+            line.append(" - ");
+            line.append(testInfo.getFailureAdvice());
+        }
+
+        return line.toString();
+    }
+
     public String getScoreString() {
         return formatScore(this.getScore());
     }

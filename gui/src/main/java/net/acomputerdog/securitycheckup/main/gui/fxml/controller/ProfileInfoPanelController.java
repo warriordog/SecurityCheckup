@@ -7,9 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.ProfileInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.RunInfoPanel;
@@ -27,13 +25,9 @@ public class ProfileInfoPanelController implements ProfileInfoPanel {
     @FXML
     private Label descriptionText;
     @FXML
-    private BorderPane runInfo;
-    @FXML
     private RunInfoPanel runInfoController;
     @FXML
     private ListView<Test> testList;
-    @FXML
-    private VBox testInfo;
     @FXML
     private TestInfoPanel testInfoController;
     @FXML

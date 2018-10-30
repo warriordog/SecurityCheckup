@@ -25,13 +25,10 @@ public class TestInfoPanelController implements TestInfoPanel {
 
         if (test != null) {
             descriptionText.setText(test.getInfo().getDescription());
-
             test.getInfo().getInfoMap().forEach((k, v) -> testInfoView.getItems().add(new ExtraInfo(k, v)));
-
             root.setVisible(true);
         } else {
             descriptionText.setText("");
-
             root.setVisible(false);
         }
     }
