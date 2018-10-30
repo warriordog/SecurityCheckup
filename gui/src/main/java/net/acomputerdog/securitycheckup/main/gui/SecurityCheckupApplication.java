@@ -1,24 +1,20 @@
 package net.acomputerdog.securitycheckup.main.gui;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-import net.acomputerdog.securitycheckup.main.gui.fxml.controller.AboutController;
-import net.acomputerdog.securitycheckup.main.gui.fxml.controller.AddTestController;
-import net.acomputerdog.securitycheckup.main.gui.fxml.controller.NewProfileController;
-import net.acomputerdog.securitycheckup.main.gui.fxml.controller.ProfileManagerController;
+import net.acomputerdog.securitycheckup.main.gui.fxml.controller.*;
+import net.acomputerdog.securitycheckup.main.gui.fxml.panel.ProfileInfoPanel;
+import net.acomputerdog.securitycheckup.main.gui.fxml.panel.RunInfoPanel;
+import net.acomputerdog.securitycheckup.main.gui.fxml.panel.TestInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.AboutWindow;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.AddTestWindow;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.NewProfileWindow;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.ProfileManagerWindow;
-import net.acomputerdog.securitycheckup.main.gui.panels.ProfileInfoPanel;
-import net.acomputerdog.securitycheckup.main.gui.panels.RunInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
-import net.acomputerdog.securitycheckup.main.gui.scene.MainScene;
 import net.acomputerdog.securitycheckup.profiles.BasicTests;
 import net.acomputerdog.securitycheckup.test.TestResult;
 import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
@@ -34,13 +30,16 @@ public class SecurityCheckupApplication extends Application {
 
     private TestRegistry testRegistry;
 
-    private Stage primaryStage;
-    private MainScene mainWin;
-
+    private MainController mainController;
     private AboutController aboutController;
     private ProfileManagerController profileManagerController;
     private NewProfileController newProfileController;
     private AddTestController addTestController;
+
+    // TODO in place as-needed
+    private TestInfoPanelController testInfoPanelController;
+    private RunInfoPanelController runInfoPanelController;
+    private ProfileInfoPanel profileInfoPanelController;
 
     @Override
     public void init() {
@@ -51,28 +50,34 @@ public class SecurityCheckupApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
+            //TODO load as needed
+            this.testInfoPanelController = loadFXMLController("/ui/panel/test_info.fxml");
+            this.runInfoPanelController = loadFXMLController("/ui/panel/run_info.fxml");
+            this.profileInfoPanelController = loadFXMLController("/ui/panel/profile_info.fxml");
+
             // load windows
-            this.mainWin = new MainScene(this);
-            this.aboutController = loadFXMLController("/ui/about.fxml");
-            this.profileManagerController = loadFXMLController("/ui/profile_manager.fxml");
+            this.mainController = loadFXMLController("/ui/window/main.fxml");
+            mainController.initData(this);
+            this.aboutController = loadFXMLController("/ui/window/about.fxml");
+            this.profileManagerController = loadFXMLController("/ui/window/profile_manager.fxml");
             profileManagerController.initData(this);
-            this.newProfileController = loadFXMLController("/ui/new_profile.fxml");
+            this.newProfileController = loadFXMLController("/ui/window/new_profile.fxml");
             newProfileController.initData(this);
-            this.addTestController = loadFXMLController("/ui/add_test.fxml");
+            this.addTestController = loadFXMLController("/ui/window/add_test.fxml");
             addTestController.initData(this);
 
             // register events
-            mainWin.addRunButtonListener(this::runProfile);
+            mainController.addRunButtonListener(this::runProfile);
 
             profileManagerController.addTestRemoveListener((profile, test) -> {
                 // Triggers when test removed from registry
                 // TODO selective refresh
-                mainWin.refreshProfiles();
+                mainController.refreshProfiles();
             });
             profileManagerController.addProfileRemoveListener(profile -> {
                 // Triggers profile removed from registry
                 // TODO selective refresh
-                mainWin.refreshProfiles();
+                mainController.refreshProfiles();
             });
 
             newProfileController.addCreateProfileListener(profile -> {
@@ -80,7 +85,7 @@ public class SecurityCheckupApplication extends Application {
                 profileManagerController.refreshProfilesList();
 
                 // TODO selective refresh
-                mainWin.refreshProfiles();
+                mainController.refreshProfiles();
             });
 
             addTestController.addAddTestListener((profile, test) -> {
@@ -88,10 +93,11 @@ public class SecurityCheckupApplication extends Application {
                 profileManagerController.showProfile(profile);
 
                 // TODO selective refresh
-                mainWin.refreshProfiles();
+                mainController.refreshProfiles();
             });
 
             // show main window
+            /*
             this.primaryStage = primaryStage;
             this.primaryStage.setScene(mainWin.getScene());
             this.primaryStage.setTitle("Security Checkup");
@@ -99,6 +105,9 @@ public class SecurityCheckupApplication extends Application {
             this.primaryStage.setHeight(800);
             this.primaryStage.setOnCloseRequest(e -> Platform.exit());
             this.primaryStage.show();
+            */
+            mainController.refreshProfiles();
+            mainController.getStage().show();
         } catch (Throwable t) {
             System.err.println("Unhandled exception starting: " + t.toString());
             t.printStackTrace();
@@ -179,9 +188,22 @@ public class SecurityCheckupApplication extends Application {
         return testRegistry;
     }
 
+    public TestInfoPanel getTestInfoPanel() {
+        return testInfoPanelController;
+    }
+
+    public RunInfoPanel getRunInfoPanel() {
+        return runInfoPanelController;
+    }
+
+    public ProfileInfoPanel getProfileInfoPanel() {
+        return profileInfoPanelController;
+    }
+
     private <T> T loadFXMLController(String path) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.load(getClass().getResourceAsStream(path));
+        fxmlLoader.setLocation(getClass().getResource(path));
+        fxmlLoader.load();
         return fxmlLoader.getController();
     }
 

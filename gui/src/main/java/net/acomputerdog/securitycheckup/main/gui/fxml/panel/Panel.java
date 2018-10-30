@@ -1,4 +1,4 @@
-package net.acomputerdog.securitycheckup.main.gui.panels;
+package net.acomputerdog.securitycheckup.main.gui.fxml.panel;
 
 import javafx.scene.Node;
 

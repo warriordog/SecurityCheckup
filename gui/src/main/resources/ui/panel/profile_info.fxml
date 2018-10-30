@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<StackPane fx:id="root"
+           xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.ProfileInfoPanelController">
+
+    <Text fx:id="selectProfileMessage" style="-fx-font-size: 12;"/>
+
+    <TabPane fx:id="tabs">
+        <Tab text="Overview" closable="false">
+            <VBox spacing="5">
+                <padding><Insets top="5" bottom="5" left="5" right="5"/></padding>
+                <Label fx:id="descriptionText" wrapText="true" style="-fx-font-size: 16;"/>
+                <Button fx:id="runButton" text="Run test"/>
+                <fx:include fx:id="runInfo" source="run_info.fxml" VBox.vgrow="ALWAYS"/>
+            </VBox>
+        </Tab>
+        <Tab text="Tests" closable="false">
+            <SplitPane dividerPositions="0.3">
+                <ListView fx:id="testList" SplitPane.resizableWithParent="false">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList"/>
+                    </items>
+                </ListView>
+                <fx:include fx:id="testInfo" source="test_info.fxml"/>
+            </SplitPane>
+        </Tab>
+        <Tab text="Details" closable="false">
+            <VBox spacing="10">
+                <padding><Insets top="5" bottom="5" left="5" right="5"/></padding>
+                <TitledPane text="ID">
+                    <VBox>
+                        <Label fx:id="profileIdText" wrapText="true" style="-fx-font-size: 14;"/>
+                    </VBox>
+                </TitledPane>
+                <TitledPane text="Description">
+                    <VBox>
+                        <Label fx:id="profileDescText" wrapText="true" style="-fx-font-size: 14;"/>
+                    </VBox>
+                </TitledPane>
+            </VBox>
+        </Tab>
+    </TabPane>
+</StackPane>

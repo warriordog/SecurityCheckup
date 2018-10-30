@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.Scene?>
+<?import javafx.stage.Stage?>
+<?import net.acomputerdog.securitycheckup.main.gui.util.Size16CellFactory?>
+<Stage fx:id="stage"
+       title="Profile Manager"
+       xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.MainController">
+    <scene>
+        <Scene>
+            <BorderPane prefHeight="800.0"
+                        prefWidth="1200.0">
+                <top>
+                    <MenuBar>
+                        <Menu text="File">
+                            <MenuItem text="Exit" onAction="#onExit"/>
+                        </Menu>
+                        <Menu text="Tests">
+                            <MenuItem text="Manage Profiles" onAction="#onManageProfiles"/>
+                            <MenuItem text="Manage Tests" disable="true"/>
+                        </Menu>
+                        <Menu text="Help">
+                            <MenuItem text="About" onAction="#onAbout"/>
+                        </Menu>
+                    </MenuBar>
+                </top>
+                <center>
+                    <SplitPane dividerPositions="0.15">
+                        <BorderPane SplitPane.resizableWithParent="false">
+                            <top>
+                                <Label text="Test profiles:" style="-fx-font-size: 18;">
+                                    <BorderPane.margin>
+                                        <Insets top="5" right="5" bottom="5" left="5"/>
+                                    </BorderPane.margin>
+                                </Label>
+                            </top>
+                            <center>
+                                <ListView fx:id="profilesList">
+                                    <cellFactory>
+                                        <Size16CellFactory/>
+                                    </cellFactory>
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList"/>
+                                    </items>
+                                </ListView>
+                            </center>
+                        </BorderPane>
+                        <fx:include fx:id="profileInfo" source="../panel/profile_info.fxml"/>
+                    </SplitPane>
+                </center>
+            </BorderPane>
+        </Scene>
+    </scene>
+</Stage>

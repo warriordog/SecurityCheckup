@@ -9,8 +9,6 @@ public class GUIMain {
         try {
             // check environment
             checkEnvironment();
-
-            SecurityCheckupApplication.launch(args);
         } catch (UnsupportedPlatformException e) {
             System.out.println("Unsupported platform!");
             e.printStackTrace();
@@ -22,6 +20,9 @@ public class GUIMain {
 
             displayException("Exception occurred while starting SecurityCheckup.  The program must now close.", t);
         }
+
+        // SecurityCheckupApplication handles its own exceptions
+        SecurityCheckupApplication.launch(args);
     }
 
     public static void displayException(String message, Throwable throwable) {
