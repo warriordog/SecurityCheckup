@@ -47,12 +47,12 @@ public class Test {
         if (this == o) return true;
         if (!(o instanceof Test)) return false;
         Test test = (Test) o;
-        return Objects.equals(info.getID(), test.info.getID());
+        return Objects.equals(info.getId(), test.info.getId());
     }
 
     @Override
     public int hashCode() {
-        return info.getID().hashCode();
+        return info.getId().hashCode();
     }
 
     @Override

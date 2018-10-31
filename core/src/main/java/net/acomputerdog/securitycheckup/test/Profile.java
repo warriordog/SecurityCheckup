@@ -46,11 +46,11 @@ public class Profile {
             throw new IllegalArgumentException("Test cannot be null");
         }
 
-        if (testIDs.contains(test.getInfo().getID())) {
+        if (testIDs.contains(test.getInfo().getId())) {
             throw new IllegalStateException("Duplicate test ID");
         }
 
-        testIDs.add(test.getInfo().getID());
+        testIDs.add(test.getInfo().getId());
     }
 
     /**
@@ -62,7 +62,7 @@ public class Profile {
     }
 
     public void removeTest(Test test) {
-        removeTest(test.getInfo().getID());
+        removeTest(test.getInfo().getId());
     }
 
     public int getNumTests() {

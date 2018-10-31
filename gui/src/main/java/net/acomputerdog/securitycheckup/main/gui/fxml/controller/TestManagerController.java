@@ -90,7 +90,7 @@ public class TestManagerController implements TestManagerWindow {
                     Test test = task.getValue();
 
                     // check for duplicate test
-                    if (securityCheckupApp.getTestRegistry().hasTest(test.getInfo().getID())) {
+                    if (securityCheckupApp.getTestRegistry().hasTest(test.getInfo().getId())) {
                         // Ask to overwrite
                         if (!AlertUtils.askWarning("Security Checkup", "Test already exists", "A test with the same ID already exists.  Do you want to overwrite it?")) {
                             return;
@@ -125,6 +125,7 @@ public class TestManagerController implements TestManagerWindow {
                     new FileChooser.ExtensionFilter("JSON files", "*.json"),
                     new FileChooser.ExtensionFilter("All files", "*.*")
             );
+            saveChooser.setInitialFileName(test.getInfo().getId() + ".json");
 
             File saveFile = saveChooser.showSaveDialog(stage);
 

@@ -26,7 +26,7 @@ public class TestRegistry {
     }
 
     public void addTest(Test test) {
-        testMap.put(test.getInfo().getID(), test);
+        testMap.put(test.getInfo().getId(), test);
     }
 
     public Profile getProfile(String id) {
@@ -78,7 +78,7 @@ public class TestRegistry {
     }
 
     public void removeTest(Test test) {
-        this.removeTest(test.getInfo().getID());
+        this.removeTest(test.getInfo().getId());
     }
 
     public void clear() {

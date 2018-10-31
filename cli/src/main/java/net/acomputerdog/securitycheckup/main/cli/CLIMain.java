@@ -120,7 +120,7 @@ public class CLIMain implements AutoCloseable {
                 String resultMessage = result.getInfo(TestResult.KEY_MESSAGE);
                 String resultEx = result.getInfo(TestResult.KEY_EXCEPTION);
 
-                System.out.printf("  |%-7s %s\n", result.getResultString(), result.getTestInfo().getID());
+                System.out.printf("  |%-7s %s\n", result.getResultString(), result.getTestInfo().getId());
                 System.out.printf("  |Name:   %s\n", result.getTestInfo().getName());
                 System.out.printf("  |Desc:   %s\n", result.getTestInfo().getDescription());
                 System.out.printf("  |Score:  %1.0f%%\n", result.getScore() * 100);

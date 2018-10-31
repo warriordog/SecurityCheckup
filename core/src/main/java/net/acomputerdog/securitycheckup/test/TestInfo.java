@@ -38,7 +38,7 @@ public class TestInfo implements Informable {
         return name;
     }
 
-    public String getID() {
+    public String getId() {
         return id;
     }
 

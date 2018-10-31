@@ -139,6 +139,7 @@ public class ProfileManagerController implements ProfileManagerWindow {
                     new FileChooser.ExtensionFilter("JSON files", "*.json"),
                     new FileChooser.ExtensionFilter("All files", "*.*")
             );
+            saveChooser.setInitialFileName(profile.getId() + ".json");
 
             File saveFile = saveChooser.showSaveDialog(stage);
 

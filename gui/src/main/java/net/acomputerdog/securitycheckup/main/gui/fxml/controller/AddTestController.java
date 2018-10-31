@@ -61,7 +61,7 @@ public class AddTestController implements AddTestWindow {
 
         testCombo.getItems().clear();
         for (Test test : securityCheckupApplication.getTestRegistry().getTests()) {
-            if (!profile.getTests().contains(test.getInfo().getID())) {
+            if (!profile.getTests().contains(test.getInfo().getId())) {
                 testCombo.getItems().add(test);
             }
         }
