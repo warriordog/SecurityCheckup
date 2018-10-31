@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<SplitPane fx:id="root"
+           xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.TestListPanelController"
+           dividerPositions="0.3">
+
+            <ListView fx:id="testList" SplitPane.resizableWithParent="false">
+                <items>
+                    <FXCollections fx:factory="observableArrayList"/>
+                </items>
+            </ListView>
+            <fx:include fx:id="testInfo" source="test_info.fxml"/>
+</SplitPane>

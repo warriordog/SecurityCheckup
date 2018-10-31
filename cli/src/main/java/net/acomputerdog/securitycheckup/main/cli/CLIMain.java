@@ -17,6 +17,7 @@ import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
+import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
 import net.acomputerdog.securitycheckup.util.RegUtil;
 
 import java.util.ArrayList;
@@ -39,7 +40,10 @@ public class CLIMain implements AutoCloseable {
      */
     private TestEnvironment testEnvironment;
 
-    private List<Profile> profiles;
+    /**
+     * Test and profile registry
+     */
+    private TestRegistry testRegistry;
 
     /**
      * CLI constructor, should only be called from main()
@@ -60,8 +64,8 @@ public class CLIMain implements AutoCloseable {
         this.testEnvironment = new TestEnvironment(locator);
 
         // TODO load externally
-        profiles = new ArrayList<>();
-        profiles.add(new BasicTests()); // test for basic system security
+        testRegistry = new TestRegistry();
+        BasicTests.lookupOrRegister(testRegistry);  // test for basic system security
     }
 
     /**
@@ -76,12 +80,12 @@ public class CLIMain implements AutoCloseable {
         Map<Profile, List<TestResult>> testSuiteResults = new HashMap<>();
 
         // Run each suite, and each test in each suite
-        System.out.printf("Running %d test suites.\n", profiles.size());
-        for (Profile tests : profiles) {
+        System.out.printf("Running %d test suites.\n", testRegistry.getProfileCount());
+        for (Profile tests : testRegistry.getProfiles()) {
             System.out.printf("Running %d tests in '%s'.\n", tests.getNumTests(), tests.getName());
 
             List<TestResult> testResults = new ArrayList<>();
-            for (Test test : tests.getTests()) {
+            for (Test test : tests.getTestsFrom(testRegistry)) {
                 testEnvironment.setCurrentTest(test);
                 TestResult result = test.getRootStep().run(testEnvironment);
                 testResults.add(result);
@@ -101,7 +105,10 @@ public class CLIMain implements AutoCloseable {
 
         // print each suite
         System.out.println("Individual test results:");
-        for (Profile suite : profiles) {
+        for (Map.Entry<Profile, List<TestResult>> suiteResult : testSuiteResults.entrySet()) {
+            Profile suite = suiteResult.getKey();
+            List<TestResult> suiteResults = suiteResult.getValue();
+
             System.out.printf("Results for suite '%s':\n", suite.getId());
             System.out.println("----------------------");
             System.out.printf("|%s:\n", suite.getName());
@@ -109,7 +116,7 @@ public class CLIMain implements AutoCloseable {
             System.out.println("----------------------");
 
             // print results
-            for (TestResult result : testSuiteResults.get(suite)) {
+            for (TestResult result : suiteResults) {
                 String resultMessage = result.getInfo(TestResult.KEY_MESSAGE);
                 String resultEx = result.getInfo(TestResult.KEY_EXCEPTION);
 
@@ -134,9 +141,9 @@ public class CLIMain implements AutoCloseable {
      */
     public void close() {
         // clear tests
-        if (profiles != null) {
-            profiles.clear();
-            profiles = null;
+        if (testRegistry != null) {
+            testRegistry.clear();
+            testRegistry = null;
         }
 
         // clear test environment

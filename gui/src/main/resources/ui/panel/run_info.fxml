@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import net.acomputerdog.securitycheckup.main.gui.util.ColoredCellFactory?>
+<BorderPane fx:id="root"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.RunInfoPanelController">
+    <top>
+        <Label fx:id="statusText" styleClass="big_text"/>
+    </top>
+    <center>
+        <SplitPane dividerPositions="0.3">
+            <TableView fx:id="testTable" SplitPane.resizableWithParent="false">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+                <items>
+                    <FXCollections fx:factory="observableArrayList"/>
+                </items>
+                <columns>
+                    <TableColumn text="Test">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="test"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Result">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="status"/>
+                        </cellValueFactory>
+                        <cellFactory>
+                            <ColoredCellFactory/>
+                        </cellFactory>
+                    </TableColumn>
+                    <TableColumn text="Score">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="score"/>
+                        </cellValueFactory>
+                        <cellFactory>
+                            <ColoredCellFactory/>
+                        </cellFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
+            <fx:include fx:id="testInfo" source="test_results.fxml"/>
+        </SplitPane>
+    </center>
+</BorderPane>

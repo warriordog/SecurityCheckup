@@ -1,0 +1,16 @@
+
+.header_text {
+    -fx-font-size: 18;
+}
+
+.big_text {
+    -fx-font-size: 16;
+}
+
+.normal_text {
+    -fx-font-size: 14;
+}
+
+.small_text, .root {
+    -fx-font-size: 12;
+}

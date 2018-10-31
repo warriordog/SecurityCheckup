@@ -5,12 +5,12 @@ import net.acomputerdog.securitycheckup.util.Informable;
 import java.util.*;
 
 public class TestResult implements Informable {
-    public static String KEY_PASSED = "Passed";
-    public static String KEY_SCORE = "Score";
-    public static String KEY_CAUSE = "Cause";
-    public static String KEY_EXCEPTION = "Exception";
-    public static String KEY_MESSAGE = "Message";
-    public static String KEY_STRING = "String";
+    public static final String KEY_PASSED = "Passed";
+    public static final String KEY_SCORE = "Score";
+    public static final String KEY_CAUSE = "Cause";
+    public static final String KEY_EXCEPTION = "Exception";
+    public static final String KEY_MESSAGE = "Message";
+    public static final String KEY_STRING = "String";
 
     public static final float SCORE_PASS = 1.0f;
     public static final float SCORE_FAIL = 0.0f;
@@ -82,6 +82,22 @@ public class TestResult implements Informable {
             default:
                 return "UNKNOWN";
         }
+    }
+
+    public String getResultLine() {
+        // create results line
+        StringBuilder line = new StringBuilder();
+
+        // Add base result
+        line.append(getResultString());
+
+        // only add instructions if it failed AND the test ran correctly
+        if (!isPassed() && resultCause == ResultCause.FINISHED) {
+            line.append(" - ");
+            line.append(testInfo.getFailureAdvice());
+        }
+
+        return line.toString();
     }
 
     public String getScoreString() {

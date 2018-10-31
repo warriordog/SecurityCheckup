@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<VBox fx:id="root"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.TestResultsPanelController"
+      spacing="10">
+
+    <TitledPane text="Result">
+        <padding><Insets top="5" bottom="5" left="5" right="5"/></padding>
+        <VBox>
+            <Label fx:id="resultText" wrapText="true" styleClass="big_text"/>
+        </VBox>
+    </TitledPane>
+
+    <TitledPane text="Description">
+        <padding><Insets top="5" bottom="5" left="5" right="5"/></padding>
+        <VBox>
+            <Label fx:id="descriptionText" wrapText="true" styleClass="big_text"/>
+        </VBox>
+    </TitledPane>
+
+    <TitledPane text="Test messages" expanded="false">
+        <padding><Insets top="5" bottom="5" left="5" right="5"/></padding>
+        <ListView fx:id="messagesList">
+            <items>
+                <FXCollections fx:factory="observableArrayList"/>
+            </items>
+        </ListView>
+    </TitledPane>
+</VBox>

@@ -1,4 +1,4 @@
-package net.acomputerdog.securitycheckup.test.password;
+package net.acomputerdog.securitycheckup.test.step.password;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.*;
