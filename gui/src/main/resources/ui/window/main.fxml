@@ -23,7 +23,7 @@
                         </Menu>
                         <Menu text="Tests">
                             <MenuItem text="Manage Profiles" onAction="#onManageProfiles"/>
-                            <MenuItem text="Manage Tests" disable="true"/>
+                            <MenuItem text="Manage Tests" onAction="#onManageTests"/>
                         </Menu>
                         <Menu text="Help">
                             <MenuItem text="About" onAction="#onAbout"/>

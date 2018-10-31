@@ -4,21 +4,22 @@ import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
 
 public interface ProfileManagerWindow extends Window {
-    void addTestRemoveListener(TestRemoveListener listener);
-    void removeTestRemoveListener(TestRemoveListener listener);
+    void addTestRemoveListener(ProfileRemoveTestListener listener);
+    void removeTestRemoveListener(ProfileRemoveTestListener listener);
 
     void addProfileRemoveListener(ProfileRemoveListener listener);
     void removeProfileRemoveListener(ProfileRemoveListener listener);
 
     void refreshProfilesList();
+    void refreshTestsList();
 
     void showProfile(Profile profile);
 
-    interface TestRemoveListener {
+    interface ProfileRemoveTestListener {
         void onRemoveTest(Profile profile, Test test);
     }
 
-    interface TestAddListener {
+    interface ProfileAddTestListener {
         void onAddTest(Profile profile, Test test);
     }
 

@@ -5,15 +5,13 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.ProfileInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.RunInfoPanel;
-import net.acomputerdog.securitycheckup.main.gui.fxml.panel.TestInfoPanel;
+import net.acomputerdog.securitycheckup.main.gui.fxml.panel.TestListPanel;
 import net.acomputerdog.securitycheckup.test.Profile;
-import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
 
 public class ProfileInfoPanelController implements ProfileInfoPanel {
@@ -28,9 +26,7 @@ public class ProfileInfoPanelController implements ProfileInfoPanel {
     @FXML
     private RunInfoPanel runInfoController;
     @FXML
-    private ListView<Test> testList;
-    @FXML
-    private TestInfoPanel testInfoController;
+    private TestListPanel testListController;
     @FXML
     private Label profileIdText;
     @FXML
@@ -39,15 +35,6 @@ public class ProfileInfoPanelController implements ProfileInfoPanel {
     private Button runButton;
 
     private Profile profile;
-
-    @FXML
-    private void initialize() {
-        testList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> this.onSelectTest(newValue));
-    }
-
-    private void onSelectTest(Test test) {
-        testInfoController.showTest(test);
-    }
 
     @Override
     public Profile getProfile() {
@@ -64,7 +51,7 @@ public class ProfileInfoPanelController implements ProfileInfoPanel {
             this.descriptionText.setText(profile.getDescription());
 
             // Set test list tab
-            this.testList.getItems().addAll(profile.getTestsFrom(testRegistry));
+            testListController.showTests(profile.getTestsFrom(testRegistry));
 
             // set details tab
             profileIdText.setText(profile.getId());
@@ -86,8 +73,7 @@ public class ProfileInfoPanelController implements ProfileInfoPanel {
     @Override
     public void clear() {
         this.profile = null;
-        this.testList.getItems().clear();
-        testInfoController.showTest(null);
+        testListController.clear();
         runInfoController.clear();
     }
 

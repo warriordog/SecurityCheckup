@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -10,9 +9,9 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.ProfileInfoPanelController">
 
-    <Text fx:id="selectProfileMessage" styleClass="small_text"/>
+    <Text fx:id="selectProfileMessage" styleClass="small_text" text="Select a profile from the list to the left."/>
 
-    <TabPane fx:id="tabs">
+    <TabPane fx:id="tabs" visible="false">
         <Tab text="Overview" closable="false">
             <VBox spacing="5">
                 <padding><Insets top="5" bottom="5" left="5" right="5"/></padding>
@@ -22,14 +21,7 @@
             </VBox>
         </Tab>
         <Tab text="Tests" closable="false">
-            <SplitPane dividerPositions="0.3">
-                <ListView fx:id="testList" SplitPane.resizableWithParent="false">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList"/>
-                    </items>
-                </ListView>
-                <fx:include fx:id="testInfo" source="test_info.fxml"/>
-            </SplitPane>
+            <fx:include fx:id="testList" source="test_list.fxml"/>
         </Tab>
         <Tab text="Details" closable="false">
             <VBox spacing="10">

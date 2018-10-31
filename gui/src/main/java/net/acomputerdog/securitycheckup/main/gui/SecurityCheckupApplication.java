@@ -1,6 +1,5 @@
 package net.acomputerdog.securitycheckup.main.gui;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.application.Application;
 import javafx.concurrent.Worker;
@@ -14,11 +13,10 @@ import net.acomputerdog.securitycheckup.main.gui.fxml.panel.RunInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.*;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 import net.acomputerdog.securitycheckup.profiles.BasicTests;
-import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.TestResult;
 import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
 
-import java.io.*;
+import java.io.IOException;
 
 import static net.acomputerdog.securitycheckup.main.gui.GUIMain.displayException;
 
@@ -28,19 +26,18 @@ public class SecurityCheckupApplication extends Application {
     public static final float PASSING_SCORE = 0.75f;
 
     private TestRegistry testRegistry;
-    private Gson gson;
 
     private MainController mainController;
     private AboutController aboutController;
     private ProfileManagerController profileManagerController;
     private NewProfileController newProfileController;
     private AddTestController addTestController;
+    private TestManagerController testManagerController;
 
     @Override
     public void init() {
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
-        this.gson = builder.create();
 
         this.testRegistry = new TestRegistry();
         BasicTests.lookupOrRegister(testRegistry);
@@ -59,6 +56,8 @@ public class SecurityCheckupApplication extends Application {
             newProfileController.initData(this);
             this.addTestController = loadFXMLController("/ui/window/add_test.fxml");
             addTestController.initData(this);
+            this.testManagerController = loadFXMLController("/ui/window/test_manager.fxml");
+            testManagerController.initData(this);
 
             // register events
             mainController.addRunButtonListener(this::runProfile);
@@ -85,6 +84,14 @@ public class SecurityCheckupApplication extends Application {
             addTestController.addAddTestListener((profile, test) -> {
                 // triggers when test added to profile
                 profileManagerController.showProfile(profile);
+
+                // TODO selective refresh
+                mainController.refreshProfiles();
+            });
+
+            testManagerController.addTestRemoveListener(test -> {
+                // triggers when test removed from registry
+                profileManagerController.refreshTestsList();
 
                 // TODO selective refresh
                 mainController.refreshProfiles();
@@ -138,20 +145,6 @@ public class SecurityCheckupApplication extends Application {
         new Thread(runner).start();
     }
 
-    // TODO in utility class
-    public void saveProfile(Profile profile, File saveFile) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile))) {
-            gson.toJson(profile, writer);
-        }
-    }
-
-    // TODO in utility class
-    public Profile loadProfile(File profileFile) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(profileFile))) {
-            return gson.fromJson(reader, Profile.class);
-        }
-    }
-
     public AboutWindow getAboutWindow() {
         return aboutController;
     }
@@ -170,6 +163,10 @@ public class SecurityCheckupApplication extends Application {
 
     public AddTestWindow getAddTestWindow() {
         return addTestController;
+    }
+
+    public TestManagerWindow getTestManagerWindow() {
+        return testManagerController;
     }
 
     public TestRegistry getTestRegistry() {

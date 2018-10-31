@@ -9,7 +9,8 @@
       xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="net.acomputerdog.securitycheckup.main.gui.fxml.controller.TestInfoPanelController"
-      spacing="10">
+      spacing="10"
+      visible="false">
 
     <TitledPane text="Description">
         <padding><Insets top="5" bottom="5" left="5" right="5"/></padding>

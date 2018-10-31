@@ -71,6 +71,10 @@ public class TestRegistry {
 
     public void removeTest(String id) {
         testMap.remove(id);
+
+        for (Profile profile : profileMap.values()) {
+            profile.removeTest(id);
+        }
     }
 
     public void removeTest(Test test) {
@@ -80,5 +84,13 @@ public class TestRegistry {
     public void clear() {
         testMap.clear();
         profileMap.clear();
+    }
+
+    public boolean hasProfile(String id) {
+        return profileMap.containsKey(id);
+    }
+
+    public boolean hasTest(String id) {
+        return testMap.containsKey(id);
     }
 }

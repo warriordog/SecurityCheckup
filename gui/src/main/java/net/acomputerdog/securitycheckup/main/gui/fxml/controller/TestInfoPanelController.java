@@ -21,16 +21,21 @@ public class TestInfoPanelController implements TestInfoPanel {
     @Override
     public void showTest(Test test) {
         // Reset results list
-        testInfoView.getItems().clear();
+        clear();
 
         if (test != null) {
             descriptionText.setText(test.getInfo().getDescription());
             test.getInfo().getInfoMap().forEach((k, v) -> testInfoView.getItems().add(new ExtraInfo(k, v)));
             root.setVisible(true);
         } else {
-            descriptionText.setText("");
             root.setVisible(false);
         }
+    }
+
+    @Override
+    public void clear() {
+        testInfoView.getItems().clear();
+        descriptionText.setText("");
     }
 
     @Override

@@ -44,6 +44,11 @@ public class MainController implements MainWindow {
     }
 
     @FXML
+    public void onManageTests(ActionEvent actionEvent) {
+        securityCheckupApp.getTestManagerWindow().getStage().show();
+    }
+
+    @FXML
     private void onAbout(ActionEvent actionEvent) {
         securityCheckupApp.getAboutWindow().getStage().show();
     }
