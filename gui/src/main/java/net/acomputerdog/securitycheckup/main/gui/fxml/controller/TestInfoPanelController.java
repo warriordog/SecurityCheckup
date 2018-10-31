@@ -44,8 +44,8 @@ public class TestInfoPanelController implements TestInfoPanel {
     }
 
     public static class ExtraInfo {
-        private StringProperty key = new SimpleStringProperty(null, "key");
-        private StringProperty value = new SimpleStringProperty(null, "value");
+        private final StringProperty key = new SimpleStringProperty(null, "key");
+        private final StringProperty value = new SimpleStringProperty(null, "value");
 
         public ExtraInfo(String key, String value) {
             this.key.setValue(key);

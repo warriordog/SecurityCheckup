@@ -77,10 +77,10 @@ public class TestRunner extends Task<Float> {
     }
 
     public static class RunTest {
-        private ObjectProperty<Test> test = new SimpleObjectProperty<>(null, "test");
-        private StringProperty status = new SimpleStringProperty(null, "status");
-        private StringProperty score = new SimpleStringProperty(null, "score");
-        private ObjectProperty<TestResult> results = new SimpleObjectProperty<>(null, "results");
+        private final ObjectProperty<Test> test = new SimpleObjectProperty<>(null, "test");
+        private final StringProperty status = new SimpleStringProperty(null, "status");
+        private final StringProperty score = new SimpleStringProperty(null, "score");
+        private final ObjectProperty<TestResult> results = new SimpleObjectProperty<>(null, "results");
 
         public RunTest(Test test) {
             this.test.set(test);
