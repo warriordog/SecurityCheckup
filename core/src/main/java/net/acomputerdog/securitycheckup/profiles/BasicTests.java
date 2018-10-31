@@ -127,25 +127,22 @@ public class BasicTests extends Profile {
 
             // TODO resource leak
             Step<Float> rootStep =
-                    new AverageEveryStep(
-                            new BoolToScoreStep(
-                                    new AddDataMessageStep<>(
-                                            new MatchAnyStep<>(
-                                                    new WMIStep(
-                                                            "ROOT\\SecurityCenter2",
-                                                            "SELECT * FROM AntiVirusProduct"
-                                                    ),
-                                                    new PushStep<>("Windows Defender"),
-                                                    new WMIPropertyComparison<>(
-                                                            new EqualsComparison<String>().setInverted(true),
-                                                            "displayName"
-                                                    )
-
+                    new RequireThenStep(
+                            new AddDataMessageStep<>(
+                                    new MatchAnyStep<>(
+                                            new WMIStep(
+                                                    "ROOT\\SecurityCenter2",
+                                                    "SELECT * FROM AntiVirusProduct"
                                             ),
-                                            "Antivirus installed: %s"
-                                    )
-                            ),
+                                            new PushStep<>("Windows Defender"),
+                                            new WMIPropertyComparison<>(
+                                                    new EqualsComparison<String>().setInverted(true),
+                                                    "displayName"
+                                            )
 
+                                    ),
+                                    "Antivirus installed: %s"
+                            ),
                             new BoolToScoreStep(
                                     new AddDataMessageStep<>(
                                             new ConstCompareStep<>(

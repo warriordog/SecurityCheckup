@@ -5,14 +5,14 @@ import net.acomputerdog.securitycheckup.test.step.PassthroughStep;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
 public class DoIfStep extends PassthroughStep<Boolean> {
-    private final Step doIf;
+    private final Step<Boolean> doIf;
 
     public DoIfStep(Step<Boolean> passthrough, Step doIf) {
         super(passthrough);
         this.doIf = doIf;
     }
 
-    public Step getDoIf() {
+    public Step<Boolean> getDoIf() {
         return doIf;
     }
 
