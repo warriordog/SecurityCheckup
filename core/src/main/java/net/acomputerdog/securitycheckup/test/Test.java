@@ -4,8 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.acomputerdog.securitycheckup.test.comparison.Comparison;
 import net.acomputerdog.securitycheckup.test.step.Step;
-import net.acomputerdog.securitycheckup.util.ComparisonGsonAdapter;
-import net.acomputerdog.securitycheckup.util.StepGsonAdapter;
+import net.acomputerdog.securitycheckup.util.GenericGsonAdapter;
 
 import java.io.Reader;
 import java.io.Writer;
@@ -14,8 +13,8 @@ import java.util.Objects;
 public class Test {
     private static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
-            .registerTypeAdapter(Step.class, new StepGsonAdapter())
-            .registerTypeAdapter(Comparison.class, new ComparisonGsonAdapter())
+            .registerTypeAdapter(Comparison.class, new GenericGsonAdapter<>(Comparison.class))
+            .registerTypeAdapter(Step.class, new GenericGsonAdapter<>(Step.class))
             .create();
 
     private final TestInfo info;
@@ -42,7 +41,6 @@ public class Test {
     public void toJson(Writer writer) {
         gson.toJson(this, writer);
     }
-
 
     @Override
     public boolean equals(Object o) {

@@ -75,7 +75,17 @@ public class TestManagerController implements TestManagerWindow {
                     }
                 };
                 task.setOnCancelled(e -> AlertUtils.showWarning("Security Checkup", "Error importing test", task.getMessage()));
-                task.setOnFailed(e -> AlertUtils.showError("Security Checkup", "Unhandled error importing test", String.valueOf(task.getException())));
+                task.setOnFailed(e -> {
+                    Throwable ex = task.getException();
+                    if (ex != null) {
+                        System.err.println("Exception importing test");
+                        ex.printStackTrace();
+                        AlertUtils.showError("Security Checkup","Unhandled error importing test",String.valueOf(ex));
+                    } else {
+                        System.err.println("Unknown error importing test (no exception)");
+                        AlertUtils.showError("Security Checkup","Unhandled error importing test", "Import failed for unknown reason (no exception)");
+                    }
+                });
                 task.setOnSucceeded(e -> {
                     Test test = task.getValue();
 
@@ -128,7 +138,17 @@ public class TestManagerController implements TestManagerWindow {
                         return null;
                     }
                 };
-                task.setOnFailed(e -> AlertUtils.showError("Security Checkup","Unhandled error exporting test",String.valueOf(task.getException())));
+                task.setOnFailed(e -> {
+                    Throwable ex = task.getException();
+                    if (ex != null) {
+                        System.err.println("Exception exporting test");
+                        ex.printStackTrace();
+                        AlertUtils.showError("Security Checkup","Unhandled error exporting test",String.valueOf(ex));
+                    } else {
+                        System.err.println("Unknown error exporting test (no exception)");
+                        AlertUtils.showError("Security Checkup","Unhandled error exporting test", "Export failed for unknown reason (no exception)");
+                    }
+                });
                 task.setOnSucceeded(e -> AlertUtils.showInformation("Security Checkup","Success", "Test saved successfully."));
 
                 new Thread(task).start();

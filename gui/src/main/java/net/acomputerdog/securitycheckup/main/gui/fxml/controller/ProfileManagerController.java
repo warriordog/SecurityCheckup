@@ -87,7 +87,17 @@ public class ProfileManagerController implements ProfileManagerWindow {
                     }
                 };
                 task.setOnCancelled(e -> AlertUtils.showWarning("Security Checkup", "Error importing profile", task.getMessage()));
-                task.setOnFailed(e -> AlertUtils.showError("Security Checkup", "Unhandled error importing profile", String.valueOf(task.getException())));
+                task.setOnFailed(e -> {
+                    Throwable ex = task.getException();
+                    if (ex != null) {
+                        System.err.println("Exception importing profile");
+                        ex.printStackTrace();
+                        AlertUtils.showError("Security Checkup","Unhandled error importing profile",String.valueOf(ex));
+                    } else {
+                        System.err.println("Unknown error importing profile (no exception)");
+                        AlertUtils.showError("Security Checkup","Unhandled error importing profile", "Import failed for unknown reason (no exception)");
+                    }
+                });
                 task.setOnSucceeded(e -> {
                     Profile profile = task.getValue();
 
@@ -142,7 +152,17 @@ public class ProfileManagerController implements ProfileManagerWindow {
                         return null;
                     }
                 };
-                task.setOnFailed(e -> AlertUtils.showError("Security Checkup","Unhandled error exporting profile",String.valueOf(task.getException())));
+                task.setOnFailed(e -> {
+                    Throwable ex = task.getException();
+                    if (ex != null) {
+                        System.err.println("Exception exporting profile");
+                        ex.printStackTrace();
+                        AlertUtils.showError("Security Checkup","Unhandled error exporting profile",String.valueOf(ex));
+                    } else {
+                        System.err.println("Unknown error exporting profile (no exception)");
+                        AlertUtils.showError("Security Checkup","Unhandled error exporting profile", "Export failed for unknown reason (no exception)");
+                    }
+                });
                 task.setOnSucceeded(e -> AlertUtils.showInformation("Security Checkup","Success", "Profile saved successfully."));
 
                 new Thread(task).start();
