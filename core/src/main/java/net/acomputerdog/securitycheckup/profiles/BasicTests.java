@@ -14,15 +14,11 @@ import net.acomputerdog.securitycheckup.test.step.compare.MatchAnyStep;
 import net.acomputerdog.securitycheckup.test.step.data.InvertStep;
 import net.acomputerdog.securitycheckup.test.step.data.PushStep;
 import net.acomputerdog.securitycheckup.test.step.flow.AverageEveryStep;
-import net.acomputerdog.securitycheckup.test.step.flow.PassAnyStep;
-import net.acomputerdog.securitycheckup.test.step.flow.PassEveryStep;
 import net.acomputerdog.securitycheckup.test.step.flow.RequireThenStep;
 import net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep;
 import net.acomputerdog.securitycheckup.test.step.password.UserPasswordIsEmptyStep;
-import net.acomputerdog.securitycheckup.test.step.reg.RegEntryExistsStep;
+import net.acomputerdog.securitycheckup.test.step.reg.RegDefValueStep;
 import net.acomputerdog.securitycheckup.test.step.reg.RegKeyEmptyStep;
-import net.acomputerdog.securitycheckup.test.step.reg.RegKeyExistsStep;
-import net.acomputerdog.securitycheckup.test.step.reg.RegValueStep;
 import net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep;
 import net.acomputerdog.securitycheckup.test.step.score.FinalStep;
 import net.acomputerdog.securitycheckup.test.step.wmi.ClsPropertyStep;
@@ -84,10 +80,11 @@ public class BasicTests extends Profile {
                                             new AddDataMessageStep<>(
                                                     new ConstCompareStep<>(
                                                             new EqualsComparison<>(),
-                                                            new RegValueStep<>(
+                                                            new RegDefValueStep<>(
                                                                     WinReg.HKEY_LOCAL_MACHINE,
                                                                     "SOFTWARE\\Microsoft\\Windows Defender",
-                                                                    "DisableAntiSpyware"
+                                                                    "DisableAntiSpyware",
+                                                                    0 // False (enabled) if the value is missing
                                                             ),
                                                             0
                                                     ),
@@ -98,10 +95,11 @@ public class BasicTests extends Profile {
                                             new AddDataMessageStep<>(
                                                     new ConstCompareStep<>(
                                                             new EqualsComparison<>(),
-                                                            new RegValueStep<>(
+                                                            new RegDefValueStep<>(
                                                                     WinReg.HKEY_LOCAL_MACHINE,
                                                                     "SOFTWARE\\Microsoft\\Windows Defender",
-                                                                    "DisableAntiVirus"
+                                                                    "DisableAntiVirus",
+                                                                    0 // False (enabled) if the value is missing
                                                             ),
                                                             0
                                                     ),
@@ -129,8 +127,8 @@ public class BasicTests extends Profile {
 
             // TODO resource leak
             Step<Float> rootStep =
-                    new BoolToScoreStep(
-                            new PassEveryStep(
+                    new AverageEveryStep(
+                            new BoolToScoreStep(
                                     new AddDataMessageStep<>(
                                             new MatchAnyStep<>(
                                                     new WMIStep(
@@ -145,24 +143,22 @@ public class BasicTests extends Profile {
 
                                             ),
                                             "Antivirus installed: %s"
-                                    ),
-                                    new RegKeyExistsStep(
-                                            WinReg.HKEY_LOCAL_MACHINE,
-                                            "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\QualityCompat"
-                                    ),
-                                    new RegEntryExistsStep(
-                                            WinReg.HKEY_LOCAL_MACHINE,
-                                            "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\QualityCompat",
-                                            "cadca5fe-87d3-4b96-b7fb-a231484277cc"
-                                    ),
-                                    new ConstCompareStep<>(
-                                            new EqualsComparison<>(),
-                                            new RegValueStep<>(
-                                                    WinReg.HKEY_LOCAL_MACHINE,
-                                                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\QualityCompat",
-                                                    "cadca5fe-87d3-4b96-b7fb-a231484277cc"
+                                    )
+                            ),
+
+                            new BoolToScoreStep(
+                                    new AddDataMessageStep<>(
+                                            new ConstCompareStep<>(
+                                                    new EqualsComparison<>(),
+                                                    new RegDefValueStep<>(
+                                                            WinReg.HKEY_LOCAL_MACHINE,
+                                                            "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\QualityCompat",
+                                                            "cadca5fe-87d3-4b96-b7fb-a231484277cc",
+                                                            1 // not compatible if not set
+                                                    ),
+                                                    0
                                             ),
-                                            0
+                                            "Antivirus spectre-compatible: %s"
                                     )
                             )
                     );
@@ -186,21 +182,15 @@ public class BasicTests extends Profile {
 
             Step<Float> rootStep =
                     new BoolToScoreStep(
-                            new PassEveryStep(
-                                    new RegEntryExistsStep(
+                            new CompareStep<>(
+                                    new EqualsComparison<>(),
+                                    new RegDefValueStep<>(
                                             WinReg.HKEY_CURRENT_USER,
                                             "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\AutoplayHandlers",
-                                            "DisableAutoplay"
+                                            "DisableAutoplay",
+                                            0 // enabled if not set
                                     ),
-                                    new CompareStep<>(
-                                            new EqualsComparison<>(),
-                                            new RegValueStep<>(
-                                                    WinReg.HKEY_CURRENT_USER,
-                                                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\AutoplayHandlers",
-                                                    "DisableAutoplay"
-                                            ),
-                                            new PushStep<>(1)
-                                    )
+                                    new PushStep<>(1)
                             )
                     );
 
@@ -222,46 +212,41 @@ public class BasicTests extends Profile {
                     "Remove any exclusions through the Windows Defender Security Console.");
 
         Step<Float> rootStep =
-                new BoolToScoreStep(
-                        new PassAnyStep(
-                                new InvertStep(
-                                    new AddDataMessageStep<>(
-                                            new RegKeyExistsStep(
-                                                    WinReg.HKEY_LOCAL_MACHINE,
-                                                    "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Extensions"
-                                            ),
-                                            "Exclusions registry key exists: %s"
-                                    )
-                                ),
-                                new PassEveryStep(
-                                        new AddDataMessageStep<>(
-                                                new RegKeyEmptyStep(
-                                                        WinReg.HKEY_LOCAL_MACHINE,
-                                                        "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Extensions"
-                                                ),
-                                                "Excluded extensions: %s"
+                new AverageEveryStep(
+                        new BoolToScoreStep(
+                                new AddDataMessageStep<>(
+                                        new RegKeyEmptyStep(
+                                                WinReg.HKEY_LOCAL_MACHINE,
+                                                "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Extensions"
                                         ),
-                                        new AddDataMessageStep<>(
-                                                new RegKeyEmptyStep(
-                                                        WinReg.HKEY_LOCAL_MACHINE,
-                                                        "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Paths"
-                                                ),
-                                                "Excluded paths: %s"
+                                        "Excluded extensions: %s"
+                                )
+                        ),
+                        new BoolToScoreStep(
+                                new AddDataMessageStep<>(
+                                        new RegKeyEmptyStep(
+                                                WinReg.HKEY_LOCAL_MACHINE,
+                                                "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Paths"
                                         ),
-                                        new AddDataMessageStep<>(
-                                                new RegKeyEmptyStep(
-                                                        WinReg.HKEY_LOCAL_MACHINE,
-                                                        "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Processes"
-                                                ),
-                                                "Excluded processes: %s"
+                                        "Excluded paths: %s"
+                                )
+                        ),
+                        new BoolToScoreStep(
+                                new AddDataMessageStep<>(
+                                        new RegKeyEmptyStep(
+                                                WinReg.HKEY_LOCAL_MACHINE,
+                                                "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Processes"
                                         ),
-                                        new AddDataMessageStep<>(
-                                                new RegKeyEmptyStep(
-                                                        WinReg.HKEY_LOCAL_MACHINE,
-                                                        "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\TemporaryPaths"
-                                                ),
-                                                "Excluded temporary paths: %s"
-                                        )
+                                        "Excluded processes: %s"
+                                )
+                        ),
+                        new BoolToScoreStep(
+                                new AddDataMessageStep<>(
+                                        new RegKeyEmptyStep(
+                                                WinReg.HKEY_LOCAL_MACHINE,
+                                                "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\TemporaryPaths"
+                                        ),
+                                        "Excluded temporary paths: %s"
                                 )
                         )
                 );
@@ -283,36 +268,40 @@ public class BasicTests extends Profile {
                     "Checks if User Account Control is enabled.",
                     "Enable User Account Control in the Control Panel.");
 
-            Step<Float> rootStep = new BoolToScoreStep(
-                    new PassEveryStep(
-                            new AddDataMessageStep<>(
-                                    new CompareStep<>(
-                                            new EqualsComparison<>(),
-                                            new RegValueStep<>(
-                                                    WinReg.HKEY_LOCAL_MACHINE,
-                                                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
-                                                    "EnableLUA"
+            Step<Float> rootStep =
+                    new AverageEveryStep(
+                            new BoolToScoreStep(
+                                    new AddDataMessageStep<>(
+                                            new CompareStep<>(
+                                                    new EqualsComparison<>(),
+                                                    new RegDefValueStep<>(
+                                                            WinReg.HKEY_LOCAL_MACHINE,
+                                                            "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+                                                            "EnableLUA",
+                                                            0 // disabled if missing
+                                                    ),
+                                                    new PushStep<>(1)
                                             ),
-                                            new PushStep<>(1)
-                                    ),
-                                    "UAC enabled: %s"
+                                            "UAC enabled: %s"
+                                    )
                             ),
-                            new AddDataMessageStep<>(
-                                    new CompareStep<>(
-                                            new EqualsComparison<>()
-                                                    .setInverted(true),
-                                            new RegValueStep<>(
-                                                    WinReg.HKEY_LOCAL_MACHINE,
-                                                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
-                                                    "ConsentPromptBehaviorAdmin"
+                            new BoolToScoreStep(
+                                    new AddDataMessageStep<>(
+                                            new CompareStep<>(
+                                                    new EqualsComparison<>()
+                                                            .setInverted(true),
+                                                    new RegDefValueStep<>(
+                                                            WinReg.HKEY_LOCAL_MACHINE,
+                                                            "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+                                                            "ConsentPromptBehaviorAdmin",
+                                                            0 // no notification if missing
+                                                    ),
+                                                    new PushStep<>(0)
                                             ),
-                                            new PushStep<>(0)
-                                    ),
-                                    "UAC prompt enabled: %s"
+                                            "UAC prompt enabled: %s"
+                                    )
                             )
-                    )
-
-            );
+                    );
 
             uacEnabled = new Test(testInfo, new FinalStep(rootStep));
             testRegistry.addTest(uacEnabled);

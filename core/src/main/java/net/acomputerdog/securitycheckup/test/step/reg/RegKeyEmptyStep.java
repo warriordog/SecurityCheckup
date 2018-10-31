@@ -11,6 +11,10 @@ public class RegKeyEmptyStep extends RegKeyStep<Boolean> {
 
     @Override
     public Boolean run(TestEnvironment environment) {
-        return Advapi32Util.registryGetValues(getHive(), getKey()).isEmpty();
+        if (Advapi32Util.registryKeyExists(getHive(), getKey())) {
+            return Advapi32Util.registryGetValues(getHive(), getKey()).isEmpty();
+        } else {
+            return true;
+        }
     }
 }
