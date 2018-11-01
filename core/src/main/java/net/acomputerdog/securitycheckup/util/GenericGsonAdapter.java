@@ -6,6 +6,8 @@ import java.lang.reflect.Type;
 
 /**
  * Gson utility class to serialize generic types.  Can ONLY be used if the generic supertype is abstract or an interface.
+ * It is best to use an interface so that there is no chance of a class potentially becoming concrete and breaking here.
+ *
  * @param <T> The type of class to serialize.
  */
 public class GenericGsonAdapter<T> implements JsonSerializer<T>, JsonDeserializer<T> {

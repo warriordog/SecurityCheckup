@@ -5,10 +5,7 @@ import net.acomputerdog.jwmi.wbem.WbemClassObject;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-import java.util.Collections;
-import java.util.List;
-
-public class GetFirstClsObjStep extends Step<WbemClassObject> {
+public class GetFirstClsObjStep implements Step<WbemClassObject> {
     private final WMIStep source;
 
     public GetFirstClsObjStep(WMIStep source) {
@@ -26,8 +23,4 @@ public class GetFirstClsObjStep extends Step<WbemClassObject> {
         }
     }
 
-    @Override
-    public List<WMIStep> getSubsteps() {
-        return Collections.singletonList(source);
-    }
 }

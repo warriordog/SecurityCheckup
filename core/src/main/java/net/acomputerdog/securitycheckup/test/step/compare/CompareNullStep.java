@@ -3,10 +3,7 @@ package net.acomputerdog.securitycheckup.test.step.compare;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-import java.util.Collections;
-import java.util.List;
-
-public class CompareNullStep extends Step<Boolean> {
+public class CompareNullStep implements Step<Boolean> {
     private final Step child;
 
     public CompareNullStep(Step child) {
@@ -22,8 +19,4 @@ public class CompareNullStep extends Step<Boolean> {
         return child.run(environment) == null;
     }
 
-    @Override
-    public List<Step> getSubsteps() {
-        return Collections.singletonList(child);
-    }
 }

@@ -4,9 +4,6 @@ import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.PassthroughStep;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class RequireThenStep extends PassthroughStep<Float> {
     private final Step<Boolean> requiredStep;
 
@@ -29,8 +26,4 @@ public class RequireThenStep extends PassthroughStep<Float> {
         }
     }
 
-    @Override
-    public List<Step> getSubsteps() {
-        return Arrays.asList(new Step[]{requiredStep, getPassthrough()});
-    }
 }

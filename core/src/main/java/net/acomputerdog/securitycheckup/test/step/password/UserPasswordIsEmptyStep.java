@@ -5,7 +5,7 @@ import com.sun.jna.platform.win32.*;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-public class UserPasswordIsEmptyStep extends Step<Boolean> {
+public class UserPasswordIsEmptyStep implements Step<Boolean> {
     private static final int LOGON32_LOGON_NETWORK = 3;
     private static final int LOGON32_PROVIDER_DEFAULT = 0;
 

@@ -4,10 +4,7 @@ import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.comparison.Comparison;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class ConstCompareStep<T extends Comparable<T>> extends Step<Boolean> {
+public class ConstCompareStep<T extends Comparable<T>> implements Step<Boolean> {
     private final Comparison<T, T> comparison;
     private final Step<T> child;
     private final T value;
@@ -35,8 +32,4 @@ public class ConstCompareStep<T extends Comparable<T>> extends Step<Boolean> {
         return comparison.compare(child.run(environment), value);
     }
 
-    @Override
-    public List<Step> getSubsteps() {
-        return Arrays.asList(new Step[]{child});
-    }
 }

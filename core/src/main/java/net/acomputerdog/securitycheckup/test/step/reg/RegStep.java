@@ -4,7 +4,7 @@ package net.acomputerdog.securitycheckup.test.step.reg;
 import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-public abstract class RegStep<T> extends Step<T> {
+public abstract class RegStep<T> implements Step<T> {
     /**
      * Registry hive to access
      */

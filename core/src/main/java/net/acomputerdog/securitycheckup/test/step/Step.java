@@ -2,14 +2,8 @@ package net.acomputerdog.securitycheckup.test.step;
 
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 
-import java.util.Collections;
-import java.util.List;
+public interface Step<T> {
 
-public abstract class Step<T> {
+    T run(TestEnvironment environment);
 
-    public abstract T run(TestEnvironment environment);
-
-    public List<? extends Step> getSubsteps() {
-        return Collections.emptyList();
-    }
 }

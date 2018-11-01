@@ -4,18 +4,15 @@ import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.PassthroughStep;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DoIfStep extends PassthroughStep<Boolean> {
-    private final Step<Boolean> doIf;
+    private final Step<?> doIf;
 
-    public DoIfStep(Step<Boolean> passthrough, Step doIf) {
+    public DoIfStep(Step<Boolean> passthrough, Step<?> doIf) {
         super(passthrough);
         this.doIf = doIf;
     }
 
-    public Step getDoIf() {
+    public Step<?> getDoIf() {
         return doIf;
     }
 
@@ -28,11 +25,4 @@ public class DoIfStep extends PassthroughStep<Boolean> {
         return result;
     }
 
-    @Override
-    public List<Step> getSubsteps() {
-        List<Step> subSteps = new ArrayList<>();
-        subSteps.add(super.getPassthrough());
-        subSteps.add(doIf);
-        return subSteps;
-    }
 }

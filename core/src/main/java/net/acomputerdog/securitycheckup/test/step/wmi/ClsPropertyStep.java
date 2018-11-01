@@ -5,10 +5,7 @@ import net.acomputerdog.jwmi.wbem.WbemClassObject;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-import java.util.Collections;
-import java.util.List;
-
-public class ClsPropertyStep<T> extends Step<T> {
+public class ClsPropertyStep<T> implements Step<T> {
     private final Step<WbemClassObject> source;
     private final String property;
 
@@ -34,8 +31,4 @@ public class ClsPropertyStep<T> extends Step<T> {
         }
     }
 
-    @Override
-    public List<Step<WbemClassObject>> getSubsteps() {
-        return Collections.singletonList(source);
-    }
 }

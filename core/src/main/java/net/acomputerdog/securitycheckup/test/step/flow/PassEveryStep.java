@@ -7,9 +7,10 @@ import net.acomputerdog.securitycheckup.util.CollectionUtils;
 import java.util.Collections;
 import java.util.List;
 
-public class PassEveryStep extends Step<Boolean> {
+public class PassEveryStep implements Step<Boolean> {
     private final List<Step<Boolean>> subSteps;
 
+    @SafeVarargs
     public PassEveryStep(Step<Boolean> ... substeps) {
         this(CollectionUtils.createList(substeps));
     }
@@ -28,8 +29,4 @@ public class PassEveryStep extends Step<Boolean> {
         return true;
     }
 
-    @Override
-    public List<Step<Boolean>> getSubsteps() {
-        return subSteps;
-    }
 }

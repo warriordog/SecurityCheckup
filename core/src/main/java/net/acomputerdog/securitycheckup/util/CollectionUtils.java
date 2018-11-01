@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class CollectionUtils {
+    @SafeVarargs
     public static <T> List<T> createList(T ... items) {
         List<T> list = new ArrayList<>();
         Collections.addAll(list, items);

@@ -5,7 +5,7 @@ import net.acomputerdog.jwmi.wbem.WbemServices;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-public class WMIStep extends Step<EnumWbemClassObject> {
+public class WMIStep implements Step<EnumWbemClassObject> {
     private final String namespace;
     private final String query;
 

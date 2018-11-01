@@ -3,7 +3,7 @@ package net.acomputerdog.securitycheckup.test.step.data;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-public class PushStep<T> extends Step<T> {
+public class PushStep<T> implements Step<T> {
     private final T value;
 
     public PushStep(T value) {

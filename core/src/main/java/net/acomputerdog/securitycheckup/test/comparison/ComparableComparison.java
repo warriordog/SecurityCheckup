@@ -1,6 +1,6 @@
 package net.acomputerdog.securitycheckup.test.comparison;
 
-public class ComparableComparison<T extends Comparable<T>> extends Comparison<T, T> {
+public class ComparableComparison<T extends Comparable<T>> implements Comparison<T, T> {
     private final CompareMode mode;
 
     public ComparableComparison(CompareMode mode) {

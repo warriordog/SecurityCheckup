@@ -1,6 +1,6 @@
 package net.acomputerdog.securitycheckup.test.comparison;
 
-public class EqualsComparison<T> extends Comparison<T, T> {
+public class EqualsComparison<T> implements Comparison<T, T> {
     private boolean inverted = false;
 
     public boolean isInverted() {

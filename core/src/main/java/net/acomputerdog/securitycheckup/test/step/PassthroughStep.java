@@ -2,10 +2,7 @@ package net.acomputerdog.securitycheckup.test.step;
 
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 
-import java.util.Collections;
-import java.util.List;
-
-public abstract class PassthroughStep<T> extends Step<T> {
+public abstract class PassthroughStep<T> implements Step<T> {
     private final Step<T> passthrough;
 
     protected PassthroughStep(Step<T> passthrough) {
@@ -21,8 +18,4 @@ public abstract class PassthroughStep<T> extends Step<T> {
         return passthrough;
     }
 
-    @Override
-    public List<Step> getSubsteps() {
-        return Collections.singletonList(passthrough);
-    }
 }

@@ -3,7 +3,7 @@ package net.acomputerdog.securitycheckup.test.comparison;
 import net.acomputerdog.jwmi.nat.ReleasableVariant;
 import net.acomputerdog.jwmi.wbem.WbemClassObject;
 
-public class WMIPropertyComparison<T> extends Comparison<WbemClassObject, T> {
+public class WMIPropertyComparison<T> implements Comparison<WbemClassObject, T> {
     private final Comparison<T, T> passthrough;
     private final String property;
 

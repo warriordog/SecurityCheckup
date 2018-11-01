@@ -4,9 +4,6 @@ import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.PassthroughStep;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DoAndDoIgnoredStep<T> extends PassthroughStep<T> {
     private final Step optionalStep;
 
@@ -28,11 +25,4 @@ public class DoAndDoIgnoredStep<T> extends PassthroughStep<T> {
         return result;
     }
 
-    @Override
-    public List<Step> getSubsteps() {
-        List<Step> substeps = new ArrayList<>();
-        substeps.add(getPassthrough());
-        substeps.add(optionalStep);
-        return substeps;
-    }
 }

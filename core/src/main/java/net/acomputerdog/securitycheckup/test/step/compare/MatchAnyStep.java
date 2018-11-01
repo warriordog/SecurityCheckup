@@ -4,11 +4,9 @@ import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.comparison.Comparison;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
-public class MatchAnyStep<T1, T2> extends Step<Boolean> {
+public class MatchAnyStep<T1, T2> implements Step<Boolean> {
     private final Step<? extends Iterator<T1>> source;
     private final Step<T2> match;
     private final Comparison<T1, T2> comparison;
@@ -43,8 +41,4 @@ public class MatchAnyStep<T1, T2> extends Step<Boolean> {
         return false;
     }
 
-    @Override
-    public List<Step> getSubsteps() {
-        return Arrays.asList(new Step[]{source, match});
-    }
 }

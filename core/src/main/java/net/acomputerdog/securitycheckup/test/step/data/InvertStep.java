@@ -3,10 +3,7 @@ package net.acomputerdog.securitycheckup.test.step.data;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-import java.util.Collections;
-import java.util.List;
-
-public class InvertStep extends Step<Boolean> {
+public class InvertStep implements Step<Boolean> {
     private final Step<Boolean> source;
 
     public InvertStep(Step<Boolean> source) {
@@ -22,8 +19,4 @@ public class InvertStep extends Step<Boolean> {
         return !source.run(environment);
     }
 
-    @Override
-    public List<Step<Boolean>> getSubsteps() {
-        return Collections.singletonList(source);
-    }
 }

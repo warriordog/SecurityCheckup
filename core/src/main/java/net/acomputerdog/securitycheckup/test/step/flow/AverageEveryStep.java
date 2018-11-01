@@ -7,9 +7,10 @@ import net.acomputerdog.securitycheckup.util.CollectionUtils;
 import java.util.Collections;
 import java.util.List;
 
-public class AverageEveryStep extends Step<Float> {
+public class AverageEveryStep implements Step<Float> {
     private final List<Step<Float>> subSteps;
 
+    @SafeVarargs
     public AverageEveryStep(Step<Float> ... substeps) {
         this(CollectionUtils.createList(substeps));
     }
@@ -31,8 +32,4 @@ public class AverageEveryStep extends Step<Float> {
         return count == 0 ? 0f : (total / count);
     }
 
-    @Override
-    public List<Step<Float>> getSubsteps() {
-        return subSteps;
-    }
 }
