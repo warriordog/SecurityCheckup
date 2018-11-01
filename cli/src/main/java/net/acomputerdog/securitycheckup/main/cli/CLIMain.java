@@ -65,7 +65,7 @@ public class CLIMain implements AutoCloseable {
 
         // TODO load externally
         testRegistry = new TestRegistry();
-        BasicTests.lookupOrRegister(testRegistry);  // test for basic system security
+        BasicTests.addToProfile(testRegistry);  // test for basic system security
     }
 
     /**

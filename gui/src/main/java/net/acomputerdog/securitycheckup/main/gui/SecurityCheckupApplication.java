@@ -40,7 +40,7 @@ public class SecurityCheckupApplication extends Application {
         builder.setPrettyPrinting();
 
         this.testRegistry = new TestRegistry();
-        BasicTests.lookupOrRegister(testRegistry);
+        BasicTests.addToProfile(testRegistry);
     }
 
     @Override

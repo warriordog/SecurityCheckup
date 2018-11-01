@@ -4,7 +4,7 @@ import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FinalStep extends Step<TestResult> {
@@ -42,7 +42,7 @@ public class FinalStep extends Step<TestResult> {
     }
 
     @Override
-    public List<Step> getSubsteps() {
-        return Arrays.asList(new Step[]{child});
+    public List<Step<Float>> getSubsteps() {
+        return Collections.singletonList(child);
     }
 }

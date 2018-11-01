@@ -331,14 +331,9 @@ public class BasicTests extends Profile {
         return passwordSet;
     }
 
-    public static Profile lookupOrRegister(TestRegistry testRegistry) {
-        Profile basicTests = testRegistry.getProfile(ID_BASIC_TESTS);
-
-        if (basicTests == null) {
-            basicTests = new BasicTests(testRegistry);
-            testRegistry.addProfile(basicTests);
+    public static void addToProfile(TestRegistry testRegistry) {
+        if (!testRegistry.hasProfile(ID_BASIC_TESTS)) {
+            testRegistry.addProfile(new BasicTests(testRegistry));
         }
-
-        return basicTests;
     }
 }

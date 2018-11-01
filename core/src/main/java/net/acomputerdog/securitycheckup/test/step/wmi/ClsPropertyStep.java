@@ -35,7 +35,7 @@ public class ClsPropertyStep<T> extends Step<T> {
     }
 
     @Override
-    public List<Step> getSubsteps() {
+    public List<Step<WbemClassObject>> getSubsteps() {
         return Collections.singletonList(source);
     }
 }

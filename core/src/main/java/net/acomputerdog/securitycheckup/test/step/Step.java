@@ -9,7 +9,7 @@ public abstract class Step<T> {
 
     public abstract T run(TestEnvironment environment);
 
-    public List<Step> getSubsteps() {
+    public List<? extends Step> getSubsteps() {
         return Collections.emptyList();
     }
 }

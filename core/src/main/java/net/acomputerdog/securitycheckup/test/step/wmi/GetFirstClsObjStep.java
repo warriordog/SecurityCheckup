@@ -27,7 +27,7 @@ public class GetFirstClsObjStep extends Step<WbemClassObject> {
     }
 
     @Override
-    public List<Step> getSubsteps() {
+    public List<WMIStep> getSubsteps() {
         return Collections.singletonList(source);
     }
 }

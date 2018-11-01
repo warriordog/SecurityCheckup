@@ -2,15 +2,20 @@ package net.acomputerdog.securitycheckup.test.step.flow;
 
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.Step;
+import net.acomputerdog.securitycheckup.util.CollectionUtils;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class AverageEveryStep extends Step<Float> {
-    private final Step<Float>[] subSteps;
+    private final List<Step<Float>> subSteps;
 
-    public AverageEveryStep(Step<Float> ... subSteps) {
-        this.subSteps = subSteps;
+    public AverageEveryStep(Step<Float> ... substeps) {
+        this(CollectionUtils.createList(substeps));
+    }
+
+    public AverageEveryStep(List<Step<Float>> subSteps) {
+        this.subSteps = Collections.unmodifiableList(subSteps);
     }
 
     @Override
@@ -27,7 +32,7 @@ public class AverageEveryStep extends Step<Float> {
     }
 
     @Override
-    public List<Step> getSubsteps() {
-        return Arrays.asList(subSteps);
+    public List<Step<Float>> getSubsteps() {
+        return subSteps;
     }
 }

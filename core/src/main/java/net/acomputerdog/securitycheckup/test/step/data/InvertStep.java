@@ -3,7 +3,7 @@ package net.acomputerdog.securitycheckup.test.step.data;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class InvertStep extends Step<Boolean> {
@@ -23,7 +23,7 @@ public class InvertStep extends Step<Boolean> {
     }
 
     @Override
-    public List<Step> getSubsteps() {
-        return Arrays.asList(new Step[]{source});
+    public List<Step<Boolean>> getSubsteps() {
+        return Collections.singletonList(source);
     }
 }

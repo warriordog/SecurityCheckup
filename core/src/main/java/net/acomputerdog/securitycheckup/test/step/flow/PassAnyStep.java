@@ -2,15 +2,20 @@ package net.acomputerdog.securitycheckup.test.step.flow;
 
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.Step;
+import net.acomputerdog.securitycheckup.util.CollectionUtils;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class PassAnyStep extends Step<Boolean> {
-    private final Step<Boolean>[] subSteps;
+    private final List<Step<Boolean>> subSteps;
 
-    public PassAnyStep(Step<Boolean> ... subSteps) {
-        this.subSteps = subSteps;
+    public PassAnyStep(Step<Boolean> ... substeps) {
+        this(CollectionUtils.createList(substeps));
+    }
+
+    public PassAnyStep(List<Step<Boolean>> subSteps) {
+        this.subSteps = Collections.unmodifiableList(subSteps);
     }
 
     @Override
@@ -24,7 +29,7 @@ public class PassAnyStep extends Step<Boolean> {
     }
 
     @Override
-    public List<Step> getSubsteps() {
-        return Arrays.asList(subSteps);
+    public List<Step<Boolean>> getSubsteps() {
+        return subSteps;
     }
 }

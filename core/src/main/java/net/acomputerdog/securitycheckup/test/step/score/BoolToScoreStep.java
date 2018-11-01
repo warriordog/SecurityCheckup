@@ -3,7 +3,7 @@ package net.acomputerdog.securitycheckup.test.step.score;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static net.acomputerdog.securitycheckup.test.TestResult.SCORE_FAIL;
@@ -26,7 +26,7 @@ public class BoolToScoreStep extends Step<Float> {
     }
 
     @Override
-    public List<Step> getSubsteps() {
-        return Arrays.asList(new Step[]{child});
+    public List<Step<Boolean>> getSubsteps() {
+        return Collections.singletonList(child);
     }
 }
