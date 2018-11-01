@@ -14,6 +14,7 @@ import net.acomputerdog.securitycheckup.test.step.compare.MatchAnyStep;
 import net.acomputerdog.securitycheckup.test.step.data.InvertStep;
 import net.acomputerdog.securitycheckup.test.step.data.PushStep;
 import net.acomputerdog.securitycheckup.test.step.flow.AverageEveryStep;
+import net.acomputerdog.securitycheckup.test.step.flow.PassEveryStep;
 import net.acomputerdog.securitycheckup.test.step.flow.RequireThenStep;
 import net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep;
 import net.acomputerdog.securitycheckup.test.step.password.UserPasswordIsEmptyStep;
@@ -344,8 +345,8 @@ public class BasicTests extends Profile {
                     "Change the default browser in the Settings app.");
 
             Step<Float> rootStep =
-                    new AverageEveryStep(
-                            new BoolToScoreStep(
+                    new BoolToScoreStep(
+                            new PassEveryStep(
                                     new AddDataMessageStep<>(
                                             new CompareStep<>(
                                                     new EqualsComparison<>()
@@ -359,9 +360,7 @@ public class BasicTests extends Profile {
                                                     new PushStep<>("IE.HTTP")
                                             ),
                                             "HTTP handler not IE: %s"
-                                    )
-                            ),
-                            new BoolToScoreStep(
+                                    ),
                                     new AddDataMessageStep<>(
                                             new CompareStep<>(
                                                     new EqualsComparison<>()
@@ -372,7 +371,7 @@ public class BasicTests extends Profile {
                                                             "ProgId",
                                                             "" // empty string (pass) if missing
                                                     ),
-                                                    new PushStep<>("IE.HTTP")
+                                                    new PushStep<>("IE.HTTPS")
                                             ),
                                             "HTTPS handler not IE: %s"
                                     )
