@@ -26,6 +26,7 @@ import net.acomputerdog.securitycheckup.test.step.wmi.ClsPropertyStep;
 import net.acomputerdog.securitycheckup.test.step.wmi.GetFirstClsObjStep;
 import net.acomputerdog.securitycheckup.test.step.wmi.WMIStep;
 
+@Deprecated // Moving to JSON files soon
 public class BasicTests extends Profile {
 
     public static final String ID_BASIC_TESTS = "basic_tests";
@@ -37,6 +38,7 @@ public class BasicTests extends Profile {
     public static final String ID_UAC_ENABLED = "uac_enabled";
     public static final String ID_PASSWORD_SET = "password_set";
     public static final String ID_DEFAULT_BROWSER_IE = "default_browser_ie";
+    public static final String ID_SMARTSCREEN_ENABLED = "smartscreen_enabled";
 
     public BasicTests(TestRegistry testRegistry) {
         super(ID_BASIC_TESTS, "Basic Tests", "Tests for basic system security.");
@@ -48,6 +50,7 @@ public class BasicTests extends Profile {
         addTest(getOrCreateUACEnabled(testRegistry));
         addTest(getOrCreatePasswordSet(testRegistry));
         addTest(getOrCreateDefaultBrowserIE(testRegistry));
+        addTest(getOfCreateSmartScreenEnabled(testRegistry));
     }
 
     private static Test getOrCreateWinDefenderEnabled(TestRegistry testRegistry) {
@@ -383,6 +386,47 @@ public class BasicTests extends Profile {
         }
 
         return defaultBrowserIE;
+    }
+
+    private static Test getOfCreateSmartScreenEnabled(TestRegistry testRegistry) {
+        Test smartScreenEnabled = testRegistry.getTest(ID_SMARTSCREEN_ENABLED);
+
+        if (smartScreenEnabled == null) {
+            TestInfo testInfo = new TestInfo(
+                    ID_SMARTSCREEN_ENABLED,
+                    "SmartScreen Enabled",
+                    "Checks that Windows SmartScreen is enabled.",
+                    "Enable SmartScreen in the Windows Security Console.");
+
+            Step<Float> rootStep =
+                    new BoolToScoreStep(
+                            new AddDataMessageStep<>(
+                                    new CompareStep<>(
+                                            new EqualsComparison<>()
+                                                    .setInverted(true),
+
+                                            new AddDataMessageStep<>(
+                                                    new RegDefValueStep<>(
+                                                            WinReg.HKEY_LOCAL_MACHINE,
+                                                            "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+                                                            "SmartScreenEnabled",
+
+                                                            // Key is missing if setting has never been changed from default of warn
+                                                            "Warn"
+                                                    ),
+                                                    "SmartScreen mode: %s"
+                                            ),
+                                            new PushStep<>("Off")
+                                    ),
+                                    "SmartScreen enabled: %s"
+                            )
+                    );
+
+            smartScreenEnabled = new Test(testInfo, new FinalStep(rootStep));
+            testRegistry.addTest(smartScreenEnabled);
+        }
+
+        return smartScreenEnabled;
     }
 
     public static void addToProfile(TestRegistry testRegistry) {
