@@ -5,14 +5,14 @@ import net.acomputerdog.securitycheckup.test.step.PassthroughStep;
 import net.acomputerdog.securitycheckup.test.step.Step;
 
 public class DoAndDoIgnoredStep<T> extends PassthroughStep<T> {
-    private final Step optionalStep;
+    private final Step<?> optionalStep;
 
-    public DoAndDoIgnoredStep(Step<T> passthrough, Step optionalStep) {
+    public DoAndDoIgnoredStep(Step<T> passthrough, Step<?> optionalStep) {
         super(passthrough);
         this.optionalStep = optionalStep;
     }
 
-    public Step getOptionalStep() {
+    public Step<?> getOptionalStep() {
         return optionalStep;
     }
 

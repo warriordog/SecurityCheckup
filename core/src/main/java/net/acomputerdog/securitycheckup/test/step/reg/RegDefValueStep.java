@@ -1,19 +1,23 @@
 package net.acomputerdog.securitycheckup.test.step.reg;
 
-import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.securitycheckup.ex.reg.RegistryKeyMissingException;
 import net.acomputerdog.securitycheckup.ex.reg.RegistryValueMissingException;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
+import net.acomputerdog.securitycheckup.util.gson.GenericWrapped;
 
 public class RegDefValueStep<T> extends RegValueStep<T> {
-    private final T defaultValue;
+    private final GenericWrapped<T> defaultValue;
 
-    public RegDefValueStep(WinReg.HKEY hive, String key, String value, T defaultValue) {
+    public RegDefValueStep(String hive, String key, String value, T defaultValue) {
+        this(hive, key, value, new GenericWrapped<>(defaultValue));
+    }
+
+    public RegDefValueStep(String hive, String key, String value, GenericWrapped<T> defaultValue) {
         super(hive, key, value);
         this.defaultValue = defaultValue;
     }
 
-    public T getDefaultValue() {
+    public GenericWrapped<T> getDefaultValue() {
         return defaultValue;
     }
 
@@ -22,7 +26,7 @@ public class RegDefValueStep<T> extends RegValueStep<T> {
         try {
             return super.run(environment);
         } catch (RegistryKeyMissingException | RegistryValueMissingException e) {
-            return defaultValue;
+            return defaultValue.getValue();
         }
     }
 }

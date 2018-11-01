@@ -3,18 +3,23 @@ package net.acomputerdog.securitycheckup.test.step.reg;
 
 import com.sun.jna.platform.win32.WinReg;
 import net.acomputerdog.securitycheckup.test.step.Step;
+import net.acomputerdog.securitycheckup.util.RegUtil;
 
 public abstract class RegStep<T> implements Step<T> {
     /**
      * Registry hive to access
      */
-    private final WinReg.HKEY hive;
+    private final String hive;
 
-    public RegStep(WinReg.HKEY hive) {
+    public RegStep(String hive) {
         this.hive = hive;
     }
 
-    public WinReg.HKEY getHive() {
+    public String getHiveString() {
         return hive;
+    }
+
+    public WinReg.HKEY getHive() {
+        return RegUtil.getHiveByName(hive);
     }
 }

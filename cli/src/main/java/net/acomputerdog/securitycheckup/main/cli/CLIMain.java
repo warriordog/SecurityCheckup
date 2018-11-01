@@ -12,7 +12,6 @@ import net.acomputerdog.jwmi.wbem.WbemClassObject;
 import net.acomputerdog.jwmi.wbem.WbemLocator;
 import net.acomputerdog.jwmi.wbem.WbemServices;
 import net.acomputerdog.securitycheckup.ex.UnsupportedPlatformException;
-import net.acomputerdog.securitycheckup.profiles.BasicTests;
 import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
@@ -63,9 +62,8 @@ public class CLIMain implements AutoCloseable {
         WbemLocator locator = JWMI.getInstance().createWbemLocator();
         this.testEnvironment = new TestEnvironment(locator);
 
-        // TODO load externally
+        // TODO load from JSON
         testRegistry = new TestRegistry();
-        BasicTests.addToProfile(testRegistry);  // test for basic system security
     }
 
     /**

@@ -1,0 +1,15 @@
+{
+  "tests": [
+    "windows_defender_enabled.json",
+    "av_installed.json",
+    "autoplay_disabled.json",
+    "defender_exclusions.json",
+    "uac_enabled.json",
+    "password_set.json",
+    "default_browser_ie.json",
+    "smartscreen_enabled.json"
+  ],
+  "profiles": [
+    "basic_tests.json"
+  ]
+}

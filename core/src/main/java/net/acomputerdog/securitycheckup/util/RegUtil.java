@@ -15,6 +15,16 @@ public class RegUtil {
      */
     public static final String DEFAULT_VALUE = null;
 
+    public static final String HKEY_CLASSES_ROOT = "HKEY_CLASSES_ROOT";
+    public static final String HKEY_CURRENT_USER = "HKEY_CURRENT_USER";
+    public static final String HKEY_LOCAL_MACHINE = "HKEY_LOCAL_MACHINE";
+    public static final String HKEY_USERS = "HKEY_USERS";
+    public static final String HKEY_PERFORMANCE_DATA = "HKEY_PERFORMANCE_DATA";
+    public static final String HKEY_PERFORMANCE_TEXT = "HKEY_PERFORMANCE_TEXT";
+    public static final String HKEY_PERFORMANCE_NLSTEXT = "HKEY_PERFORMANCE_NLSTEXT";
+    public static final String HKEY_CURRENT_CONFIG = "HKEY_CURRENT_CONFIG";
+    public static final String HKEY_DYN_DATA = "HKEY_DYN_DATA";
+
     /**
      * Finds an HKEY by name.
      * The name is case-insensitive, and the common "shorthand" key names are supported:
@@ -29,27 +39,27 @@ public class RegUtil {
      */
     public static WinReg.HKEY getHiveByName(String hive) {
         switch (hive.toUpperCase()) {
-            case "HKEY_CLASSES_ROOT":
+            case HKEY_CLASSES_ROOT:
             case "HKCR":
                 return WinReg.HKEY_CLASSES_ROOT;
-            case "HKEY_CURRENT_USER":
+            case HKEY_CURRENT_USER:
             case "HKCU":
                 return WinReg.HKEY_CURRENT_USER;
-            case "HKEY_LOCAL_MACHINE":
+            case HKEY_LOCAL_MACHINE:
             case "HKLM":
                 return WinReg.HKEY_LOCAL_MACHINE;
-            case "HKEY_USERS":
+            case HKEY_USERS:
                 return WinReg.HKEY_USERS;
-            case "HKEY_PERFORMANCE_DATA":
+            case HKEY_PERFORMANCE_DATA:
                 return WinReg.HKEY_PERFORMANCE_DATA;
-            case "HKEY_PERFORMANCE_TEXT":
+            case HKEY_PERFORMANCE_TEXT:
                 return WinReg.HKEY_PERFORMANCE_TEXT;
-            case "HKEY_PERFORMANCE_NLSTEXT":
+            case HKEY_PERFORMANCE_NLSTEXT:
                 return WinReg.HKEY_PERFORMANCE_NLSTEXT;
-            case "HKEY_CURRENT_CONFIG":
+            case HKEY_CURRENT_CONFIG:
             case "HKCC":
                 return WinReg.HKEY_CURRENT_CONFIG;
-            case "HKEY_DYN_DATA":
+            case HKEY_DYN_DATA:
                 return WinReg.HKEY_DYN_DATA;
             default:
                 throw new RegistryUnknownHiveException("Unknown registry hive: " + hive);

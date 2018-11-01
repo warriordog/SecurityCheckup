@@ -1,0 +1,56 @@
+{
+  "info": {
+    "id": "autoplay_disabled",
+    "name": "AutoPlay Disabled",
+    "description": "Verifies that AutoPlay is disabled.",
+    "failureAdvice": "Disable AutoPlay in the Settings app.",
+    "extraInfo": {
+      "failure_advice": "Disable AutoPlay in the Settings app.",
+      "name": "AutoPlay Disabled",
+      "description": "Verifies that AutoPlay is disabled.",
+      "id": "autoplay_disabled"
+    }
+  },
+  "rootStep": {
+    "class": "net.acomputerdog.securitycheckup.test.step.score.FinalStep",
+    "contents": {
+      "child": {
+        "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+        "contents": {
+          "child": {
+            "class": "net.acomputerdog.securitycheckup.test.step.compare.CompareStep",
+            "contents": {
+              "comparison": {
+                "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
+                "contents": {
+                  "inverted": false
+                }
+              },
+              "step1": {
+                "class": "net.acomputerdog.securitycheckup.test.step.reg.RegDefValueStep",
+                "contents": {
+                  "defaultValue": {
+                    "class": "java.lang.Integer",
+                    "value": 0
+                  },
+                  "value": "DisableAutoplay",
+                  "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\AutoplayHandlers",
+                  "hive": "HKEY_CURRENT_USER"
+                }
+              },
+              "step2": {
+                "class": "net.acomputerdog.securitycheckup.test.step.data.PushStep",
+                "contents": {
+                  "value": {
+                    "class": "java.lang.Integer",
+                    "value": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

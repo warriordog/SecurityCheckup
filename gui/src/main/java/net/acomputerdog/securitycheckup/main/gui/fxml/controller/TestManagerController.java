@@ -70,7 +70,7 @@ public class TestManagerController implements TestManagerWindow {
                     @Override
                     protected Test call() throws Exception {
                         try (BufferedReader reader = new BufferedReader(new FileReader(testFile))) {
-                            return Test.fromJson(reader);
+                            return securityCheckupApp.getGson().fromJson(reader, Test.class);
                         }
                     }
                 };
@@ -134,7 +134,7 @@ public class TestManagerController implements TestManagerWindow {
                     @Override
                     protected Void call() throws Exception {
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile))) {
-                            test.toJson(writer);
+                            securityCheckupApp.getGson().toJson(test, writer);
                         }
                         return null;
                     }

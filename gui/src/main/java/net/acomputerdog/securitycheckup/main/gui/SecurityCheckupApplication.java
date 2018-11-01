@@ -1,5 +1,6 @@
 package net.acomputerdog.securitycheckup.main.gui;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.application.Application;
 import javafx.concurrent.Worker;
@@ -12,11 +13,19 @@ import net.acomputerdog.securitycheckup.main.gui.fxml.panel.ProfileInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.RunInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.*;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
-import net.acomputerdog.securitycheckup.profiles.BasicTests;
+import net.acomputerdog.securitycheckup.main.gui.util.AlertUtils;
+import net.acomputerdog.securitycheckup.test.Profile;
+import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestResult;
+import net.acomputerdog.securitycheckup.test.comparison.Comparison;
 import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
+import net.acomputerdog.securitycheckup.test.step.Step;
+import net.acomputerdog.securitycheckup.util.gson.GenericGsonAdapter;
+import net.acomputerdog.securitycheckup.util.gson.GenericWrapped;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import static net.acomputerdog.securitycheckup.main.gui.GUIMain.displayException;
 
@@ -24,6 +33,8 @@ public class SecurityCheckupApplication extends Application {
     // TODO settings
     public static final float PERFECT_SCORE = 1.0f;
     public static final float PASSING_SCORE = 0.75f;
+
+    private Gson gson;
 
     private TestRegistry testRegistry;
 
@@ -38,14 +49,21 @@ public class SecurityCheckupApplication extends Application {
     public void init() {
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
+        builder.registerTypeAdapter(Step.class, new GenericGsonAdapter<>(Step.class));
+        builder.registerTypeAdapter(Comparison.class, new GenericGsonAdapter<>(Comparison.class));
+        builder.registerTypeAdapter(GenericWrapped.class, new GenericWrapped.GenericWrappedGsonAdapter());
+
+        this.gson = builder.create();
 
         this.testRegistry = new TestRegistry();
-        BasicTests.addToProfile(testRegistry);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
+            // load tests
+            loadJarTests();
+
             // load windows
             this.mainController = loadFXMLController("/ui/window/main.fxml");
             mainController.initData(this);
@@ -180,7 +198,46 @@ public class SecurityCheckupApplication extends Application {
         return fxmlLoader.getController();
     }
 
+    private void loadJarTests() throws IOException {
+        try (BufferedReader indexReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/tests/index.json")))) {
+            JarIndex index = gson.fromJson(indexReader, JarIndex.class);
+
+            // load tests first
+            for (String testFileName : index.tests) {
+                try (BufferedReader testReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/tests/test/" + testFileName)))) {
+                    Test test = gson.fromJson(testReader, Test.class);
+                    testRegistry.addTest(test);
+                } catch (IOException e) {
+                   System.err.println("Exception loading internal test");
+                    e.printStackTrace();
+                    AlertUtils.showWarning("Security Checkup", "Error loading test", "Internal test '" + testFileName + "' could not be loaded: " + e.toString());
+                }
+            }
+
+            // now load profiles, after tests are loaded
+            for (String profileFileName : index.profiles) {
+                try (BufferedReader profileReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/tests/profile/" + profileFileName)))) {
+                    Profile profile = gson.fromJson(profileReader, Profile.class);
+                    testRegistry.addProfile(profile);
+                } catch (IOException e) {
+                    System.err.println("Exception loading internal profile");
+                    e.printStackTrace();
+                    AlertUtils.showWarning("Security Checkup", "Error loading profile", "Internal profile '" + profileFileName + "' could not be loaded: " + e.toString());
+                }
+            }
+        }
+    }
+
     public static void launch(String[] args) {
         Application.launch(args);
+    }
+
+    public Gson getGson() {
+        return gson;
+    }
+
+    private static class JarIndex {
+        private String[] tests;
+        private String[] profiles;
     }
 }

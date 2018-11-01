@@ -1,0 +1,98 @@
+{
+  "info": {
+    "id": "defender_exclusions",
+    "name": "Windows Defender Exclusions",
+    "description": "Checks for files and applications excluded from Windows Defender scans.",
+    "failureAdvice": "Remove any exclusions through the Windows Defender Security Console.",
+    "extraInfo": {
+      "failure_advice": "Remove any exclusions through the Windows Defender Security Console.",
+      "name": "Windows Defender Exclusions",
+      "description": "Checks for files and applications excluded from Windows Defender scans.",
+      "id": "defender_exclusions"
+    }
+  },
+  "rootStep": {
+    "class": "net.acomputerdog.securitycheckup.test.step.score.FinalStep",
+    "contents": {
+      "child": {
+        "class": "net.acomputerdog.securitycheckup.test.step.flow.AverageEveryStep",
+        "contents": {
+          "subSteps": [
+            {
+              "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+              "contents": {
+                "child": {
+                  "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                  "contents": {
+                    "formatMessage": "Excluded extensions: %s",
+                    "passthrough": {
+                      "class": "net.acomputerdog.securitycheckup.test.step.reg.RegKeyEmptyStep",
+                      "contents": {
+                        "key": "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Extensions",
+                        "hive": "HKEY_LOCAL_MACHINE"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+              "contents": {
+                "child": {
+                  "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                  "contents": {
+                    "formatMessage": "Excluded paths: %s",
+                    "passthrough": {
+                      "class": "net.acomputerdog.securitycheckup.test.step.reg.RegKeyEmptyStep",
+                      "contents": {
+                        "key": "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Paths",
+                        "hive": "HKEY_LOCAL_MACHINE"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+              "contents": {
+                "child": {
+                  "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                  "contents": {
+                    "formatMessage": "Excluded processes: %s",
+                    "passthrough": {
+                      "class": "net.acomputerdog.securitycheckup.test.step.reg.RegKeyEmptyStep",
+                      "contents": {
+                        "key": "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Processes",
+                        "hive": "HKEY_LOCAL_MACHINE"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+              "contents": {
+                "child": {
+                  "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                  "contents": {
+                    "formatMessage": "Excluded temporary paths: %s",
+                    "passthrough": {
+                      "class": "net.acomputerdog.securitycheckup.test.step.reg.RegKeyEmptyStep",
+                      "contents": {
+                        "key": "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\TemporaryPaths",
+                        "hive": "HKEY_LOCAL_MACHINE"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
