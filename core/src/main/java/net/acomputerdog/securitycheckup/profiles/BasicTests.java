@@ -35,6 +35,7 @@ public class BasicTests extends Profile {
     public static final String ID_DEFENDER_EXCLUSIONS = "defender_exclusions";
     public static final String ID_UAC_ENABLED = "uac_enabled";
     public static final String ID_PASSWORD_SET = "password_set";
+    public static final String ID_DEFAULT_BROWSER_IE = "default_browser_ie";
 
     public BasicTests(TestRegistry testRegistry) {
         super(ID_BASIC_TESTS, "Basic Tests", "Tests for basic system security.");
@@ -45,6 +46,7 @@ public class BasicTests extends Profile {
         addTest(getOrCreateDefenderExclusions(testRegistry));
         addTest(getOrCreateUACEnabled(testRegistry));
         addTest(getOrCreatePasswordSet(testRegistry));
+        addTest(getOrCreateDefaultBrowserIE(testRegistry));
     }
 
     private static Test getOrCreateWinDefenderEnabled(TestRegistry testRegistry) {
@@ -329,6 +331,59 @@ public class BasicTests extends Profile {
         }
 
         return passwordSet;
+    }
+
+    private static Test getOrCreateDefaultBrowserIE(TestRegistry testRegistry) {
+        Test defaultBrowserIE = testRegistry.getTest(ID_DEFAULT_BROWSER_IE);
+
+        if (defaultBrowserIE == null) {
+            TestInfo testInfo = new TestInfo(
+                    ID_DEFAULT_BROWSER_IE,
+                    "Default Web Browser",
+                    "Makes sure that the default web browser is not Internet Explorer.",
+                    "Change the default browser in the Settings app.");
+
+            Step<Float> rootStep =
+                    new AverageEveryStep(
+                            new BoolToScoreStep(
+                                    new AddDataMessageStep<>(
+                                            new CompareStep<>(
+                                                    new EqualsComparison<>()
+                                                            .setInverted(true),
+                                                    new RegDefValueStep<>(
+                                                            WinReg.HKEY_CURRENT_USER,
+                                                            "SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\URLAssociations\\http\\UserChoice",
+                                                            "ProgId",
+                                                            "" // empty string (pass) if missing
+                                                    ),
+                                                    new PushStep<>("IE.HTTP")
+                                            ),
+                                            "HTTP handler not IE: %s"
+                                    )
+                            ),
+                            new BoolToScoreStep(
+                                    new AddDataMessageStep<>(
+                                            new CompareStep<>(
+                                                    new EqualsComparison<>()
+                                                            .setInverted(true),
+                                                    new RegDefValueStep<>(
+                                                            WinReg.HKEY_CURRENT_USER,
+                                                            "SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\URLAssociations\\https\\UserChoice",
+                                                            "ProgId",
+                                                            "" // empty string (pass) if missing
+                                                    ),
+                                                    new PushStep<>("IE.HTTP")
+                                            ),
+                                            "HTTPS handler not IE: %s"
+                                    )
+                            )
+                    );
+
+            defaultBrowserIE = new Test(testInfo, new FinalStep(rootStep));
+            testRegistry.addTest(defaultBrowserIE);
+        }
+
+        return defaultBrowserIE;
     }
 
     public static void addToProfile(TestRegistry testRegistry) {
