@@ -8,7 +8,9 @@ import javafx.stage.Stage;
 import net.acomputerdog.securitycheckup.main.gui.SecurityCheckupApplication;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.ProfileInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.MainWindow;
+import net.acomputerdog.securitycheckup.main.gui.json.JsonUI;
 import net.acomputerdog.securitycheckup.test.Profile;
+import net.acomputerdog.securitycheckup.test.registry.Bundle;
 
 public class MainController implements MainWindow {
     @FXML
@@ -68,5 +70,17 @@ public class MainController implements MainWindow {
     @Override
     public Stage getStage() {
         return stage;
+    }
+
+    @FXML
+    public void onExportAllAsBundle(ActionEvent actionEvent) {
+        Bundle bundle = new Bundle(securityCheckupApp.getTestRegistry());
+
+        JsonUI.showExportBundle(securityCheckupApp, getStage(), bundle);
+    }
+
+    @FXML
+    public void onImportAllAsBundle(ActionEvent actionEvent) {
+        JsonUI.showImportBundle(securityCheckupApp, getStage());
     }
 }

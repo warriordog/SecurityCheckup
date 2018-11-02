@@ -24,6 +24,9 @@
                         <Menu text="Tests">
                             <MenuItem text="Manage Profiles" onAction="#onManageProfiles"/>
                             <MenuItem text="Manage Tests" onAction="#onManageTests"/>
+                            <SeparatorMenuItem/>
+                            <MenuItem text="Import bundle" onAction="#onImportAllAsBundle"/>
+                            <MenuItem text="Export bundle" onAction="#onExportAllAsBundle"/>
                         </Menu>
                         <Menu text="Help">
                             <MenuItem text="About" onAction="#onAbout"/>

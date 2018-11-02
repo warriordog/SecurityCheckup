@@ -23,6 +23,7 @@
                         <Button onAction="#onRemoveProfile" text="Remove"/>
                         <Button onAction="#onImportProfile" text="Import"/>
                         <Button onAction="#onExportProfile" text="Export"/>
+                        <Button onAction="#onExportBundle" text="Export as bundle"/>
                     </HBox>
                 </top>
                 <center>

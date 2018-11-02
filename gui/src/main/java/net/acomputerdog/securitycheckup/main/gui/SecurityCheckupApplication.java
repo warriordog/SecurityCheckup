@@ -1,7 +1,5 @@
 package net.acomputerdog.securitycheckup.main.gui;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import javafx.application.Application;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXMLLoader;
@@ -12,16 +10,15 @@ import net.acomputerdog.securitycheckup.main.gui.fxml.controller.*;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.ProfileInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.RunInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.*;
+import net.acomputerdog.securitycheckup.main.gui.json.JarIndex;
+import net.acomputerdog.securitycheckup.main.gui.json.JsonUtils;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 import net.acomputerdog.securitycheckup.main.gui.util.AlertUtils;
 import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestResult;
-import net.acomputerdog.securitycheckup.test.comparison.Comparison;
+import net.acomputerdog.securitycheckup.test.registry.Bundle;
 import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
-import net.acomputerdog.securitycheckup.test.step.Step;
-import net.acomputerdog.securitycheckup.util.gson.GenericGsonAdapter;
-import net.acomputerdog.securitycheckup.util.gson.GenericWrapped;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,8 +31,6 @@ public class SecurityCheckupApplication extends Application {
     public static final float PERFECT_SCORE = 1.0f;
     public static final float PASSING_SCORE = 0.75f;
 
-    private Gson gson;
-
     private TestRegistry testRegistry;
 
     private MainController mainController;
@@ -47,14 +42,6 @@ public class SecurityCheckupApplication extends Application {
 
     @Override
     public void init() {
-        GsonBuilder builder = new GsonBuilder();
-        builder.setPrettyPrinting();
-        builder.registerTypeAdapter(Step.class, new GenericGsonAdapter<>(Step.class));
-        builder.registerTypeAdapter(Comparison.class, new GenericGsonAdapter<>(Comparison.class));
-        builder.registerTypeAdapter(GenericWrapped.class, new GenericWrapped.GenericWrappedGsonAdapter());
-
-        this.gson = builder.create();
-
         this.testRegistry = new TestRegistry();
     }
 
@@ -80,24 +67,26 @@ public class SecurityCheckupApplication extends Application {
             // register events
             mainController.addRunButtonListener(this::runProfile);
 
-            profileManagerController.addTestRemoveListener((profile, test) -> {
-                // Triggers when test removed from registry
-                // TODO selective refresh
-                mainController.refreshProfiles();
-            });
-            profileManagerController.addProfileRemoveListener(profile -> {
-                // Triggers profile removed from registry
-                // TODO selective refresh
-                mainController.refreshProfiles();
-            });
+            // Test registry events
+            TestRegistry.RegistryListener registryListener = (object, event, type) -> {
+                if (type == TestRegistry.Type.TEST) {
+                    profileManagerController.refreshTestsList();
+                    testManagerController.refreshTestsList();
+                } else if (type == TestRegistry.Type.PROFILE) {
+                    profileManagerController.refreshProfilesList();
 
-            newProfileController.addCreateProfileListener(profile -> {
-                // Triggers when profile created
-                profileManagerController.refreshProfilesList();
+                    // TODO selective refresh
+                    mainController.refreshProfiles();
 
-                // TODO selective refresh
-                mainController.refreshProfiles();
-            });
+                    if (event == TestRegistry.Event.REMOVE) {
+                        profileManagerController.showProfile(null);
+                    }
+                }
+            };
+            testRegistry.registerAddProfileListener(registryListener);
+            testRegistry.registerRemoveProfileListener(registryListener);
+            testRegistry.registerAddTestListener(registryListener);
+            testRegistry.registerRemoveTestListener(registryListener);
 
             addTestController.addAddTestListener((profile, test) -> {
                 // triggers when test added to profile
@@ -106,11 +95,8 @@ public class SecurityCheckupApplication extends Application {
                 // TODO selective refresh
                 mainController.refreshProfiles();
             });
-
-            testManagerController.addTestRemoveListener(test -> {
-                // triggers when test removed from registry
-                profileManagerController.refreshTestsList();
-
+            profileManagerController.addProfileRemoveTestListener((profile, test) -> {
+                // Triggers when test removed from registry
                 // TODO selective refresh
                 mainController.refreshProfiles();
             });
@@ -200,29 +186,41 @@ public class SecurityCheckupApplication extends Application {
 
     private void loadJarTests() throws IOException {
         try (BufferedReader indexReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/tests/index.json")))) {
-            JarIndex index = gson.fromJson(indexReader, JarIndex.class);
+            JarIndex index = JsonUtils.readJarIndex(indexReader);
 
-            // load tests first
-            for (String testFileName : index.tests) {
-                try (BufferedReader testReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/tests/test/" + testFileName)))) {
-                    Test test = gson.fromJson(testReader, Test.class);
+            // load bundles first
+            for (String bundlePath : index.getBundles()) {
+                try (BufferedReader bundleReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(bundlePath)))) {
+                    Bundle bundle = JsonUtils.readBundle(bundleReader);
+                    bundle.addToRegistry(testRegistry);
+                } catch (IOException e) {
+                    System.err.println("Exception loading internal bundle");
+                    e.printStackTrace();
+                    AlertUtils.showWarning("Security Checkup", "Error loading bundle", "Internal bundle '" + bundlePath + "' could not be loaded: " + e.toString());
+                }
+            }
+
+            // then load standalone tests
+            for (String testPath : index.getTests()) {
+                try (BufferedReader testReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(testPath)))) {
+                    Test test = JsonUtils.readTest(testReader);
                     testRegistry.addTest(test);
                 } catch (IOException e) {
                    System.err.println("Exception loading internal test");
                     e.printStackTrace();
-                    AlertUtils.showWarning("Security Checkup", "Error loading test", "Internal test '" + testFileName + "' could not be loaded: " + e.toString());
+                    AlertUtils.showWarning("Security Checkup", "Error loading test", "Internal test '" + testPath + "' could not be loaded: " + e.toString());
                 }
             }
 
-            // now load profiles, after tests are loaded
-            for (String profileFileName : index.profiles) {
-                try (BufferedReader profileReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/tests/profile/" + profileFileName)))) {
-                    Profile profile = gson.fromJson(profileReader, Profile.class);
+            // finally load profiles after all tests are loaded
+            for (String profilePath : index.getProfiles()) {
+                try (BufferedReader profileReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(profilePath)))) {
+                    Profile profile = JsonUtils.readProfile(profileReader);
                     testRegistry.addProfile(profile);
                 } catch (IOException e) {
                     System.err.println("Exception loading internal profile");
                     e.printStackTrace();
-                    AlertUtils.showWarning("Security Checkup", "Error loading profile", "Internal profile '" + profileFileName + "' could not be loaded: " + e.toString());
+                    AlertUtils.showWarning("Security Checkup", "Error loading profile", "Internal profile '" + profilePath + "' could not be loaded: " + e.toString());
                 }
             }
         }
@@ -232,12 +230,4 @@ public class SecurityCheckupApplication extends Application {
         Application.launch(args);
     }
 
-    public Gson getGson() {
-        return gson;
-    }
-
-    private static class JarIndex {
-        private String[] tests;
-        private String[] profiles;
-    }
 }

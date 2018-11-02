@@ -1,0 +1,746 @@
+{
+  "tests": [
+    {
+      "info": {
+        "id": "windows_defender_enabled",
+        "name": "Windows Defender Enabled",
+        "description": "Verifies that Windows Defender is enabled.",
+        "failureAdvice": "Enable Windows Defender in the Settings app.",
+        "extraInfo": {
+          "failure_advice": "Enable Windows Defender in the Settings app.",
+          "name": "Windows Defender Enabled",
+          "description": "Verifies that Windows Defender is enabled.",
+          "id": "windows_defender_enabled"
+        }
+      },
+      "rootStep": {
+        "class": "net.acomputerdog.securitycheckup.test.step.score.FinalStep",
+        "contents": {
+          "child": {
+            "class": "net.acomputerdog.securitycheckup.test.step.flow.RequireThenStep",
+            "contents": {
+              "requiredStep": {
+                "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                "contents": {
+                  "formatMessage": "Protection technologies enabled: %s",
+                  "passthrough": {
+                    "class": "net.acomputerdog.securitycheckup.test.step.compare.ConstCompareStep",
+                    "contents": {
+                      "comparison": {
+                        "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
+                        "contents": {
+                          "inverted": false
+                        }
+                      },
+                      "child": {
+                        "class": "net.acomputerdog.securitycheckup.test.step.wmi.ClsPropertyStep",
+                        "contents": {
+                          "source": {
+                            "class": "net.acomputerdog.securitycheckup.test.step.wmi.GetFirstClsObjStep",
+                            "contents": {
+                              "source": {
+                                "namespace": "ROOT\\Microsoft\\SecurityClient",
+                                "query": "SELECT * FROM ProtectionTechnologyStatus"
+                              }
+                            }
+                          },
+                          "property": "Enabled"
+                        }
+                      },
+                      "value": {
+                        "class": "java.lang.Boolean",
+                        "value": true
+                      }
+                    }
+                  }
+                }
+              },
+              "passthrough": {
+                "class": "net.acomputerdog.securitycheckup.test.step.flow.AverageEveryStep",
+                "contents": {
+                  "subSteps": [
+                    {
+                      "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+                      "contents": {
+                        "child": {
+                          "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                          "contents": {
+                            "formatMessage": "Antispyware enabled: %s",
+                            "passthrough": {
+                              "class": "net.acomputerdog.securitycheckup.test.step.compare.ConstCompareStep",
+                              "contents": {
+                                "comparison": {
+                                  "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
+                                  "contents": {
+                                    "inverted": false
+                                  }
+                                },
+                                "child": {
+                                  "class": "net.acomputerdog.securitycheckup.test.step.reg.RegDefValueStep",
+                                  "contents": {
+                                    "defaultValue": {
+                                      "class": "java.lang.Integer",
+                                      "value": 0
+                                    },
+                                    "value": "DisableAntiSpyware",
+                                    "key": "SOFTWARE\\Microsoft\\Windows Defender",
+                                    "hive": "HKEY_LOCAL_MACHINE"
+                                  }
+                                },
+                                "value": {
+                                  "class": "java.lang.Integer",
+                                  "value": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+                      "contents": {
+                        "child": {
+                          "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                          "contents": {
+                            "formatMessage": "Antivirus enabled: %s",
+                            "passthrough": {
+                              "class": "net.acomputerdog.securitycheckup.test.step.compare.ConstCompareStep",
+                              "contents": {
+                                "comparison": {
+                                  "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
+                                  "contents": {
+                                    "inverted": false
+                                  }
+                                },
+                                "child": {
+                                  "class": "net.acomputerdog.securitycheckup.test.step.reg.RegDefValueStep",
+                                  "contents": {
+                                    "defaultValue": {
+                                      "class": "java.lang.Integer",
+                                      "value": 0
+                                    },
+                                    "value": "DisableAntiVirus",
+                                    "key": "SOFTWARE\\Microsoft\\Windows Defender",
+                                    "hive": "HKEY_LOCAL_MACHINE"
+                                  }
+                                },
+                                "value": {
+                                  "class": "java.lang.Integer",
+                                  "value": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "info": {
+        "id": "autoplay_disabled",
+        "name": "AutoPlay Disabled",
+        "description": "Verifies that AutoPlay is disabled.",
+        "failureAdvice": "Disable AutoPlay in the Settings app.",
+        "extraInfo": {
+          "failure_advice": "Disable AutoPlay in the Settings app.",
+          "name": "AutoPlay Disabled",
+          "description": "Verifies that AutoPlay is disabled.",
+          "id": "autoplay_disabled"
+        }
+      },
+      "rootStep": {
+        "class": "net.acomputerdog.securitycheckup.test.step.score.FinalStep",
+        "contents": {
+          "child": {
+            "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+            "contents": {
+              "child": {
+                "class": "net.acomputerdog.securitycheckup.test.step.compare.CompareStep",
+                "contents": {
+                  "comparison": {
+                    "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
+                    "contents": {
+                      "inverted": false
+                    }
+                  },
+                  "step1": {
+                    "class": "net.acomputerdog.securitycheckup.test.step.reg.RegDefValueStep",
+                    "contents": {
+                      "defaultValue": {
+                        "class": "java.lang.Integer",
+                        "value": 0
+                      },
+                      "value": "DisableAutoplay",
+                      "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\AutoplayHandlers",
+                      "hive": "HKEY_CURRENT_USER"
+                    }
+                  },
+                  "step2": {
+                    "class": "net.acomputerdog.securitycheckup.test.step.data.PushStep",
+                    "contents": {
+                      "value": {
+                        "class": "java.lang.Integer",
+                        "value": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "info": {
+        "id": "default_browser_ie",
+        "name": "Default Web Browser",
+        "description": "Makes sure that the default web browser is not Internet Explorer.",
+        "failureAdvice": "Change the default browser in the Settings app.",
+        "extraInfo": {
+          "failure_advice": "Change the default browser in the Settings app.",
+          "name": "Default Web Browser",
+          "description": "Makes sure that the default web browser is not Internet Explorer.",
+          "id": "default_browser_ie"
+        }
+      },
+      "rootStep": {
+        "class": "net.acomputerdog.securitycheckup.test.step.score.FinalStep",
+        "contents": {
+          "child": {
+            "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+            "contents": {
+              "child": {
+                "class": "net.acomputerdog.securitycheckup.test.step.flow.PassEveryStep",
+                "contents": {
+                  "subSteps": [
+                    {
+                      "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                      "contents": {
+                        "formatMessage": "HTTP handler not IE: %s",
+                        "passthrough": {
+                          "class": "net.acomputerdog.securitycheckup.test.step.compare.CompareStep",
+                          "contents": {
+                            "comparison": {
+                              "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
+                              "contents": {
+                                "inverted": true
+                              }
+                            },
+                            "step1": {
+                              "class": "net.acomputerdog.securitycheckup.test.step.reg.RegDefValueStep",
+                              "contents": {
+                                "defaultValue": {
+                                  "class": "java.lang.String",
+                                  "value": ""
+                                },
+                                "value": "ProgId",
+                                "key": "SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\URLAssociations\\http\\UserChoice",
+                                "hive": "HKEY_CURRENT_USER"
+                              }
+                            },
+                            "step2": {
+                              "class": "net.acomputerdog.securitycheckup.test.step.data.PushStep",
+                              "contents": {
+                                "value": {
+                                  "class": "java.lang.String",
+                                  "value": "IE.HTTP"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                      "contents": {
+                        "formatMessage": "HTTPS handler not IE: %s",
+                        "passthrough": {
+                          "class": "net.acomputerdog.securitycheckup.test.step.compare.CompareStep",
+                          "contents": {
+                            "comparison": {
+                              "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
+                              "contents": {
+                                "inverted": true
+                              }
+                            },
+                            "step1": {
+                              "class": "net.acomputerdog.securitycheckup.test.step.reg.RegDefValueStep",
+                              "contents": {
+                                "defaultValue": {
+                                  "class": "java.lang.String",
+                                  "value": ""
+                                },
+                                "value": "ProgId",
+                                "key": "SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\URLAssociations\\https\\UserChoice",
+                                "hive": "HKEY_CURRENT_USER"
+                              }
+                            },
+                            "step2": {
+                              "class": "net.acomputerdog.securitycheckup.test.step.data.PushStep",
+                              "contents": {
+                                "value": {
+                                  "class": "java.lang.String",
+                                  "value": "IE.HTTPS"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "info": {
+        "id": "av_installed",
+        "name": "Antivirus Software Installed",
+        "description": "Verifies that an antivirus product is installed.",
+        "failureAdvice": "Install an antivirus application such as Avast, AVG, MalwareBytes, etc.",
+        "extraInfo": {
+          "failure_advice": "Install an antivirus application such as Avast, AVG, MalwareBytes, etc.",
+          "name": "Antivirus Software Installed",
+          "description": "Verifies that an antivirus product is installed.",
+          "id": "av_installed"
+        }
+      },
+      "rootStep": {
+        "class": "net.acomputerdog.securitycheckup.test.step.score.FinalStep",
+        "contents": {
+          "child": {
+            "class": "net.acomputerdog.securitycheckup.test.step.flow.RequireThenStep",
+            "contents": {
+              "requiredStep": {
+                "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                "contents": {
+                  "formatMessage": "Antivirus installed: %s",
+                  "passthrough": {
+                    "class": "net.acomputerdog.securitycheckup.test.step.compare.MatchAnyStep",
+                    "contents": {
+                      "source": {
+                        "class": "net.acomputerdog.securitycheckup.test.step.wmi.WMIStep",
+                        "contents": {
+                          "namespace": "ROOT\\SecurityCenter2",
+                          "query": "SELECT * FROM AntiVirusProduct"
+                        }
+                      },
+                      "match": {
+                        "class": "net.acomputerdog.securitycheckup.test.step.data.PushStep",
+                        "contents": {
+                          "value": {
+                            "class": "java.lang.String",
+                            "value": "Windows Defender"
+                          }
+                        }
+                      },
+                      "comparison": {
+                        "class": "net.acomputerdog.securitycheckup.test.comparison.WMIPropertyComparison",
+                        "contents": {
+                          "passthrough": {
+                            "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
+                            "contents": {
+                              "inverted": true
+                            }
+                          },
+                          "property": "displayName"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "passthrough": {
+                "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+                "contents": {
+                  "child": {
+                    "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                    "contents": {
+                      "formatMessage": "Antivirus spectre-compatible: %s",
+                      "passthrough": {
+                        "class": "net.acomputerdog.securitycheckup.test.step.compare.ConstCompareStep",
+                        "contents": {
+                          "comparison": {
+                            "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
+                            "contents": {
+                              "inverted": false
+                            }
+                          },
+                          "child": {
+                            "class": "net.acomputerdog.securitycheckup.test.step.reg.RegDefValueStep",
+                            "contents": {
+                              "defaultValue": {
+                                "class": "java.lang.Integer",
+                                "value": 1
+                              },
+                              "value": "cadca5fe-87d3-4b96-b7fb-a231484277cc",
+                              "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\QualityCompat",
+                              "hive": "HKEY_LOCAL_MACHINE"
+                            }
+                          },
+                          "value": {
+                            "class": "java.lang.Integer",
+                            "value": 0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "info": {
+        "id": "uac_enabled",
+        "name": "UAC Enabled",
+        "description": "Checks if User Account Control is enabled.",
+        "failureAdvice": "Enable User Account Control in the Control Panel.",
+        "extraInfo": {
+          "failure_advice": "Enable User Account Control in the Control Panel.",
+          "name": "UAC Enabled",
+          "description": "Checks if User Account Control is enabled.",
+          "id": "uac_enabled"
+        }
+      },
+      "rootStep": {
+        "class": "net.acomputerdog.securitycheckup.test.step.score.FinalStep",
+        "contents": {
+          "child": {
+            "class": "net.acomputerdog.securitycheckup.test.step.flow.AverageEveryStep",
+            "contents": {
+              "subSteps": [
+                {
+                  "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+                  "contents": {
+                    "child": {
+                      "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                      "contents": {
+                        "formatMessage": "UAC enabled: %s",
+                        "passthrough": {
+                          "class": "net.acomputerdog.securitycheckup.test.step.compare.CompareStep",
+                          "contents": {
+                            "comparison": {
+                              "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
+                              "contents": {
+                                "inverted": false
+                              }
+                            },
+                            "step1": {
+                              "class": "net.acomputerdog.securitycheckup.test.step.reg.RegDefValueStep",
+                              "contents": {
+                                "defaultValue": {
+                                  "class": "java.lang.Integer",
+                                  "value": 0
+                                },
+                                "value": "EnableLUA",
+                                "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+                                "hive": "HKEY_LOCAL_MACHINE"
+                              }
+                            },
+                            "step2": {
+                              "class": "net.acomputerdog.securitycheckup.test.step.data.PushStep",
+                              "contents": {
+                                "value": {
+                                  "class": "java.lang.Integer",
+                                  "value": 1
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+                  "contents": {
+                    "child": {
+                      "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                      "contents": {
+                        "formatMessage": "UAC prompt enabled: %s",
+                        "passthrough": {
+                          "class": "net.acomputerdog.securitycheckup.test.step.compare.CompareStep",
+                          "contents": {
+                            "comparison": {
+                              "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
+                              "contents": {
+                                "inverted": true
+                              }
+                            },
+                            "step1": {
+                              "class": "net.acomputerdog.securitycheckup.test.step.reg.RegDefValueStep",
+                              "contents": {
+                                "defaultValue": {
+                                  "class": "java.lang.Integer",
+                                  "value": 0
+                                },
+                                "value": "ConsentPromptBehaviorAdmin",
+                                "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+                                "hive": "HKEY_LOCAL_MACHINE"
+                              }
+                            },
+                            "step2": {
+                              "class": "net.acomputerdog.securitycheckup.test.step.data.PushStep",
+                              "contents": {
+                                "value": {
+                                  "class": "java.lang.Integer",
+                                  "value": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "info": {
+        "id": "defender_exclusions",
+        "name": "Windows Defender Exclusions",
+        "description": "Checks for files and applications excluded from Windows Defender scans.",
+        "failureAdvice": "Remove any exclusions through the Windows Defender Security Console.",
+        "extraInfo": {
+          "failure_advice": "Remove any exclusions through the Windows Defender Security Console.",
+          "name": "Windows Defender Exclusions",
+          "description": "Checks for files and applications excluded from Windows Defender scans.",
+          "id": "defender_exclusions"
+        }
+      },
+      "rootStep": {
+        "class": "net.acomputerdog.securitycheckup.test.step.score.FinalStep",
+        "contents": {
+          "child": {
+            "class": "net.acomputerdog.securitycheckup.test.step.flow.AverageEveryStep",
+            "contents": {
+              "subSteps": [
+                {
+                  "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+                  "contents": {
+                    "child": {
+                      "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                      "contents": {
+                        "formatMessage": "Excluded extensions: %s",
+                        "passthrough": {
+                          "class": "net.acomputerdog.securitycheckup.test.step.reg.RegKeyEmptyStep",
+                          "contents": {
+                            "key": "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Extensions",
+                            "hive": "HKEY_LOCAL_MACHINE"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+                  "contents": {
+                    "child": {
+                      "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                      "contents": {
+                        "formatMessage": "Excluded paths: %s",
+                        "passthrough": {
+                          "class": "net.acomputerdog.securitycheckup.test.step.reg.RegKeyEmptyStep",
+                          "contents": {
+                            "key": "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Paths",
+                            "hive": "HKEY_LOCAL_MACHINE"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+                  "contents": {
+                    "child": {
+                      "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                      "contents": {
+                        "formatMessage": "Excluded processes: %s",
+                        "passthrough": {
+                          "class": "net.acomputerdog.securitycheckup.test.step.reg.RegKeyEmptyStep",
+                          "contents": {
+                            "key": "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\Processes",
+                            "hive": "HKEY_LOCAL_MACHINE"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+                  "contents": {
+                    "child": {
+                      "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                      "contents": {
+                        "formatMessage": "Excluded temporary paths: %s",
+                        "passthrough": {
+                          "class": "net.acomputerdog.securitycheckup.test.step.reg.RegKeyEmptyStep",
+                          "contents": {
+                            "key": "SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\TemporaryPaths",
+                            "hive": "HKEY_LOCAL_MACHINE"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "info": {
+        "id": "smartscreen_enabled",
+        "name": "SmartScreen Enabled",
+        "description": "Checks that Windows SmartScreen is enabled.",
+        "failureAdvice": "Enable SmartScreen in the Windows Security Console.",
+        "extraInfo": {
+          "failure_advice": "Enable SmartScreen in the Windows Security Console.",
+          "name": "SmartScreen Enabled",
+          "description": "Checks that Windows SmartScreen is enabled.",
+          "id": "smartscreen_enabled"
+        }
+      },
+      "rootStep": {
+        "class": "net.acomputerdog.securitycheckup.test.step.score.FinalStep",
+        "contents": {
+          "child": {
+            "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+            "contents": {
+              "child": {
+                "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                "contents": {
+                  "formatMessage": "SmartScreen enabled: %s",
+                  "passthrough": {
+                    "class": "net.acomputerdog.securitycheckup.test.step.compare.CompareStep",
+                    "contents": {
+                      "comparison": {
+                        "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
+                        "contents": {
+                          "inverted": true
+                        }
+                      },
+                      "step1": {
+                        "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
+                        "contents": {
+                          "formatMessage": "SmartScreen mode: %s",
+                          "passthrough": {
+                            "class": "net.acomputerdog.securitycheckup.test.step.reg.RegDefValueStep",
+                            "contents": {
+                              "defaultValue": {
+                                "class": "java.lang.String",
+                                "value": "Warn"
+                              },
+                              "value": "SmartScreenEnabled",
+                              "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+                              "hive": "HKEY_LOCAL_MACHINE"
+                            }
+                          }
+                        }
+                      },
+                      "step2": {
+                        "class": "net.acomputerdog.securitycheckup.test.step.data.PushStep",
+                        "contents": {
+                          "value": {
+                            "class": "java.lang.String",
+                            "value": "Off"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "info": {
+        "id": "password_set",
+        "name": "Password Set",
+        "description": "Verifies that a password is set on the current Windows account.",
+        "failureAdvice": "Set a Windows password in the Settings app or Control Panel.",
+        "extraInfo": {
+          "failure_advice": "Set a Windows password in the Settings app or Control Panel.",
+          "name": "Password Set",
+          "description": "Verifies that a password is set on the current Windows account.",
+          "id": "password_set"
+        }
+      },
+      "rootStep": {
+        "class": "net.acomputerdog.securitycheckup.test.step.score.FinalStep",
+        "contents": {
+          "child": {
+            "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
+            "contents": {
+              "child": {
+                "class": "net.acomputerdog.securitycheckup.test.step.data.InvertStep",
+                "contents": {
+                  "source": {
+                    "class": "net.acomputerdog.securitycheckup.test.step.password.UserPasswordIsEmptyStep",
+                    "contents": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "profiles": [
+    {
+      "id": "power_users",
+      "name": "Power Users",
+      "description": "Enhanced security for power users.",
+      "testIDs": [
+        "autoplay_disabled",
+        "default_browser_ie",
+        "password_set"
+      ]
+    },
+    {
+      "id": "basic_tests",
+      "name": "Basic Tests",
+      "description": "Tests for basic system security.",
+      "testIDs": [
+        "windows_defender_enabled",
+        "av_installed",
+        "uac_enabled",
+        "defender_exclusions",
+        "smartscreen_enabled"
+      ]
+    }
+  ]
+}

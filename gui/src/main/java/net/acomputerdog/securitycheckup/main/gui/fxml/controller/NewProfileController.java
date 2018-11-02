@@ -6,10 +6,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import net.acomputerdog.securitycheckup.main.gui.SecurityCheckupApplication;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.NewProfileWindow;
+import net.acomputerdog.securitycheckup.main.gui.util.AlertUtils;
 import net.acomputerdog.securitycheckup.test.Profile;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class NewProfileController implements NewProfileWindow {
     @FXML
@@ -23,11 +21,8 @@ public class NewProfileController implements NewProfileWindow {
 
     private SecurityCheckupApplication securityCheckupApp;
 
-    private Set<CreateProfileListener> createProfileListeners;
-
     @FXML
     private void initialize() {
-        createProfileListeners = new HashSet<>();
     }
 
     public void initData(SecurityCheckupApplication securityCheckupApp) {
@@ -36,13 +31,26 @@ public class NewProfileController implements NewProfileWindow {
 
     @FXML
     private void onCreateProfile(ActionEvent actionEvent) {
-        Profile profile = new Profile(idText.getText(), nameText.getText(), descriptionText.getText());
+        String id = idText.getText().trim();
+        if (!id.isEmpty()) {
 
-        securityCheckupApp.getTestRegistry().addProfile(profile);
+            // default to id if missing
+            String name = nameText.getText().trim();
+            if (name.isEmpty()) {
+                name = id;
+            }
 
-        createProfileListeners.forEach(l -> l.onCreateProfile(profile));
+            // can be empty
+            String desc = descriptionText.getText().trim();
 
-        stage.hide();
+            Profile profile = new Profile(id, name, desc);
+
+            securityCheckupApp.getTestRegistry().addProfile(profile);
+
+            stage.hide();
+        } else {
+            AlertUtils.showWarning("Security Checkup", "Unable to create profile", "Profile id cannot be blank");
+        }
     }
 
     @FXML
@@ -53,15 +61,5 @@ public class NewProfileController implements NewProfileWindow {
     @Override
     public Stage getStage() {
         return stage;
-    }
-
-    @Override
-    public void addCreateProfileListener(CreateProfileListener listener) {
-        createProfileListeners.add(listener);
-    }
-
-    @Override
-    public void removeCreateProfileListener(CreateProfileListener listener) {
-        createProfileListeners.remove(listener);
     }
 }

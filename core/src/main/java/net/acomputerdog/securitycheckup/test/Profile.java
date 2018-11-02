@@ -1,19 +1,13 @@
 package net.acomputerdog.securitycheckup.test;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
 
-import java.io.Reader;
-import java.io.Writer;
 import java.util.*;
 
 /**
  * A collection of tests to run together
  */
 public class Profile {
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
     private final String id;
     private final String name;
     private final String description;
@@ -108,11 +102,16 @@ public class Profile {
         return name;
     }
 
-    public void toJson(Writer writer) {
-        gson.toJson(this, writer);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Profile)) return false;
+        Profile profile = (Profile) o;
+        return Objects.equals(id, profile.id);
     }
 
-    public static Profile fromJson(Reader reader) {
-        return gson.fromJson(reader, Profile.class);
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

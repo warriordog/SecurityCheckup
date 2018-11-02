@@ -1,18 +1,18 @@
 package net.acomputerdog.securitycheckup.main.gui.fxml.controller;
 
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
-import javafx.stage.FileChooser;
+import javafx.scene.control.SelectionMode;
 import javafx.stage.Stage;
 import net.acomputerdog.securitycheckup.main.gui.SecurityCheckupApplication;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.ProfileManagerWindow;
-import net.acomputerdog.securitycheckup.main.gui.util.AlertUtils;
+import net.acomputerdog.securitycheckup.main.gui.json.JsonUI;
 import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
+import net.acomputerdog.securitycheckup.test.registry.Bundle;
 
-import java.io.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,15 +26,14 @@ public class ProfileManagerController implements ProfileManagerWindow {
 
     private SecurityCheckupApplication securityCheckupApp;
 
-    private Set<ProfileRemoveListener> profileRemoveListeners;
     private Set<ProfileRemoveTestListener> profileRemoveTestListeners;
 
     @FXML
     private void initialize() {
-        profileRemoveListeners = new HashSet<>();
         profileRemoveTestListeners = new HashSet<>();
 
         profilesList.getSelectionModel().selectedItemProperty().addListener(e -> showProfile(getSelectedProfile()));
+        profilesList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     public void initData(SecurityCheckupApplication securityCheckupApp) {
@@ -56,9 +55,6 @@ public class ProfileManagerController implements ProfileManagerWindow {
         if (profile != null) {
             securityCheckupApp.getTestRegistry().removeProfile(profile);
 
-            // Trigger remove listeners
-            profileRemoveListeners.forEach(l -> l.onRemoveProfile(profile));
-
             // redraw profile
             refreshProfilesList();
             showProfile(null);
@@ -67,63 +63,7 @@ public class ProfileManagerController implements ProfileManagerWindow {
 
     @FXML
     private void onImportProfile(ActionEvent actionEvent) {
-        FileChooser openChooser = new FileChooser();
-        openChooser.setTitle("Import profile");
-        openChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("JSON files", "*.json"),
-                new FileChooser.ExtensionFilter("All files", "*.*")
-        );
-
-        File profileFile = openChooser.showOpenDialog(stage);
-
-        if (profileFile != null) {
-            if (profileFile.isFile()) {
-                Task<Profile> task = new Task<Profile>() {
-                    @Override
-                    protected Profile call() throws Exception {
-                        try (BufferedReader reader = new BufferedReader(new FileReader(profileFile))) {
-                            return Profile.fromJson(reader);
-                        }
-                    }
-                };
-                task.setOnCancelled(e -> AlertUtils.showWarning("Security Checkup", "Error importing profile", task.getMessage()));
-                task.setOnFailed(e -> {
-                    Throwable ex = task.getException();
-                    if (ex != null) {
-                        System.err.println("Exception importing profile");
-                        ex.printStackTrace();
-                        AlertUtils.showError("Security Checkup","Unhandled error importing profile",String.valueOf(ex));
-                    } else {
-                        System.err.println("Unknown error importing profile (no exception)");
-                        AlertUtils.showError("Security Checkup","Unhandled error importing profile", "Import failed for unknown reason (no exception)");
-                    }
-                });
-                task.setOnSucceeded(e -> {
-                    Profile profile = task.getValue();
-
-                    // check for duplicate profile
-                    if (securityCheckupApp.getTestRegistry().hasProfile(profile.getId())) {
-                        // Ask to overwrite
-                        if (!AlertUtils.askWarning("Security Checkup", "Profile already exists", "A profile with the same ID already exists.  Do you want to overwrite it?")) {
-                            return;
-                        }
-                    }
-
-                    securityCheckupApp.getTestRegistry().addProfile(profile);
-
-                    // TODO selective refresh
-                    this.refreshProfilesList();
-                    securityCheckupApp.getMainWindow().refreshProfiles();
-
-                    showProfile(task.getValue());
-                    AlertUtils.showInformation("Security Checkup", "Success", "Profile loaded successfully.");
-                });
-
-                new Thread(task).start();
-            } else {
-                AlertUtils.showWarning("Security Checkup", "Error importing profile", "The selected file does not exist or is a directory.");
-            }
-        }
+        JsonUI.showImportProfile(securityCheckupApp, getStage());
     }
 
     @FXML
@@ -132,42 +72,24 @@ public class ProfileManagerController implements ProfileManagerWindow {
 
         // null if nothing selected
         if (profile != null) {
+            JsonUI.showExportProfile(securityCheckupApp, getStage(), profile);
+        }
+    }
 
-            FileChooser saveChooser = new FileChooser();
-            saveChooser.setTitle("Export profile");
-            saveChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("JSON files", "*.json"),
-                    new FileChooser.ExtensionFilter("All files", "*.*")
-            );
-            saveChooser.setInitialFileName(profile.getId() + ".json");
+    @FXML
+    public void onExportBundle(ActionEvent actionEvent) {
+        Collection<Profile> selectedProfiles = getSelectedProfiles();
 
-            File saveFile = saveChooser.showSaveDialog(stage);
+        // null if nothing selected
+        if (!selectedProfiles.isEmpty()) {
 
-            if (saveFile != null) {
-                Task task = new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        try (BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile))) {
-                            profile.toJson(writer);
-                        }
-                        return null;
-                    }
-                };
-                task.setOnFailed(e -> {
-                    Throwable ex = task.getException();
-                    if (ex != null) {
-                        System.err.println("Exception exporting profile");
-                        ex.printStackTrace();
-                        AlertUtils.showError("Security Checkup","Unhandled error exporting profile",String.valueOf(ex));
-                    } else {
-                        System.err.println("Unknown error exporting profile (no exception)");
-                        AlertUtils.showError("Security Checkup","Unhandled error exporting profile", "Export failed for unknown reason (no exception)");
-                    }
-                });
-                task.setOnSucceeded(e -> AlertUtils.showInformation("Security Checkup","Success", "Profile saved successfully."));
+            Set<Profile> profiles = new HashSet<>(selectedProfiles);
+            Set<Test> tests = new HashSet<>();
+            profiles.forEach(profile -> tests.addAll(profile.getTestsFrom(securityCheckupApp.getTestRegistry())));
 
-                new Thread(task).start();
-            }
+            Bundle bundle = new Bundle(tests, profiles);
+
+            JsonUI.showExportBundle(securityCheckupApp, this.getStage(), bundle);
         }
     }
 
@@ -197,28 +119,24 @@ public class ProfileManagerController implements ProfileManagerWindow {
         }
     }
 
-    private Profile getSelectedProfile() {
+    @Override
+    public Profile getSelectedProfile() {
         return profilesList.getSelectionModel().getSelectedItem();
     }
 
     @Override
-    public void addTestRemoveListener(ProfileRemoveTestListener listener) {
+    public Collection<Profile> getSelectedProfiles() {
+        return profilesList.getSelectionModel().getSelectedItems();
+    }
+
+    @Override
+    public void addProfileRemoveTestListener(ProfileRemoveTestListener listener) {
         profileRemoveTestListeners.add(listener);
     }
 
     @Override
-    public void removeTestRemoveListener(ProfileRemoveTestListener listener) {
+    public void removeProfileRemoveTestListener(ProfileRemoveTestListener listener) {
         profileRemoveTestListeners.remove(listener);
-    }
-
-    @Override
-    public void addProfileRemoveListener(ProfileRemoveListener listener) {
-        profileRemoveListeners.add(listener);
-    }
-
-    @Override
-    public void removeProfileRemoveListener(ProfileRemoveListener listener) {
-        profileRemoveListeners.remove(listener);
     }
 
     @Override
@@ -245,4 +163,5 @@ public class ProfileManagerController implements ProfileManagerWindow {
     public Stage getStage() {
         return stage;
     }
+
 }

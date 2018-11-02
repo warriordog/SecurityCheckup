@@ -21,11 +21,11 @@ public class AddTestController implements AddTestWindow {
     private SecurityCheckupApplication securityCheckupApplication;
 
     private Profile currentProfile;
-    private Set<AddTestListener> addTestListeners;
+    private Set<ProfileAddTestListener> profileAddTestListeners;
 
     @FXML
     private void initialize() {
-        addTestListeners = new HashSet<>();
+        profileAddTestListeners = new HashSet<>();
     }
 
     public void initData(SecurityCheckupApplication application) {
@@ -38,7 +38,7 @@ public class AddTestController implements AddTestWindow {
 
         if (test != null) {
             currentProfile.addTest(test);
-            addTestListeners.forEach(l -> l.onAddTest(currentProfile, test));
+            profileAddTestListeners.forEach(l -> l.onAddTest(currentProfile, test));
         }
 
         stage.hide();
@@ -68,13 +68,13 @@ public class AddTestController implements AddTestWindow {
     }
 
     @Override
-    public void addAddTestListener(AddTestListener listener) {
-        addTestListeners.add(listener);
+    public void addAddTestListener(ProfileAddTestListener listener) {
+        profileAddTestListeners.add(listener);
     }
 
     @Override
-    public void removeAddTestListener(AddTestListener listener) {
-        addTestListeners.remove(listener);
+    public void removeAddTestListener(ProfileAddTestListener listener) {
+        profileAddTestListeners.remove(listener);
     }
 
     @Override

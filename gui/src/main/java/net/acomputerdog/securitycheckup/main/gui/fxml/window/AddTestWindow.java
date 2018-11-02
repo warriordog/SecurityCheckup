@@ -7,10 +7,10 @@ public interface AddTestWindow extends Window {
     void show(Profile profile);
     void setProfile(Profile profile);
 
-    void addAddTestListener(AddTestListener listener);
-    void removeAddTestListener(AddTestListener listener);
+    void addAddTestListener(ProfileAddTestListener listener);
+    void removeAddTestListener(ProfileAddTestListener listener);
 
-    interface AddTestListener {
+    interface ProfileAddTestListener {
         void onAddTest(Profile profile, Test test);
     }
 }
