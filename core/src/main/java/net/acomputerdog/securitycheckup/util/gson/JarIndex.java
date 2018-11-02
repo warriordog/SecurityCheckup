@@ -1,4 +1,4 @@
-package net.acomputerdog.securitycheckup.main.gui.json;
+package net.acomputerdog.securitycheckup.util.gson;
 
 public class JarIndex {
     private final String[] bundles;

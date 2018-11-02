@@ -10,8 +10,6 @@ import net.acomputerdog.securitycheckup.main.gui.fxml.controller.*;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.ProfileInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.RunInfoPanel;
 import net.acomputerdog.securitycheckup.main.gui.fxml.window.*;
-import net.acomputerdog.securitycheckup.main.gui.json.JarIndex;
-import net.acomputerdog.securitycheckup.main.gui.json.JsonUtils;
 import net.acomputerdog.securitycheckup.main.gui.runner.TestRunner;
 import net.acomputerdog.securitycheckup.main.gui.util.AlertUtils;
 import net.acomputerdog.securitycheckup.test.Profile;
@@ -19,6 +17,8 @@ import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestResult;
 import net.acomputerdog.securitycheckup.test.registry.Bundle;
 import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
+import net.acomputerdog.securitycheckup.util.gson.JarIndex;
+import net.acomputerdog.securitycheckup.util.gson.JsonUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

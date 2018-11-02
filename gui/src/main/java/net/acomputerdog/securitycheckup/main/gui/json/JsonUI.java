@@ -8,6 +8,7 @@ import net.acomputerdog.securitycheckup.main.gui.util.AlertUtils;
 import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.registry.Bundle;
+import net.acomputerdog.securitycheckup.util.gson.JsonUtils;
 
 import java.io.*;
 

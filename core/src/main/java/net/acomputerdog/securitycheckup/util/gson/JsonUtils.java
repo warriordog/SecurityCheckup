@@ -1,4 +1,4 @@
-package net.acomputerdog.securitycheckup.main.gui.json;
+package net.acomputerdog.securitycheckup.util.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,8 +7,6 @@ import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.comparison.Comparison;
 import net.acomputerdog.securitycheckup.test.registry.Bundle;
 import net.acomputerdog.securitycheckup.test.step.Step;
-import net.acomputerdog.securitycheckup.util.gson.GenericGsonAdapter;
-import net.acomputerdog.securitycheckup.util.gson.GenericWrapped;
 
 import java.io.Reader;
 import java.io.Writer;

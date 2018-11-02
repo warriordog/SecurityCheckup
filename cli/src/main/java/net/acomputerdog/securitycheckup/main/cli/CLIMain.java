@@ -16,9 +16,14 @@ import net.acomputerdog.securitycheckup.test.Profile;
 import net.acomputerdog.securitycheckup.test.Test;
 import net.acomputerdog.securitycheckup.test.TestEnvironment;
 import net.acomputerdog.securitycheckup.test.TestResult;
+import net.acomputerdog.securitycheckup.test.registry.Bundle;
 import net.acomputerdog.securitycheckup.test.registry.TestRegistry;
 import net.acomputerdog.securitycheckup.util.RegUtil;
+import net.acomputerdog.securitycheckup.util.gson.JsonUtils;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +33,7 @@ import java.util.Map;
 /**
  * Main class for command line usage
  */
+@Deprecated // Needs to be rewritten or thrown out
 public class CLIMain implements AutoCloseable {
     /**
      * Path to the WMI namespace CIMV2
@@ -54,7 +60,7 @@ public class CLIMain implements AutoCloseable {
     /**
      * Sets up the program to begin testing
      */
-    private void setup() throws UnsupportedPlatformException, NativeException {
+    private void setup(TestRegistry testRegistry) throws UnsupportedPlatformException, NativeException {
         if (!"Windows 10".equals(System.getProperty("os.name"))) {
             throw new UnsupportedPlatformException("OS is not windows 10");
         }
@@ -62,8 +68,7 @@ public class CLIMain implements AutoCloseable {
         WbemLocator locator = JWMI.getInstance().createWbemLocator();
         this.testEnvironment = new TestEnvironment(locator);
 
-        // TODO load from JSON
-        testRegistry = new TestRegistry();
+        this.testRegistry = testRegistry;
     }
 
     /**
@@ -179,10 +184,13 @@ public class CLIMain implements AutoCloseable {
             printVersionString();
             System.out.println();
 
+            TestRegistry testRegistry = new TestRegistry();
+
             // Parse args
-            if (args.length > 0) {
+            if (args.length >= 1) {
                 if (args[0].equalsIgnoreCase("/?")) {
-                    System.out.println("\nSupported arguments:");
+                    System.out.println("\nUsage: SecurityCheckup {options | bundle_path}");
+                    System.out.println("Supported arguments:");
                     System.out.println("/?              Show this help");
                     System.out.println("/version        Show version string and exit");
                     System.out.println("/debug_reg      DEBUG: Print the value of a registry key");
@@ -221,14 +229,26 @@ public class CLIMain implements AutoCloseable {
                         exitBadArg();
                     }
                 } else {
-                    System.out.println("Unknown argument \"" + args[0] + "\".  Use /? for help.");
-                    exitBadArg();
+                    // no args, load bundle and run
+                    try {
+                        String bundlePath = args[0];
+                        try (Reader reader = new BufferedReader(new FileReader(bundlePath))) {
+                            Bundle bundle = JsonUtils.readBundle(reader);
+                            bundle.addToRegistry(testRegistry);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Exception while loading");
+                        e.printStackTrace();
+                    }
                 }
+            } else {
+                System.out.println("Missing bundle or profile.  Use /? for help.");
+                exitBadArg();
             }
 
             try (CLIMain main = new CLIMain()) {
 
-                main.setup(); // Open registry, connect to WMI, etc.
+                main.setup(testRegistry); // Open registry, connect to WMI, etc.
 
                 main.run(); // Run the test
 
@@ -236,7 +256,6 @@ public class CLIMain implements AutoCloseable {
             } catch (UnsupportedPlatformException e) {
                 System.err.println("This system or software environment is not supported: " + e.getMessage() + ".");
                 System.err.println("Security Checkup cannot run.");
-                //e.printStackTrace();
                 exitIncompatible();
             } catch (WMIException e) {
                 System.err.printf("WMI exception in object at %s, hresult = 0x%s\n", e.getPointer().toString(), Integer.toHexString(e.getHresult().intValue()));
