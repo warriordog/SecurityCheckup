@@ -7,7 +7,7 @@ This project is split up into three parts - a core engine that acts as a test be
 
 The core is a set of utilities for querying information from native windows systems (registry, WMI, etc) and a tree-based test framework.  Tests can be created programmatically or imported from JSON. 
 
-The CLI runs a single profile or test and also acts a debugging tool to test the native features of the core.  It is currently broken due to recent JSON changes.
+The CLI runs a single profile or test and also acts a debugging tool to test the native features of the core.  It is depreciated, but still functional for now.
 
 The GUI is a JavaFX-based interface that can create, run, and manage multiple profiles.  It comes with a set of profiles ready to use out of the box.
 
