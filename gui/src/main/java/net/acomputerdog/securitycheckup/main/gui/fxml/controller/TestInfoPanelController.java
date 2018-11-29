@@ -6,9 +6,13 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebView;
 import net.acomputerdog.securitycheckup.main.gui.fxml.panel.TestInfoPanel;
 import net.acomputerdog.securitycheckup.test.Test;
+
+import java.net.URL;
 
 public class TestInfoPanelController implements TestInfoPanel {
     @FXML
@@ -17,6 +21,10 @@ public class TestInfoPanelController implements TestInfoPanel {
     private TableView<ExtraInfo> testInfoView;
     @FXML
     private VBox root;
+    @FXML
+    public TitledPane fixPane;
+    @FXML
+    public WebView fixWebView;
 
     @Override
     public void showTest(Test test) {
@@ -24,8 +32,25 @@ public class TestInfoPanelController implements TestInfoPanel {
         clear();
 
         if (test != null) {
+            // set description
             descriptionText.setText(test.getInfo().getDescription());
+
+            // display extra info
             test.getInfo().getInfoMap().forEach((k, v) -> testInfoView.getItems().add(new ExtraInfo(k, v)));
+
+            // Display fix instructions (if present)
+            URL fixUrl = test.getInfo().getFixURL();
+            if (fixUrl != null) {
+                fixWebView.getEngine().load(fixUrl.toString());
+
+                fixPane.setManaged(true);
+                fixPane.setVisible(true);
+            } else {
+                // If failed but no fix, then show message
+                fixPane.setManaged(false);
+                fixPane.setVisible(false);
+            }
+
             root.setVisible(true);
         } else {
             root.setVisible(false);

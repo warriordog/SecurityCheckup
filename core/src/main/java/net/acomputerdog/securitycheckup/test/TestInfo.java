@@ -2,6 +2,7 @@ package net.acomputerdog.securitycheckup.test;
 
 import net.acomputerdog.securitycheckup.util.Informable;
 
+import java.net.URL;
 import java.util.*;
 
 public class TestInfo implements Informable {
@@ -52,6 +53,11 @@ public class TestInfo implements Informable {
 
     public void addInfo(String key, String value) {
         extraInfo.put(key, value);
+    }
+
+    public URL getFixURL() {
+        // TODO embed in bundle
+        return getClass().getResource("/doc/fix/id/" + id + "/index.html");
     }
 
     @Override

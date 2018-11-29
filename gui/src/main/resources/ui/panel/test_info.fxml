@@ -5,6 +5,7 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.WebView?>
 <VBox fx:id="root"
       xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -16,6 +17,13 @@
         <padding><Insets top="5" bottom="5" left="5" right="5"/></padding>
         <VBox>
             <Label fx:id="descriptionText" wrapText="true" styleClass="big_text"/>
+        </VBox>
+    </TitledPane>
+
+    <TitledPane text="Fix" fx:id="fixPane">
+        <padding><Insets top="5" bottom="5" left="5" right="5"/></padding>
+        <VBox>
+            <WebView fx:id="fixWebView"/>
         </VBox>
     </TitledPane>
 

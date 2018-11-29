@@ -311,7 +311,7 @@
         "id": "av_installed",
         "name": "Antivirus Software Installed",
         "description": "Verifies that an antivirus product is installed.",
-        "failureAdvice": "Install an antivirus application such as Avast, AVG, MalwareBytes, etc.",
+        "failureAdvice": "Install an antivirus application.",
         "extraInfo": {
           "failure_advice": "Install an antivirus application such as Avast, AVG, MalwareBytes, etc.",
           "name": "Antivirus Software Installed",
@@ -690,7 +690,7 @@
         "id": "password_set",
         "name": "Password Set",
         "description": "Verifies that a password is set on the current Windows account.",
-        "failureAdvice": "Set a Windows password in the Settings app or Control Panel.",
+        "failureAdvice": "Set a Windows account password.",
         "extraInfo": {
           "failure_advice": "Set a Windows password in the Settings app or Control Panel.",
           "name": "Password Set",
