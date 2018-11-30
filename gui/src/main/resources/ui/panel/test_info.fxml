@@ -20,11 +20,9 @@
         </VBox>
     </TitledPane>
 
-    <TitledPane text="Fix" fx:id="fixPane">
+    <TitledPane text="Fix" fx:id="fixPane" VBox.vgrow="SOMETIMES" maxHeight="Infinity">
         <padding><Insets top="5" bottom="5" left="5" right="5"/></padding>
-        <VBox>
-            <WebView fx:id="fixWebView"/>
-        </VBox>
+        <WebView fx:id="fixWebView" maxHeight="Infinity"/>
     </TitledPane>
 
     <TitledPane text="Advanced info" expanded="false">

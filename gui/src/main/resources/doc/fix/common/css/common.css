@@ -1,0 +1,25 @@
+body {
+    /* 15px is to work around JFX WebKit bug that draws the scrollbar on top of the page, instead of beside it*/
+    margin: 0 15px 0 0;
+    padding: 10px;
+
+    overflow-x: hidden;
+}
+h1, h2, p, a, li {
+    font-family: sans-serif, serif;
+}
+h1 {
+    font-size: 150%;
+}
+h2 {
+    font-size: 115%;
+}
+img {
+    width: 100%;
+    height: auto;
+    border: 2px solid black;
+    margin-top: 5px;
+}
+li {
+    margin-bottom: 10px;
+}
