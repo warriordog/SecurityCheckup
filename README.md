@@ -36,8 +36,8 @@ Please note that this software is being developed for class credit and may not b
 
 Screenshots:
 
-![Screenshot 1](doc/img/ss1.png?raw=true)
+![Screenshot 1](doc/resources/doc/screenshots/ss1.png?raw=true)
 
-![Screenshot 2](doc/img/ss2.png?raw=true)
+![Screenshot 2](doc/resources/doc/screenshots/ss2.png?raw=true)
 
-![Screenshot 3](doc/img/ss3.png?raw=true)
+![Screenshot 3](doc/resources/doc/screenshots/ss3.png?raw=true)

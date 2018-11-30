@@ -5,9 +5,7 @@
 # Compiled class file
 *.class
 /target/
-/cli/target/
-/core/target/
-/gui/target/
+/*/target/
 
 # Log file
 *.log

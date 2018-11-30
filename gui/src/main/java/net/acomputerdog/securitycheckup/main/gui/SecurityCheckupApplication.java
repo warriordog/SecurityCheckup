@@ -23,6 +23,7 @@ import net.acomputerdog.securitycheckup.util.gson.JsonUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 import static net.acomputerdog.securitycheckup.main.gui.GUIMain.displayException;
 
@@ -185,42 +186,47 @@ public class SecurityCheckupApplication extends Application {
     }
 
     private void loadJarTests() throws IOException {
-        try (BufferedReader indexReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/tests/index.json")))) {
-            JarIndex index = JsonUtils.readJarIndex(indexReader);
+        // check if there are any in-jar tests
+        URL testURL = getClass().getResource("/tests/index.json");
+        if (testURL != null) {
 
-            // load bundles first
-            for (String bundlePath : index.getBundles()) {
-                try (BufferedReader bundleReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(bundlePath)))) {
-                    Bundle bundle = JsonUtils.readBundle(bundleReader);
-                    bundle.addToRegistry(testRegistry);
-                } catch (IOException e) {
-                    System.err.println("Exception loading internal bundle");
-                    e.printStackTrace();
-                    AlertUtils.showWarning("Security Checkup", "Error loading bundle", "Internal bundle '" + bundlePath + "' could not be loaded: " + e.toString());
+            try (BufferedReader indexReader = new BufferedReader(new InputStreamReader(testURL.openStream()))) {
+                JarIndex index = JsonUtils.readJarIndex(indexReader);
+
+                // load bundles first
+                for (String bundlePath : index.getBundles()) {
+                    try (BufferedReader bundleReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(bundlePath)))) {
+                        Bundle bundle = JsonUtils.readBundle(bundleReader);
+                        bundle.addToRegistry(testRegistry);
+                    } catch (IOException e) {
+                        System.err.println("Exception loading internal bundle");
+                        e.printStackTrace();
+                        AlertUtils.showWarning("Security Checkup", "Error loading bundle", "Internal bundle '" + bundlePath + "' could not be loaded: " + e.toString());
+                    }
                 }
-            }
 
-            // then load standalone tests
-            for (String testPath : index.getTests()) {
-                try (BufferedReader testReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(testPath)))) {
-                    Test test = JsonUtils.readTest(testReader);
-                    testRegistry.addTest(test);
-                } catch (IOException e) {
-                   System.err.println("Exception loading internal test");
-                    e.printStackTrace();
-                    AlertUtils.showWarning("Security Checkup", "Error loading test", "Internal test '" + testPath + "' could not be loaded: " + e.toString());
+                // then load standalone tests
+                for (String testPath : index.getTests()) {
+                    try (BufferedReader testReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(testPath)))) {
+                        Test test = JsonUtils.readTest(testReader);
+                        testRegistry.addTest(test);
+                    } catch (IOException e) {
+                        System.err.println("Exception loading internal test");
+                        e.printStackTrace();
+                        AlertUtils.showWarning("Security Checkup", "Error loading test", "Internal test '" + testPath + "' could not be loaded: " + e.toString());
+                    }
                 }
-            }
 
-            // finally load profiles after all tests are loaded
-            for (String profilePath : index.getProfiles()) {
-                try (BufferedReader profileReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(profilePath)))) {
-                    Profile profile = JsonUtils.readProfile(profileReader);
-                    testRegistry.addProfile(profile);
-                } catch (IOException e) {
-                    System.err.println("Exception loading internal profile");
-                    e.printStackTrace();
-                    AlertUtils.showWarning("Security Checkup", "Error loading profile", "Internal profile '" + profilePath + "' could not be loaded: " + e.toString());
+                // finally load profiles after all tests are loaded
+                for (String profilePath : index.getProfiles()) {
+                    try (BufferedReader profileReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(profilePath)))) {
+                        Profile profile = JsonUtils.readProfile(profileReader);
+                        testRegistry.addProfile(profile);
+                    } catch (IOException e) {
+                        System.err.println("Exception loading internal profile");
+                        e.printStackTrace();
+                        AlertUtils.showWarning("Security Checkup", "Error loading profile", "Internal profile '" + profilePath + "' could not be loaded: " + e.toString());
+                    }
                 }
             }
         }

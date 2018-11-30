@@ -9,9 +9,11 @@
     <packaging>pom</packaging>
     <version>0.1.0-SNAPSHOT</version>
     <modules>
+        <module>doc</module>
         <module>core</module>
         <module>cli</module>
         <module>gui</module>
+        <module>gui-full</module>
     </modules>
 
     <properties>
