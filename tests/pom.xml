@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>SecurityCheckup-doc</artifactId>
+    <artifactId>SecurityCheckup-tests</artifactId>
 
     <build>
         <resources>
