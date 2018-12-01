@@ -323,9 +323,9 @@
         "class": "net.acomputerdog.securitycheckup.test.step.score.FinalStep",
         "contents": {
           "child": {
-            "class": "net.acomputerdog.securitycheckup.test.step.flow.RequireThenStep",
+            "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
             "contents": {
-              "requiredStep": {
+              "child": {
                 "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
                 "contents": {
                   "formatMessage": "Antivirus installed: %s",
@@ -358,44 +358,6 @@
                             }
                           },
                           "property": "displayName"
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              "passthrough": {
-                "class": "net.acomputerdog.securitycheckup.test.step.score.BoolToScoreStep",
-                "contents": {
-                  "child": {
-                    "class": "net.acomputerdog.securitycheckup.test.step.log.AddDataMessageStep",
-                    "contents": {
-                      "formatMessage": "Antivirus spectre-compatible: %s",
-                      "passthrough": {
-                        "class": "net.acomputerdog.securitycheckup.test.step.compare.ConstCompareStep",
-                        "contents": {
-                          "comparison": {
-                            "class": "net.acomputerdog.securitycheckup.test.comparison.EqualsComparison",
-                            "contents": {
-                              "inverted": false
-                            }
-                          },
-                          "child": {
-                            "class": "net.acomputerdog.securitycheckup.test.step.reg.RegDefValueStep",
-                            "contents": {
-                              "defaultValue": {
-                                "class": "java.lang.Integer",
-                                "value": 1
-                              },
-                              "value": "cadca5fe-87d3-4b96-b7fb-a231484277cc",
-                              "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\QualityCompat",
-                              "hive": "HKEY_LOCAL_MACHINE"
-                            }
-                          },
-                          "value": {
-                            "class": "java.lang.Integer",
-                            "value": 0
-                          }
                         }
                       }
                     }
